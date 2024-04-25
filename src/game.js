@@ -14,7 +14,6 @@ export class Game {
         function loop(time) {
             //Calc delta
             const delta = (time - lastTime)/1000.0;
-            console.log(delta);
             lastTime = time;
             //Update/draw
             world.update(delta);

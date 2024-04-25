@@ -10,9 +10,9 @@ export const GameObjectState = {
  */
 export class GameObject {
 
-    constructor() {
-        this._x = 0;
-        this._y = 0;
+    constructor(x, y) {
+        this._x = x;
+        this._y = y;
         this._world = null;
         this._state = GameObjectState.New;
     }
@@ -75,6 +75,10 @@ export class GameObject {
 
     set y(val) {
         this._y = val;
+    }
+
+    get world() {
+        return this._world;
     }
 
 }
