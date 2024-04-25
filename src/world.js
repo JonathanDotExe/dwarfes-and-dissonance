@@ -37,14 +37,14 @@ export class GameWorld {
 
     draw(ctx) {
         //Draw tiles
-        const width = this.width;
-        const height = this.height;
+        const width = this.worldWidth;
+        const height = this.worldHeight;
         const camX = 0;
         const camY = 0;
         //TODO only draw whats in cam
         for (let x = 0; x < width; x++) {
             for (let y = 0; y < height; y++) {
-                tile.draw();
+                this.getTile(x, y).draw(ctx, x, y);
             }
         }
         //Draw objects
