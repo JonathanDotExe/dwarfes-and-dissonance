@@ -6,7 +6,7 @@ export class LivingObject extends GameObject {
     constructor(x, y, maxHealth) {
         super(x, y);
         this._maxHealth = maxHealth;
-        this._health = health;
+        this._health = maxHealth;
     }
 
     takeDamage(damage) {
@@ -24,23 +24,23 @@ export class LivingObject extends GameObject {
     }
 
     draw(camX, camY, ctx) {
-        super(camX, camY, ctx);
+        super.draw(camX, camY, ctx);
         //Draw health bar
-        const x = TILE_SIZE * this.x - camX;
-        const y = TILE_SIZE * this.y - camY - 10;
+        const x = TILE_SIZE * (this.x - camX);
+        const y = TILE_SIZE * (this.y - camY) - 10;
 
         ctx.fillStyle = 'red#7d0000';
-        ctx.fillRect(x, y, this.width, 5);
+        ctx.fillRect(x, y, this.width * TILE_SIZE, 5);
         ctx.fillStyle = 'red';
-        ctx.fillRect(x, y, this.width * this.healthPercent, 5);
+        ctx.fillRect(x, y, this.width * this.healthPercent * TILE_SIZE, 5);
     }
 
     get health() {
-        return this.health;
+        return this._health;
     }
 
     get maxHealth() {
-        return this.maxHealth;
+        return this._maxHealth;
     }
 
     get healthPercent() {

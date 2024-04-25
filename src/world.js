@@ -1,4 +1,5 @@
 import {GRASS_TILE, SAND_TILE, WATER_TILE} from "./object/tile.js";
+import {Goblin} from "./object/enemy.js";
 export const WORLD_SIZE = 256;
 
 
@@ -26,6 +27,8 @@ export class GameWorld {
             [g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g],
         ];
         this._objects = [];
+
+        this.addObject(new Goblin(10, 7))
     }
 
     update(deltaTime) {
@@ -58,7 +61,7 @@ export class GameWorld {
             throw "Object already in world!";
         }
         obj.init(this);
-        this._objects.addObject(obj);
+        this._objects.push(obj);
     }
 
     removeObject(obj) {

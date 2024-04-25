@@ -43,7 +43,7 @@ export class GameObject {
 
     }
 
-    move(world, xMotion, yMotion, deltaTime) {
+    move(xMotion, yMotion, deltaTime) {
         //TODO collision detection
         this.x += xMotion * deltaTime;
         this.y += yMotion * deltaTime;
