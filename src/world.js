@@ -1,12 +1,31 @@
+import {GRASS_TILE, SAND_TILE, WATER_TILE} from "./object/tile.js";
 export const WORLD_SIZE = 256;
 
 
 export class GameWorld {
 
     constructor() {
-        this._tiles = [];//TODO initialize tile array
+        const w = WATER_TILE;
+        const g = GRASS_TILE;
+        const s = SAND_TILE
+        this._tiles = [
+            [w, w, w, w, w, w, w, s, s, s, g, g, g, g, g, g, g, g, g, g],
+            [w, w, w, w, w, w, s, s, s, g, g, g, g, g, g, g, g, g, g, g],
+            [w, w, w, w, s, s, s, g, g, g, g, g, g, g, g, g, g, g, g, g],
+            [w, w, s, s, s, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g],
+            [s, s, s, s, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g],
+            [s, s, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g],
+            [g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g],
+            [g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g],
+            [g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g],
+            [g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g],
+            [g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g],
+            [g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g],
+            [g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g],
+            [g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g],
+            [g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g],
+        ];
         this._objects = [];
-
     }
 
     update(deltaTime) {
@@ -18,7 +37,16 @@ export class GameWorld {
 
     draw(ctx) {
         //Draw tiles
-        
+        const width = this.width;
+        const height = this.height;
+        const camX = 0;
+        const camY = 0;
+        //TODO only draw whats in cam
+        for (let x = 0; x < width; x++) {
+            for (let y = 0; y < height; y++) {
+                tile.draw();
+            }
+        }
         //Draw objects
         for (let obj of this._objects) {
             obj.draw(0, 0, ctx); //TODO cam position
