@@ -1,11 +1,20 @@
-import { TILE_SIZE } from "./tile";
 
+export const GameObjectState = {
+    New: 0,
+    Alive: 1,
+    Removed: 2
+}
+
+/**
+ * Coordinates are in TILE_SIZE units
+ */
 export class GameObject {
 
     constructor() {
-        this.x = 0;
-        this.y = 0;
-        this.world = null;
+        this._x = 0;
+        this._y = 0;
+        this._world = null;
+        this._state = GameObjectState.New;
     }
 
     /**
@@ -16,7 +25,14 @@ export class GameObject {
      * @param {*} world 
      */
     init(world) {
-        this.world = world;
+        if (!world) {
+            throw "World can't be null";
+        }
+        else if (this._world || this._state != GameObjectState.New) {
+            throw "Object already initialized";
+        }
+        this._world = world;
+        this._state = GameObjectState.Alive;
     }
 
     update(deltaTime) {
@@ -33,12 +49,32 @@ export class GameObject {
         this.y += yMotion * deltaTime;
     }
 
-    width() {
+    onRemove() {
+        this._state = GameObjectState.Removed;
+    }
+
+    get width() {
         return 1;
     }
 
-    height() {
+    get height() {
         return 1;
+    }
+
+    get x() {
+        return this._x;
+    }
+
+    get y() {
+        return this._y;
+    }
+
+    set x(val) {
+        this._x = val;
+    }
+
+    set y(val) {
+        this._y = val;
     }
 
 }
