@@ -95,7 +95,7 @@ export class GameWorld {
             loop:
             for (let i = Math.floor(x + width); i <= Math.ceil(goalX + width); i++) {
                 x = i - width;
-                for (let j = Math.floor(y); j <= Math.ceil(y + height); j++) {
+                for (let j = Math.floor(y); j <= Math.floor(y + height); j++) {
                     const t = this.getTile(i, j);
                     if (t == null || t.solid || t.fluid) {
                         break loop;
@@ -107,13 +107,13 @@ export class GameWorld {
         else {
             loop:
             for (let i = Math.floor(x); i >= Math.floor(goalX); i--) {
-                x = i;
-                for (let j = Math.floor(y); j <= Math.ceil(y + height); j++) {
+                for (let j = Math.floor(y); j <= Math.floor(y + height); j++) {
                     const t = this.getTile(i, j);
                     if (t == null || t.solid || t.fluid) {
                         break loop;
                     }
                 }
+                x = i;
             }
             x = Math.max(x, goalX);
         }
@@ -122,7 +122,7 @@ export class GameWorld {
             loop:
             for (let i = Math.floor(y + height); i <= Math.ceil(goalY + height); i++) {
                 y = i - height;
-                for (let j = Math.floor(x); j < Math.ceil(x + width); j++) {
+                for (let j = Math.floor(x); j <= Math.floor(x + width); j++) {
                     const t = this.getTile(j, i);
                     if (t == null || t.solid || t.fluid) {
                         break loop;
@@ -134,13 +134,13 @@ export class GameWorld {
         else {
             loop:
             for (let i = Math.floor(y); i >= Math.floor(goalY); i--) {
-                y = i;
-                for (let j = Math.floor(x); j <= Math.ceil(x + width); j++) {
+                for (let j = Math.floor(x); j <= Math.floor(x + width); j++) {
                     const t = this.getTile(j, i);
                     if (t == null || t.solid || t.fluid) {
                         break loop;
                     }
                 }
+                y = i;
             }
             y = Math.max(y, goalY);
         }

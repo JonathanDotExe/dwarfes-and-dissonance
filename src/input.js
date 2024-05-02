@@ -18,7 +18,7 @@ export class Input {
                 this._down = true;
             }
             else if (key == 'd') {
-                this._righr = true;
+                this._right = true;
             }
         });
         window.addEventListener("keyup", e => {
@@ -33,7 +33,7 @@ export class Input {
                 this._down = false;
             }
             else if (key == 'd') {
-                this._righr = false;
+                this._right = false;
             }
         });
     }
@@ -42,7 +42,10 @@ export class Input {
         const x = this._right - this._left;
         const y = this._down - this._up;
 
-        const length = Math.sqrt(x * x + y * y);
+        let length = Math.sqrt(x * x + y * y);
+        if (length == 0) {
+            length = 1;
+        }
         return {x : x/length, y: y/length};
     }
 

@@ -14,7 +14,7 @@ export class Player extends LivingObject {
         super.update(deltaTime, env);
         const motion = env.input.movementAxis;
 
-        //this.move(motion.x * 4 , motion.y * 4, deltaTime);
+        this.move(motion.x * 4 , motion.y * 4, deltaTime);
     }
 
     draw(camX, camY, ctx) {
