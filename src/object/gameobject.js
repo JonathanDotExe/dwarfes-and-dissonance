@@ -35,7 +35,7 @@ export class GameObject {
         this._state = GameObjectState.Alive;
     }
 
-    update(deltaTime) {
+    update(deltaTime, env) {
 
     }
 

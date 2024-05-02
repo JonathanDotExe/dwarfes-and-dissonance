@@ -1,5 +1,6 @@
 import {GRASS_TILE, SAND_TILE, WATER_TILE} from "./object/tile.js";
 import {Goblin} from "./object/enemy.js";
+import {Player} from "./object/player.js";
 export const WORLD_SIZE = 256;
 
 
@@ -19,22 +20,23 @@ export class GameWorld {
             [g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g],
             [g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g],
             [g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g],
-            [g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g],
-            [g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g],
-            [g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g],
-            [g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g],
-            [g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g],
-            [g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g],
+            [g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, w, w],
+            [g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, w, w, w, w],
+            [g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, w, w, w, w, g],
+            [g, g, g, g, g, g, g, g, g, g, g, g, g, g, w, w, w, w, g, g],
+            [g, g, g, g, g, g, g, g, g, g, g, g, g, g, w, w, w, g, g, g],
+            [g, g, g, g, g, g, g, g, g, g, g, g, g, g, w, w, w, g, g, g],
         ];
         this._objects = [];
 
-        this.addObject(new Goblin(10, 7))
+        this.addObject(new Goblin(10, 7));
+        this.addObject(new Player(10, 7));
     }
 
-    update(deltaTime) {
+    update(deltaTime, env) {
         //Update objects
         for (let obj of this._objects) {
-            obj.update(deltaTime);
+            obj.update(deltaTime, env);
         }
     }
 
@@ -77,6 +79,10 @@ export class GameWorld {
     }
 
     getTile(x, y) {
+        if (y < 0 || y >= this._tiles.length || x < 0 || x >= this._tiles[y].length) {
+            return null;
+        }
+        
         return this._tiles[y][x];
     }
 
@@ -90,7 +96,8 @@ export class GameWorld {
             for (let i = Math.floor(x + width); i <= Math.ceil(goalX + width); i++) {
                 x = i - width;
                 for (let j = Math.floor(y); j <= Math.ceil(y + height); j++) {
-                    if (this.getTile(i, j).solid || this.getTile(i, j).fluid) {
+                    const t = this.getTile(i, j);
+                    if (t == null || t.solid || t.fluid) {
                         break loop;
                     }
                 }
@@ -99,10 +106,11 @@ export class GameWorld {
         }
         else {
             loop:
-            for (let i = Math.ceil(x); i >= Math.floor(goalX); i--) {
+            for (let i = Math.floor(x); i >= Math.floor(goalX); i--) {
                 x = i;
                 for (let j = Math.floor(y); j <= Math.ceil(y + height); j++) {
-                    if (this.getTile(i, j).solid || this.getTile(i, j).fluid) {
+                    const t = this.getTile(i, j);
+                    if (t == null || t.solid || t.fluid) {
                         break loop;
                     }
                 }
@@ -115,7 +123,8 @@ export class GameWorld {
             for (let i = Math.floor(y + height); i <= Math.ceil(goalY + height); i++) {
                 y = i - height;
                 for (let j = Math.floor(x); j < Math.ceil(x + width); j++) {
-                    if (this.getTile(j, i).solid || this.getTile(j, i).fluid) {
+                    const t = this.getTile(j, i);
+                    if (t == null || t.solid || t.fluid) {
                         break loop;
                     }
                 }
@@ -124,10 +133,11 @@ export class GameWorld {
         }
         else {
             loop:
-            for (let i = Math.ceil(y); i <= Math.floor(goalY); i++) {
+            for (let i = Math.floor(y); i >= Math.floor(goalY); i--) {
                 y = i;
-                for (let j = Math.floor(x); j < Math.ceil(x + width); j++) {
-                    if (this.getTile(j, i).solid || this.getTile(j, i).fluid) {
+                for (let j = Math.floor(x); j <= Math.ceil(x + width); j++) {
+                    const t = this.getTile(j, i);
+                    if (t == null || t.solid || t.fluid) {
                         break loop;
                     }
                 }

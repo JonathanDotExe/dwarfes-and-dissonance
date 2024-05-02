@@ -11,8 +11,8 @@ export class Goblin extends LivingObject {
         this.count = 0;
     }
 
-    update(deltaTime) {
-        super.update(deltaTime);
+    update(deltaTime, env) {
+        super.update(deltaTime, env);
         let xMotion = 0;
         let yMotion = 0;
 
