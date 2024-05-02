@@ -80,6 +80,64 @@ export class GameWorld {
         return this._tiles[y][x];
     }
 
+    doCollisionDetection(x, y, width, height, movementX, movementY) {
+        const goalX = x + movementX;
+        const goalY = y + movementY;
+        
+        //X axis
+        if (movementX >= 0) {
+            loop:
+            for (let i = Math.floor(x + width); i <= Math.ceil(goalX + width); i++) {
+                x = i - width;
+                for (let j = Math.floor(y); j <= Math.ceil(y + height); j++) {
+                    if (this.getTile(i, j).solid || this.getTile(i, j).fluid) {
+                        break loop;
+                    }
+                }
+            }
+            x = Math.min(x, goalX);
+        }
+        else {
+            loop:
+            for (let i = Math.ceil(x); i >= Math.floor(goalX); i--) {
+                x = i;
+                for (let j = Math.floor(y); j <= Math.ceil(y + height); j++) {
+                    if (this.getTile(i, j).solid || this.getTile(i, j).fluid) {
+                        break loop;
+                    }
+                }
+            }
+            x = Math.max(x, goalX);
+        }
+        //Y axis
+        if (movementY >= 0) {
+            loop:
+            for (let i = Math.floor(y + height); i <= Math.ceil(goalY + height); i++) {
+                y = i - height;
+                for (let j = Math.floor(x); j < Math.ceil(x + width); j++) {
+                    if (this.getTile(j, i).solid || this.getTile(j, i).fluid) {
+                        break loop;
+                    }
+                }
+            }
+            y = Math.min(y, goalY);
+        }
+        else {
+            loop:
+            for (let i = Math.ceil(y); i <= Math.floor(goalY); i++) {
+                y = i;
+                for (let j = Math.floor(x); j < Math.ceil(x + width); j++) {
+                    if (this.getTile(j, i).solid || this.getTile(j, i).fluid) {
+                        break loop;
+                    }
+                }
+            }
+            y = Math.max(y, goalY);
+        }
+
+        return {x: x, y: y};
+    }
+
     get worldWidth() {
         return this._tiles[0].length; //FIXME only works if all lines are the same length
     }

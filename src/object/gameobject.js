@@ -44,9 +44,9 @@ export class GameObject {
     }
 
     move(xMotion, yMotion, deltaTime) {
-        //TODO collision detection
-        this.x += xMotion * deltaTime;
-        this.y += yMotion * deltaTime;
+        const movement = this.world.doCollisionDetection(this.x, this.y, this.width, this.height, xMotion * deltaTime, yMotion * deltaTime);
+        this.x = movement.x;
+        this.y = movement.y;
     }
 
     onRemove() {
