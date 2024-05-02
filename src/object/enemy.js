@@ -9,6 +9,7 @@ export class Goblin extends LivingObject {
     constructor(x, y) {
         super(x, y, 25);
         this.count = 0;
+        this.dir = 0;
     }
 
     update(deltaTime, env) {
@@ -16,7 +17,11 @@ export class Goblin extends LivingObject {
         let xMotion = 0;
         let yMotion = 0;
 
-        switch(Math.floor(this.count) % 4) {
+        while (this.count >= 1) {
+            this.count -= 1;
+            this.dir = Math.floor(Math.random() * 4);
+        }
+        switch(this.dir) {
             case 0:
                 xMotion = 4;
                 break;

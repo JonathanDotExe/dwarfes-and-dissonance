@@ -18,10 +18,10 @@ export class GameWorld {
             [s, s, s, s, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g],
             [s, s, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g],
             [g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g],
-            [g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g],
-            [g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g],
-            [g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, w, w],
-            [g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, w, w, w, w],
+            [g, g, g, g, g, g, g, w, w, w, w, g, g, g, g, g, g, g, g, g],
+            [g, g, g, g, g, g, g, w, w, w, w, g, g, g, g, g, g, g, g, g],
+            [g, g, g, g, g, g, g, w, w, w, w, g, g, g, g, g, g, g, w, w],
+            [g, g, g, g, g, g, g, w, w, w, w, g, g, g, g, g, w, w, w, w],
             [g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, w, w, w, w, g],
             [g, g, g, g, g, g, g, g, g, g, g, g, g, g, w, w, w, w, g, g],
             [g, g, g, g, g, g, g, g, g, g, g, g, g, g, w, w, w, g, g, g],
@@ -30,7 +30,7 @@ export class GameWorld {
         this._objects = [];
 
         this.addObject(new Goblin(10, 7));
-        this.addObject(new Player(10, 7));
+        this.addObject(new Player(10, 5));
     }
 
     update(deltaTime, env) {
@@ -91,11 +91,11 @@ export class GameWorld {
         const goalY = y + movementY;
         
         //X axis
-        if (movementX >= 0) {
+        if (movementX > 0) {
             loop:
             for (let i = Math.floor(x + width); i <= Math.ceil(goalX + width); i++) {
                 x = i - width;
-                for (let j = Math.floor(y); j <= Math.floor(y + height); j++) {
+                for (let j = Math.floor(y); j < y + height; j++) {
                     const t = this.getTile(i, j);
                     if (t == null || t.solid || t.fluid) {
                         break loop;
@@ -104,10 +104,10 @@ export class GameWorld {
             }
             x = Math.min(x, goalX);
         }
-        else {
+        else if (movementX < 0) {
             loop:
             for (let i = Math.floor(x); i >= Math.floor(goalX); i--) {
-                for (let j = Math.floor(y); j <= Math.floor(y + height); j++) {
+                for (let j = Math.floor(y); j < y + height; j++) {
                     const t = this.getTile(i, j);
                     if (t == null || t.solid || t.fluid) {
                         break loop;
@@ -118,11 +118,11 @@ export class GameWorld {
             x = Math.max(x, goalX);
         }
         //Y axis
-        if (movementY >= 0) {
+        if (movementY > 0) {
             loop:
             for (let i = Math.floor(y + height); i <= Math.ceil(goalY + height); i++) {
                 y = i - height;
-                for (let j = Math.floor(x); j <= Math.floor(x + width); j++) {
+                for (let j = Math.floor(x); j < x + width; j++) {
                     const t = this.getTile(j, i);
                     if (t == null || t.solid || t.fluid) {
                         break loop;
@@ -131,10 +131,10 @@ export class GameWorld {
             }
             y = Math.min(y, goalY);
         }
-        else {
+        else if (movementY < 0) {
             loop:
             for (let i = Math.floor(y); i >= Math.floor(goalY); i--) {
-                for (let j = Math.floor(x); j <= Math.floor(x + width); j++) {
+                for (let j = Math.floor(x); j < x + width; j++) {
                     const t = this.getTile(j, i);
                     if (t == null || t.solid || t.fluid) {
                         break loop;
