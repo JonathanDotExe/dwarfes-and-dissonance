@@ -3,6 +3,7 @@ import {Goblin} from "./object/enemy.js";
 import {Player} from "./object/player.js";
 import {Tree} from "./object/static/tree.js";
 import {Chest} from "./object/static/chest.js";
+import { createAmbientMusicGenerator } from "./music/music.js";
 export const WORLD_SIZE = 256;
 
 
@@ -36,6 +37,10 @@ export class GameWorld {
         this.addObject(new Player(10, 5));
         this.addObject(new Tree(10,12));
         this.addObject(new Chest(15,8));
+
+        createAmbientMusicGenerator(this).then(m => {
+            m.init();
+        })
     }
 
     update(deltaTime, env) {
