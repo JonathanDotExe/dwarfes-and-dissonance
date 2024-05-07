@@ -7,6 +7,7 @@ export class Input {
         this._right = false;
         this._up = false;
         this._down = false;
+        this._attack = false;
 
         window.addEventListener("keydown", e => {
             const key = e.key.toLowerCase();
@@ -39,7 +40,7 @@ export class Input {
             }
         });
         window.addEventListener("click",e => {
-            e.attack();
+            this._attack = true;
         });
     }
 
@@ -52,6 +53,13 @@ export class Input {
             length = 1;
         }
         return {x : x/length, y: y/length};
+    }
+
+    get currentlyAttacking() {
+        return this._attack;
+    }
+    doneAttacking() {
+        this._attack = false;
     }
 
 }

@@ -1,6 +1,6 @@
 import { LivingObject } from "./livingobject.js";
 import { TILE_SIZE } from "./tile.js";
-import {Goblin} from "./enemy";
+import {Goblin} from "./enemy.js";
 
 const playerImage = new Image();
 playerImage.src = "/res/objects/dwarf_blue.png";
@@ -15,9 +15,23 @@ export class Player extends LivingObject {
     update(deltaTime, env) {
         super.update(deltaTime, env);
         const motion = env.input.movementAxis;
+
+        // save direction for attacking
         if(motion.x !== 0 || motion.y !== 0) {
             this.direction = motion;
         }
+
+        // attacking
+        if(env.input.currentlyAttacking()) {
+            let curTime = new Date().getTime();
+            let lastTime;
+            if((curTime - lastTime > 500) || lastTime === undefined) {
+                this.attack();
+                env.input.doneAttacking();
+                lastTime = curTime;
+            }
+        }
+
         const speed = this.isInFluid() ? 1 : 4;
 
         this.move(motion.x * speed , motion.y * speed, deltaTime, true);
