@@ -186,4 +186,7 @@ export class GameWorld {
         return this._tiles.length;
     }
 
+    get allObjects() {
+        return this._objects;
+    }
 }

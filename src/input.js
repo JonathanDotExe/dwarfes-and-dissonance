@@ -1,3 +1,5 @@
+import {Player} from "./object/player.js";
+
 export class Input {
 
     constructor() {
@@ -35,6 +37,9 @@ export class Input {
             else if (key == 'd') {
                 this._right = false;
             }
+        });
+        window.addEventListener("click",e => {
+            e.attack();
         });
     }
 
