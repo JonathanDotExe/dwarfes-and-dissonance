@@ -16,12 +16,16 @@ export class Player extends LivingObject {
 
         const speed = this.isInFluid() ? 1 : 4;
 
-        this.move(motion.x * speed , motion.y * speed, deltaTime, t => t.solid);
+        this.move(motion.x * speed , motion.y * speed, deltaTime);
     }
 
     draw(camX, camY, ctx) {
         ctx.drawImage(playerImage, (this.x - camX) * TILE_SIZE, (this.y - camY) * TILE_SIZE);
         super.draw(camX, camY, ctx);
+    }
+
+    doesCollide(tile) {
+        return tile.solid
     }
 
 }

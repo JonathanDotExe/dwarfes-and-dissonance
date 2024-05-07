@@ -43,14 +43,18 @@ export class GameObject {
 
     }
 
-    move(xMotion, yMotion, deltaTime, collide) {
-        const movement = this.world.doCollisionDetection(this.x, this.y, this.width, this.height, xMotion * deltaTime, yMotion * deltaTime, collide);
+    move(xMotion, yMotion, deltaTime) {
+        const movement = this.world.doCollisionDetection(this.x, this.y, this.width, this.height, xMotion * deltaTime, yMotion * deltaTime, t => this.doesCollide(t));
         this.x = movement.x;
         this.y = movement.y;
     }
 
     onRemove() {
         this._state = GameObjectState.Removed;
+    }
+
+    doesCollide(tile) {
+        return tile.solid || tile.fluid;
     }
 
     isInFluid() {

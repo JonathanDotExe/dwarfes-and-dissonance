@@ -18,4 +18,8 @@ export class Piranha extends Enemy{
         super.draw(camX, camY, ctx);
     }
 
+    doesCollide(tile) {
+        return !tile.fluid;
+    }
+
 }

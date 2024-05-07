@@ -71,7 +71,7 @@ export class Enemy extends LivingObject {
 
         }
         this.count += deltaTime
-        this.move(xMotion, yMotion, deltaTime, t => t.solid || t.fluid);
+        this.move(xMotion, yMotion, deltaTime);
     }
 
 }
