@@ -24,10 +24,13 @@ export class AudioChannel {
     }
 
     play(loop, player) {
-        const source = new AudioBufferSourceNode();
+        const source = player.audioContext.createBufferSource();
         source.buffer = loop.buffer;
         source.connect(this._start);
-        source.play(player.nextLoopTime - player.barDuration * loop.preBars);
+        const time = player.nextLoopTime - player.barDuration * loop.preBars
+        if (time >= player.audioContext.currentTime) {
+            source.start(time);
+        }
     }
 
     connect(dst) {
@@ -42,7 +45,7 @@ export class MusicPlayer {
         this._bpm = bpm;
         this._bars = bars;
         this._channels = {};
-        this._audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        this._audioCtx = new (window.AudioContext || window.webkitAudioContext)({sampleRate: 48000});
         //this._audioCtx.sampleRate = 48000;
         this.onLoopStart = (player) => {};
         this._nextLoopTime = 0;
@@ -62,14 +65,14 @@ export class MusicPlayer {
     }
 
     start() {
-        this._nextLoopTime = this._audioCtx.currentTime;
+        this._nextLoopTime = this._audioCtx.currentTime + this.barDuration * 2; //Start in two bars
         const t = this;
         const func = () => {  //Loop every half bar and check if it's time to generate the next audio
-            if (this._nextLoopTime - t._audioCtx.currentTime <= t.barDuration) {
+            if (this._nextLoopTime - t._audioCtx.currentTime <= t.loopDuration) {
                 t.onLoopStart(t);
-                t._nextLoopTime += this.loopDuration;
+                t._nextLoopTime += t.loopDuration;
             }
-            setTimeout(func, this.barDuration/2);
+            setTimeout(func, t.barDuration/2);
         };
         func();
     }

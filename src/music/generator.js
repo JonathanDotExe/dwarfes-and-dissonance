@@ -2,10 +2,9 @@ import { AudioChannel, MusicPlayer } from "./player.js";
 
 export class MusicGeneratorTrack {
 
-    constructor(identifier) {
+    constructor(identifier, gain = 1) {
         this._identifier = identifier;
-        this._gain = 1;
-        this._pan = 0;
+        this._gain = gain;
     }
 
     get identifier() {
@@ -26,15 +25,15 @@ export class MusicGeneratorTrack {
 
 export class RandomMusicGeneratorTrack extends MusicGeneratorTrack {
 
-    constructor(identifier, loops, chance) {
-        super(identifier);
+    constructor(identifier, loops, chance, gain = 1) {
+        super(identifier, gain);
         this._loops = loops;
         this._chance = chance;
     }
 
     selectLoop(world) {
         if (Math.random() <= this._chance) {
-            return this._loops[Math.floor(Math.random() * this._loops(chance))]
+            return this._loops[Math.floor(Math.random() * this._loops.length)]
         }
         return super.selectLoop(world);
     }
@@ -58,6 +57,7 @@ export class MusicGenerator {
         //Start
         this._player.onLoopStart = (player) => {
             for (let track of this._tracks) {
+                console.log(track.identifier);
                 const loop = track.selectLoop(this.world);
                 if (!!loop) {
                     player.play(track.identifier, loop);
