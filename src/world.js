@@ -1,4 +1,4 @@
-import {GRASS_TILE, SAND_TILE, STONE_TILE, WATER_TILE} from "./object/tile.js";
+import {GRASS_TILE, SAND_TILE, STONE_TILE, TILE_SIZE, WATER_TILE} from "./object/tile.js";
 import {Goblin} from "./object/enemy.js";
 import {Player} from "./object/player.js";
 export const WORLD_SIZE = 256;
@@ -50,7 +50,42 @@ export class GameWorld {
         //TODO only draw whats in cam
         for (let x = 0; x < width; x++) {
             for (let y = 0; y < height; y++) {
-                this.getTile(x, y).draw(ctx, x, y);
+                const tile = this.getTile(x, y);
+                if (!!tile) {
+                    tile.draw(ctx, x, y);
+                    ctx.strokeColor = "black";
+                    //Draw borders
+                    const top = this.getTile(x, y - 1);
+                    const bottom = this.getTile(x, y + 1);
+                    const left = this.getTile(x - 1, y);
+                    const right = this.getTile(x + 1, y);
+                    if (tile.solid) {
+                        if (!!top && !top.solid) {
+                            ctx.beginPath();
+                            ctx.moveTo(x * TILE_SIZE, y * TILE_SIZE);
+                            ctx.lineTo((x + 1) * TILE_SIZE - 1, y * TILE_SIZE);
+                            ctx.stroke();
+                        }
+                        if (!!bottom && !bottom.solid) {
+                            ctx.beginPath();
+                            ctx.moveTo(x * TILE_SIZE, (y + 1) * TILE_SIZE - 1);
+                            ctx.lineTo((x + 1) * TILE_SIZE - 1, (y + 1) * TILE_SIZE - 1);
+                            ctx.stroke();
+                        }
+                        if (!!left && !left.solid) {
+                            ctx.beginPath();
+                            ctx.moveTo(x * TILE_SIZE, y * TILE_SIZE);
+                            ctx.lineTo(x * TILE_SIZE, (y + 1) * TILE_SIZE - 1);
+                            ctx.stroke();
+                        }
+                        if (!!right && !right.solid) {
+                            ctx.beginPath();
+                            ctx.moveTo((x + 1) * TILE_SIZE - 1, y * TILE_SIZE);
+                            ctx.lineTo((x + 1) * TILE_SIZE - 1, (y + 1) * TILE_SIZE - 1);
+                            ctx.stroke();
+                        }
+                    }
+                }
             }
         }
         //Draw objects

@@ -14,12 +14,14 @@ export class Game {
         const world = this._world;
         const ctx = this._canvas.getContext('2d');
         const env =  {input: this._input};
+        const canvas = this._canvas;
         function loop(time) {
             //Calc delta
             const delta = (time - lastTime)/1000.0;
             lastTime = time;
             //Update/draw
             world.update(delta, env);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
             world.draw(ctx);
 
             window.requestAnimationFrame(loop);
