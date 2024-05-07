@@ -61,28 +61,30 @@ export class GameWorld {
                     const right = this.getTile(x + 1, y);
                     if (tile.solid) {
                         if (!!top && !top.solid) {
-                            ctx.beginPath();
-                            ctx.moveTo(x * TILE_SIZE, y * TILE_SIZE);
-                            ctx.lineTo((x + 1) * TILE_SIZE - 1, y * TILE_SIZE);
-                            ctx.stroke();
+                            ctx.strokeRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, 0);
                         }
                         if (!!bottom && !bottom.solid) {
-                            ctx.beginPath();
-                            ctx.moveTo(x * TILE_SIZE, (y + 1) * TILE_SIZE - 1);
-                            ctx.lineTo((x + 1) * TILE_SIZE - 1, (y + 1) * TILE_SIZE - 1);
-                            ctx.stroke();
+                            ctx.strokeRect(x * TILE_SIZE, (y + 1) * TILE_SIZE - 1, TILE_SIZE, 0);
                         }
                         if (!!left && !left.solid) {
-                            ctx.beginPath();
-                            ctx.moveTo(x * TILE_SIZE, y * TILE_SIZE);
-                            ctx.lineTo(x * TILE_SIZE, (y + 1) * TILE_SIZE - 1);
-                            ctx.stroke();
+                            ctx.strokeRect(x * TILE_SIZE, y * TILE_SIZE, 0, TILE_SIZE);
                         }
                         if (!!right && !right.solid) {
-                            ctx.beginPath();
-                            ctx.moveTo((x + 1) * TILE_SIZE - 1, y * TILE_SIZE);
-                            ctx.lineTo((x + 1) * TILE_SIZE - 1, (y + 1) * TILE_SIZE - 1);
-                            ctx.stroke();
+                            ctx.strokeRect((x + 1) * TILE_SIZE - 1, y * TILE_SIZE, 0, TILE_SIZE);
+                        }
+                    }
+                    if (!tile.fluid) {
+                        if (!!top && top.fluid) {
+                            ctx.strokeRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, 0);
+                        }
+                        if (!!bottom && bottom.fluid) {
+                            ctx.strokeRect(x * TILE_SIZE, (y + 1) * TILE_SIZE - 1, TILE_SIZE, 0);
+                        }
+                        if (!!left && left.fluid) {
+                            ctx.strokeRect(x * TILE_SIZE, y * TILE_SIZE, 0, TILE_SIZE);
+                        }
+                        if (!!right && right.fluid) {
+                            ctx.strokeRect((x + 1) * TILE_SIZE - 1, y * TILE_SIZE, 0, TILE_SIZE);
                         }
                     }
                 }
