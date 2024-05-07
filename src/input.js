@@ -1,5 +1,3 @@
-import {Player} from "./object/player.js";
-
 export class Input {
 
     constructor() {

@@ -1,6 +1,5 @@
 import { LivingObject } from "./livingobject.js";
 import { TILE_SIZE } from "./tile.js";
-import {Goblin} from "./enemy.js";
 
 const playerImage = new Image();
 playerImage.src = "/res/objects/dwarf_blue.png";
@@ -50,15 +49,11 @@ export class Player extends LivingObject {
         if(this.direction === undefined) {
             return;
         }
-        const attackPosX = this.x + this.direction.x;
-        const attackPosY = this.y + this.direction.y;
-
-        // Check if enemy is in that tile
-        let existingObjects = this.world.allObjects;
-        for(let obj of existingObjects) {
-            if(obj instanceof LivingObject && (obj.x === attackPosX && obj.y === attackPosY)) {
-                obj.takeDamage(10);
-            }
+        const attackPosX = this.x + (this.direction.x * TILE_SIZE);
+        const attackPosY = this.y + (this.direction.y * TILE_SIZE);
+        let creatures = this.world.getLivingInArea(attackPosX, attackPosY, 1, 1);
+        for(let obj of creatures) {
+            obj.takeDamage(10);
         }
     }
 }

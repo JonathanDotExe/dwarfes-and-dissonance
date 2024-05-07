@@ -1,7 +1,7 @@
 import {GRASS_TILE, SAND_TILE, STONE_TILE, TILE_SIZE, WATER_TILE} from "./object/tile.js";
 import {Goblin} from "./object/enemy.js";
 import {Player} from "./object/player.js";
-import {LivingObject} from "./object/livingobject";
+import {LivingObject} from "./object/livingobject.js";
 export const WORLD_SIZE = 256;
 
 
@@ -199,10 +199,11 @@ export class GameWorld {
         let endY = ((y + height * TILE_SIZE) / (this._tiles.length - 1) * TILE_SIZE);
 
         // Check if living objects in area
-        let creatures;
-        for(let obj of this._objects) {
+        let creatures = [];
+        for(let i = 0; i < this._objects.length; i++) {
+            let obj = this._objects[i];
             if(obj instanceof LivingObject && ((obj.x >= startingX && obj.x <= endX) && (obj.y >= startingY && obj.y >= endY))) {
-                creatures.add(obj);
+                creatures[i] = obj;
             }
         }
 
