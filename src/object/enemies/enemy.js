@@ -23,8 +23,10 @@ export class Enemy extends LivingObject {
         //TODO implement inRange method
 
         // if(inRange(objectPosition))
-        this.moveRand(deltaTime)
+        this.moveRand(deltaTime);
     }
+
+
 
     moveRand(deltaTime){
         let xMotion = 0;
@@ -69,6 +71,7 @@ export class Enemy extends LivingObject {
 
         }
         this.count += deltaTime
-        this.move(xMotion, yMotion, deltaTime, false);
+        this.move(xMotion, yMotion, deltaTime, t => t.solid || t.fluid);
     }
+
 }

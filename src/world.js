@@ -3,6 +3,7 @@ import {Goblin} from "./object/enemies/goblin.js";
 import {Player} from "./object/player.js";
 import {Tree} from "./object/static/tree.js";
 import {Chest} from "./object/static/chest.js";
+import {Piranha} from "./object/enemies/piranha.js";
 export const WORLD_SIZE = 256;
 
 
@@ -36,6 +37,7 @@ export class GameWorld {
         this.addObject(new Player(10, 5));
         this.addObject(new Tree(10,12));
         this.addObject(new Chest(15,8));
+        this.addObject(new Piranha(1,1));
     }
 
     update(deltaTime, env) {
@@ -120,7 +122,7 @@ export class GameWorld {
         return this._tiles[y][x];
     }
 
-    doCollisionDetection(x, y, width, height, movementX, movementY, canSwim) {
+    doCollisionDetection(x, y, width, height, movementX, movementY, collide) {
         const goalX = x + movementX;
         const goalY = y + movementY;
         
@@ -131,7 +133,7 @@ export class GameWorld {
                 x = i - width;
                 for (let j = Math.floor(y); j < y + height; j++) {
                     const t = this.getTile(i, j);
-                    if (t == null || t.solid || (t.fluid && !canSwim)) {
+                    if (t == null || collide(t)) {
                         break loop;
                     }
                 }
@@ -143,7 +145,7 @@ export class GameWorld {
             for (let i = Math.floor(x); i >= Math.floor(goalX); i--) {
                 for (let j = Math.floor(y); j < y + height; j++) {
                     const t = this.getTile(i, j);
-                    if (t == null || t.solid || (t.fluid && !canSwim)) {
+                    if (t == null || collide(t)) {
                         break loop;
                     }
                 }
@@ -158,7 +160,7 @@ export class GameWorld {
                 y = i - height;
                 for (let j = Math.floor(x); j < x + width; j++) {
                     const t = this.getTile(j, i);
-                    if (t == null || t.solid || (t.fluid && !canSwim)) {
+                    if (t == null || collide(t)) {
                         break loop;
                     }
                 }
@@ -170,7 +172,7 @@ export class GameWorld {
             for (let i = Math.floor(y); i >= Math.floor(goalY); i--) {
                 for (let j = Math.floor(x); j < x + width; j++) {
                     const t = this.getTile(j, i);
-                    if (t == null || t.solid || (t.fluid && !canSwim)) {
+                    if (t == null || collide(t)) {
                         break loop;
                     }
                 }

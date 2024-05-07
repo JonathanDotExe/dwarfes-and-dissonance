@@ -16,7 +16,7 @@ export class Player extends LivingObject {
 
         const speed = this.isInFluid() ? 1 : 4;
 
-        this.move(motion.x * speed , motion.y * speed, deltaTime, true);
+        this.move(motion.x * speed , motion.y * speed, deltaTime, t => t.solid);
     }
 
     draw(camX, camY, ctx) {

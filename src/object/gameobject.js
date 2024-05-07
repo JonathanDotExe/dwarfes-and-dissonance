@@ -43,8 +43,8 @@ export class GameObject {
 
     }
 
-    move(xMotion, yMotion, deltaTime, canSwim) {
-        const movement = this.world.doCollisionDetection(this.x, this.y, this.width, this.height, xMotion * deltaTime, yMotion * deltaTime, canSwim);
+    move(xMotion, yMotion, deltaTime, collide) {
+        const movement = this.world.doCollisionDetection(this.x, this.y, this.width, this.height, xMotion * deltaTime, yMotion * deltaTime, collide);
         this.x = movement.x;
         this.y = movement.y;
     }
