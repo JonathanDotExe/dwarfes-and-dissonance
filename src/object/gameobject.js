@@ -43,14 +43,19 @@ export class GameObject {
 
     }
 
-    move(xMotion, yMotion, deltaTime) {
-        const movement = this.world.doCollisionDetection(this.x, this.y, this.width, this.height, xMotion * deltaTime, yMotion * deltaTime);
+    move(xMotion, yMotion, deltaTime, canSwim) {
+        const movement = this.world.doCollisionDetection(this.x, this.y, this.width, this.height, xMotion * deltaTime, yMotion * deltaTime, canSwim);
         this.x = movement.x;
         this.y = movement.y;
     }
 
     onRemove() {
         this._state = GameObjectState.Removed;
+    }
+
+    isInFluid() {
+        const tile = this._world.getTile(Math.floor(this.x + this.width/2), Math.floor(this.y + this.height/2));
+        return !!tile && tile.fluid;
     }
 
     get width() {

@@ -36,7 +36,7 @@ export class Goblin extends LivingObject {
                 break;
         }
         this.count += deltaTime
-        this.move(xMotion, yMotion, deltaTime);
+        this.move(xMotion, yMotion, deltaTime, false);
     }
 
     draw(camX, camY, ctx) {

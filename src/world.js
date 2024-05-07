@@ -1,4 +1,4 @@
-import {GRASS_TILE, SAND_TILE, WATER_TILE} from "./object/tile.js";
+import {GRASS_TILE, SAND_TILE, STONE_TILE, WATER_TILE} from "./object/tile.js";
 import {Goblin} from "./object/enemy.js";
 import {Player} from "./object/player.js";
 export const WORLD_SIZE = 256;
@@ -9,7 +9,8 @@ export class GameWorld {
     constructor() {
         const w = WATER_TILE;
         const g = GRASS_TILE;
-        const s = SAND_TILE
+        const s = SAND_TILE;
+        const r = STONE_TILE;
         this._tiles = [
             [w, w, w, w, w, w, w, s, s, s, g, g, g, g, g, g, g, g, g, g],
             [w, w, w, w, w, w, s, s, s, g, g, g, g, g, g, g, g, g, g, g],
@@ -18,14 +19,14 @@ export class GameWorld {
             [s, s, s, s, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g],
             [s, s, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g],
             [g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g],
-            [g, g, g, g, g, g, g, w, w, w, w, g, g, g, g, g, g, g, g, g],
-            [g, g, g, g, g, g, g, w, w, w, w, g, g, g, g, g, g, g, g, g],
-            [g, g, g, g, g, g, g, w, w, w, w, g, g, g, g, g, g, g, w, w],
-            [g, g, g, g, g, g, g, w, w, w, w, g, g, g, g, g, w, w, w, w],
-            [g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, w, w, w, w, g],
-            [g, g, g, g, g, g, g, g, g, g, g, g, g, g, w, w, w, w, g, g],
-            [g, g, g, g, g, g, g, g, g, g, g, g, g, g, w, w, w, g, g, g],
-            [g, g, g, g, g, g, g, g, g, g, g, g, g, g, w, w, w, g, g, g],
+            [g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g],
+            [g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g],
+            [g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, g, w, w],
+            [g, g, g, g, g, g, r, g, g, g, g, g, g, g, g, g, w, w, w, w],
+            [g, g, g, g, r, r, r, r, r, g, g, g, g, g, g, w, w, w, w, g],
+            [g, g, g, r, r, r, r, r, g, g, g, g, g, g, w, w, w, w, g, g],
+            [g, g, r, r, r, r, r, g, g, g, g, g, g, g, w, w, w, g, g, g],
+            [g, g, r, r, r, r, r, g, g, g, g, g, g, g, w, w, w, g, g, g],
         ];
         this._objects = [];
 
@@ -86,7 +87,7 @@ export class GameWorld {
         return this._tiles[y][x];
     }
 
-    doCollisionDetection(x, y, width, height, movementX, movementY) {
+    doCollisionDetection(x, y, width, height, movementX, movementY, canSwim) {
         const goalX = x + movementX;
         const goalY = y + movementY;
         
@@ -97,7 +98,7 @@ export class GameWorld {
                 x = i - width;
                 for (let j = Math.floor(y); j < y + height; j++) {
                     const t = this.getTile(i, j);
-                    if (t == null || t.solid || t.fluid) {
+                    if (t == null || t.solid || (t.fluid && !canSwim)) {
                         break loop;
                     }
                 }
@@ -109,7 +110,7 @@ export class GameWorld {
             for (let i = Math.floor(x); i >= Math.floor(goalX); i--) {
                 for (let j = Math.floor(y); j < y + height; j++) {
                     const t = this.getTile(i, j);
-                    if (t == null || t.solid || t.fluid) {
+                    if (t == null || t.solid || (t.fluid && !canSwim)) {
                         break loop;
                     }
                 }
@@ -124,7 +125,7 @@ export class GameWorld {
                 y = i - height;
                 for (let j = Math.floor(x); j < x + width; j++) {
                     const t = this.getTile(j, i);
-                    if (t == null || t.solid || t.fluid) {
+                    if (t == null || t.solid || (t.fluid && !canSwim)) {
                         break loop;
                     }
                 }
@@ -136,7 +137,7 @@ export class GameWorld {
             for (let i = Math.floor(y); i >= Math.floor(goalY); i--) {
                 for (let j = Math.floor(x); j < x + width; j++) {
                     const t = this.getTile(j, i);
-                    if (t == null || t.solid || t.fluid) {
+                    if (t == null || t.solid || (t.fluid && !canSwim)) {
                         break loop;
                     }
                 }
