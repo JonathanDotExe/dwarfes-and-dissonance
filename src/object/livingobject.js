@@ -26,8 +26,6 @@ export class LivingObject extends GameObject {
     draw(camX, camY, ctx) {
         super.draw(camX, camY, ctx);
         //Draw health bar
-        console.log("health"+this.health);
-        console.log("maxhealth"+this.maxHealth);
         if(this.health < this.maxHealth) {
             const x = TILE_SIZE * (this.x - camX);
             const y = TILE_SIZE * (this.y - camY) - 10;
