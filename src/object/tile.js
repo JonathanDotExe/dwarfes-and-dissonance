@@ -22,6 +22,17 @@ export class Tile {
     get fluid() {
         return this._fluid;
     }
+
+    getSeparationStyle(other) {
+        if (other == null || other == this) { //Equals
+            return null;
+        }
+        if (other.solid != this.solid || other.fluid != this.fluid) { //Vastly different materials
+            return (this.solid || this.fluid) ? "rgba(0,0,0,1)" : "rgba(0,0,0,0.75)";
+        }
+        //Similar materials
+        return "rgb(0,0,0,0.2)";
+    }
 }
 
 function loadTileImage(name) {

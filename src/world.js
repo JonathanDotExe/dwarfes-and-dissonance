@@ -53,39 +53,31 @@ export class GameWorld {
                 const tile = this.getTile(x, y);
                 if (!!tile) {
                     tile.draw(ctx, x, y);
-                    ctx.fillStyle = "black";
                     //Draw borders
                     const top = this.getTile(x, y - 1);
                     const bottom = this.getTile(x, y + 1);
                     const left = this.getTile(x - 1, y);
                     const right = this.getTile(x + 1, y);
-                    if (tile.solid) {
-                        if (!!top && !top.solid) {
-                            ctx.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, 1);
-                        }
-                        if (!!bottom && !bottom.solid) {
-                            ctx.fillRect(x * TILE_SIZE, (y + 1) * TILE_SIZE - 1, TILE_SIZE, 1);
-                        }
-                        if (!!left && !left.solid) {
-                            ctx.fillRect(x * TILE_SIZE, y * TILE_SIZE, 1, TILE_SIZE);
-                        }
-                        if (!!right && !right.solid) {
-                            ctx.fillRect((x + 1) * TILE_SIZE - 1, y * TILE_SIZE, 1, TILE_SIZE);
-                        }
+                    
+                    let line = tile.getSeparationStyle(top);
+                    if (line) {
+                        ctx.fillStyle = line;
+                        ctx.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, 1);
                     }
-                    if (!tile.fluid) {
-                        if (!!top && top.fluid) {
-                            ctx.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, 1);
-                        }
-                        if (!!bottom && bottom.fluid) {
-                            ctx.fillRect(x * TILE_SIZE, (y + 1) * TILE_SIZE - 1, TILE_SIZE, 1);
-                        }
-                        if (!!left && left.fluid) {
-                            ctx.fillRect(x * TILE_SIZE, y * TILE_SIZE, 1, TILE_SIZE);
-                        }
-                        if (!!right && right.fluid) {
-                            ctx.fillRect((x + 1) * TILE_SIZE - 1, y * TILE_SIZE, 1, TILE_SIZE);
-                        }
+                    line = tile.getSeparationStyle(bottom);
+                    if (line) {
+                        ctx.fillStyle = line;
+                        ctx.fillRect(x * TILE_SIZE, (y + 1) * TILE_SIZE - 1, TILE_SIZE, 1);
+                    }
+                    line = tile.getSeparationStyle(left);
+                    if (line) {
+                        ctx.fillStyle = line;
+                        ctx.fillRect(x * TILE_SIZE, y * TILE_SIZE, 1, TILE_SIZE);
+                    }
+                    line = tile.getSeparationStyle(right);
+                    if (line) {
+                        ctx.fillStyle = line;
+                        ctx.fillRect((x + 1) * TILE_SIZE - 1, y * TILE_SIZE, 1, TILE_SIZE);
                     }
                 }
             }
