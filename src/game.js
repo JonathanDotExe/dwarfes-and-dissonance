@@ -35,6 +35,9 @@ export class Game {
 
 window.addEventListener('load', () => {
     const canvas = document.querySelector('#game')
+    canvas.addEventListener('click', () => {
+        canvas.requestFullscreen();
+    });
     const game = new Game(canvas);
     game.start();
 });
