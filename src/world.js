@@ -1,5 +1,5 @@
 import {GRASS_TILE, SAND_TILE, STONE_TILE, TILE_SIZE, WATER_TILE} from "./object/tile.js";
-import {Goblin} from "./object/enemy.js";
+import {Goblin} from "./object/enemies/goblin.js";
 import {Player} from "./object/player.js";
 export const WORLD_SIZE = 256;
 
