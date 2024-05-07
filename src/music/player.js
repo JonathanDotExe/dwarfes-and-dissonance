@@ -18,22 +18,20 @@ export class AudioLoop {
 
 export class AudioChannel {
 
-    constructor() {
-        this._pan = new PannerNode();
-        this._gain = new GainNode();
-
-        this._pan.connect(this._gain);
+    constructor(start, end) {
+        this._start = start;
+        this.end = end;
     }
 
     play(loop, player) {
         const source = new AudioBufferSourceNode();
         source.buffer = loop.buffer;
-        source.connect(this._pan);
+        source.connect(this._start);
         source.play(player.nextLoopTime - player.barDuration * loop.preBars);
     }
 
     connect(dst) {
-        this._gain.connect(dst);
+        this._end.connect(dst);
     }
 
 }
@@ -50,13 +48,17 @@ export class MusicPlayer {
         this._nextLoopTime = 0;
     }
 
-    addChannel(key) {
+    addChannel(key, ch) {
         if (key in this._channels) {
             throw "Channel with key " + key + " already created.";
         }
-        const ch = new AudioChannel();
         ch.connect(this._audioCtx);
         this._channels[key] = ch;
+        return key;
+    }
+
+    play(key, loop) {
+        this._channels[key].play(loop, this);
     }
 
     start() {
