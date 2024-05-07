@@ -1,6 +1,7 @@
 import {GRASS_TILE, SAND_TILE, STONE_TILE, TILE_SIZE, WATER_TILE} from "./object/tile.js";
 import {Goblin} from "./object/enemy.js";
 import {Player} from "./object/player.js";
+import { createAmbientMusicGenerator } from "./music/music.js";
 export const WORLD_SIZE = 256;
 
 
@@ -32,6 +33,10 @@ export class GameWorld {
 
         this.addObject(new Goblin(10, 7));
         this.addObject(new Player(10, 5));
+
+        createAmbientMusicGenerator(this).then(m => {
+            m.init();
+        })
     }
 
     update(deltaTime, env) {

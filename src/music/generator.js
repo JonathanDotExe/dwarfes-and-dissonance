@@ -16,19 +16,15 @@ export class MusicGeneratorTrack {
         return null;
     }
 
-    createChannel() {
-        pan = new PannerNode();
-        pan.pan.setValueAtTime(this._pan, 0);
-        gain = new GainNode();
+    createChannel(ctx) {
+        let gain = ctx.createGain();
         gain.gain.setValueAtTime(this._gain, 0);
-
-        pan.connect(gain);
-        return new AudioChannel(pan, gain);
+        return new AudioChannel(gain, gain);
     }
 
 }
 
-export class RandomMusicGeneratorTrack {
+export class RandomMusicGeneratorTrack extends MusicGeneratorTrack {
 
     constructor(identifier, loops, chance) {
         super(identifier);
@@ -40,7 +36,7 @@ export class RandomMusicGeneratorTrack {
         if (Math.random() <= this._chance) {
             return this._loops[Math.floor(Math.random() * this._loops(chance))]
         }
-        return super.selectTrack(world);
+        return super.selectLoop(world);
     }
 
 }
@@ -56,13 +52,13 @@ export class MusicGenerator {
     init() {
         //Create tracks
         for (let track of this._tracks) {
-            const ch = track.createChannel();
+            const ch = track.createChannel(this._player.audioContext);
             this._player.addChannel(track.identifier, ch);
         }
         //Start
         this._player.onLoopStart = (player) => {
             for (let track of this._tracks) {
-                const loop = selectLoop(track);
+                const loop = track.selectLoop(this.world);
                 if (!!loop) {
                     player.play(track.identifier, loop);
                 }

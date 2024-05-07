@@ -20,7 +20,7 @@ export class AudioChannel {
 
     constructor(start, end) {
         this._start = start;
-        this.end = end;
+        this._end = end;
     }
 
     play(loop, player) {
@@ -43,7 +43,7 @@ export class MusicPlayer {
         this._bars = bars;
         this._channels = {};
         this._audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        this._audioCtx.sampleRate = 48000;
+        //this._audioCtx.sampleRate = 48000;
         this.onLoopStart = (player) => {};
         this._nextLoopTime = 0;
     }
@@ -52,7 +52,7 @@ export class MusicPlayer {
         if (key in this._channels) {
             throw "Channel with key " + key + " already created.";
         }
-        ch.connect(this._audioCtx);
+        ch.connect(this._audioCtx.destination);
         this._channels[key] = ch;
         return key;
     }
@@ -92,6 +92,10 @@ export class MusicPlayer {
 
     get nextLoopTime() {
         return this._nextLoopTime;
+    }
+
+    get audioContext() {
+        return this._audioCtx;
     }
 
 }

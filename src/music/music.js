@@ -2,18 +2,26 @@ import { MusicGenerator, RandomMusicGeneratorTrack } from "./generator.js";
 import { AudioLoop } from "./player.js";
 
 
+async function loadAudio(url, ctx) {
+    const response = await fetch(url);
+    const arr = await response.arrayBuffer();
+    const data = await ctx.decodeAudioData(arr);
+    return data;
+}
+
 const AUDIO_FILES = {
 
 };
 
 const AUDIO_PROMISE = new Promise(async (resolve, reject) => {
-    AUDIO_FILES.pianoCalm1 = await load("/res/loops/ambient/piano_calm1.flac");
-    AUDIO_FILES.pianoCalm2 = await load("/res/loops/ambient/piano_calm2.flac");
-    AUDIO_FILES.pianoCalm3 = await load("/res/loops/ambient/piano_calm3.flac");
-    AUDIO_FILES.epianoCalm1 = await load("/res/loops/ambient/epiano_calm1.flac");
-    AUDIO_FILES.epianoCalm2 = await load("/res/loops/ambient/epiano_calm2.flac");
-    AUDIO_FILES.padCalm1 = await load("/res/loops/ambient/pad_calm1.flac");
-    AUDIO_FILES.padCalm2 = await load("/res/loops/ambient/pad_calm2.flac");
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    AUDIO_FILES.pianoCalm1 = await loadAudio("/res/loops/ambient/piano_calm1.flac", audioCtx);
+    AUDIO_FILES.pianoCalm2 = await loadAudio("/res/loops/ambient/piano_calm2.flac", audioCtx);
+    AUDIO_FILES.pianoCalm3 = await loadAudio("/res/loops/ambient/piano_calm3.flac", audioCtx);
+    AUDIO_FILES.epianoCalm1 = await loadAudio("/res/loops/ambient/epiano_calm1.flac", audioCtx);
+    AUDIO_FILES.epianoCalm2 = await loadAudio("/res/loops/ambient/epiano_calm2.flac", audioCtx);
+    AUDIO_FILES.padCalm1 = await loadAudio("/res/loops/ambient/pad_calm1.flac", audioCtx);
+    AUDIO_FILES.padCalm2 = await loadAudio("/res/loops/ambient/pad_calm2.flac", audioCtx);
 
     resolve(AUDIO_FILES);
 });
