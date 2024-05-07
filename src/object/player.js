@@ -22,7 +22,7 @@ export class Player extends LivingObject {
         }
 
         // attacking
-        if(env.input.currentlyAttacking()) {
+        if(env.input.currentlyAttacking) {
             let curTime = new Date().getTime();
             let lastTime;
             if((curTime - lastTime > 500) || lastTime === undefined) {
@@ -54,9 +54,9 @@ export class Player extends LivingObject {
         const attackPosY = this.y + this.direction.y;
 
         // Check if enemy is in that tile
-        let existingObjects = this.allObjects;
+        let existingObjects = this.world.allObjects;
         for(let obj of existingObjects) {
-            if(obj instanceof Goblin && (obj.x === attackPosX && obj.y === attackPosY)) {
+            if(obj instanceof LivingObject && (obj.x === attackPosX && obj.y === attackPosY)) {
                 obj.takeDamage(10);
             }
         }
