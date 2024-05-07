@@ -2,6 +2,7 @@ import {GRASS_TILE, SAND_TILE, STONE_TILE, TILE_SIZE, WATER_TILE} from "./object
 import {Goblin} from "./object/enemy.js";
 import {Player} from "./object/player.js";
 import {Tree} from "./object/static/tree.js";
+import {Chest} from "./object/static/chest.js";
 export const WORLD_SIZE = 256;
 
 
@@ -34,6 +35,7 @@ export class GameWorld {
         this.addObject(new Goblin(10, 7));
         this.addObject(new Player(10, 5));
         this.addObject(new Tree(10,12));
+        this.addObject(new Chest(15,8));
     }
 
     update(deltaTime, env) {
