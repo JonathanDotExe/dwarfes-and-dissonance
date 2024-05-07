@@ -53,7 +53,7 @@ export class GameWorld {
                 const tile = this.getTile(x, y);
                 if (!!tile) {
                     tile.draw(ctx, x, y);
-                    ctx.strokeColor = "black";
+                    ctx.fillStyle = "black";
                     //Draw borders
                     const top = this.getTile(x, y - 1);
                     const bottom = this.getTile(x, y + 1);
@@ -61,30 +61,30 @@ export class GameWorld {
                     const right = this.getTile(x + 1, y);
                     if (tile.solid) {
                         if (!!top && !top.solid) {
-                            ctx.strokeRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, 0);
+                            ctx.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, 1);
                         }
                         if (!!bottom && !bottom.solid) {
-                            ctx.strokeRect(x * TILE_SIZE, (y + 1) * TILE_SIZE - 1, TILE_SIZE, 0);
+                            ctx.fillRect(x * TILE_SIZE, (y + 1) * TILE_SIZE - 1, TILE_SIZE, 1);
                         }
                         if (!!left && !left.solid) {
-                            ctx.strokeRect(x * TILE_SIZE, y * TILE_SIZE, 0, TILE_SIZE);
+                            ctx.fillRect(x * TILE_SIZE, y * TILE_SIZE, 1, TILE_SIZE);
                         }
                         if (!!right && !right.solid) {
-                            ctx.strokeRect((x + 1) * TILE_SIZE - 1, y * TILE_SIZE, 0, TILE_SIZE);
+                            ctx.fillRect((x + 1) * TILE_SIZE - 1, y * TILE_SIZE, 1, TILE_SIZE);
                         }
                     }
                     if (!tile.fluid) {
                         if (!!top && top.fluid) {
-                            ctx.strokeRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, 0);
+                            ctx.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, 1);
                         }
                         if (!!bottom && bottom.fluid) {
-                            ctx.strokeRect(x * TILE_SIZE, (y + 1) * TILE_SIZE - 1, TILE_SIZE, 0);
+                            ctx.fillRect(x * TILE_SIZE, (y + 1) * TILE_SIZE - 1, TILE_SIZE, 1);
                         }
                         if (!!left && left.fluid) {
-                            ctx.strokeRect(x * TILE_SIZE, y * TILE_SIZE, 0, TILE_SIZE);
+                            ctx.fillRect(x * TILE_SIZE, y * TILE_SIZE, 1, TILE_SIZE);
                         }
                         if (!!right && right.fluid) {
-                            ctx.strokeRect((x + 1) * TILE_SIZE - 1, y * TILE_SIZE, 0, TILE_SIZE);
+                            ctx.fillRect((x + 1) * TILE_SIZE - 1, y * TILE_SIZE, 1, TILE_SIZE);
                         }
                     }
                 }
