@@ -34,7 +34,6 @@ export class GameWorld {
             [g, g, r, r, r, r, r, g, g, g, g, g, g, g, w, w, w, g, g, g],
         ];*/
         this._tiles = [];
-        this._objects = [];
         //Create array
         for (let i = 0; i < 64; i++) {
             const arr = [];
@@ -43,17 +42,20 @@ export class GameWorld {
             }
             this._tiles.push(arr);
         }
+        this._objects = [];
+        this._player = new Player(10, 5);
         //Generate world
         const gen = new WorldGenerator();
         gen.generate(this, 0, 0, 64, 64);
 
         //Add objects
         this.addObject(new Goblin(10, 7));
-        this.addObject(new Player(10, 5));
         this.addObject(new Tree(10,12));
         this.addObject(new Chest(15,8));
         this.addObject(new Piranha(1,1));
+        this.addObject(this._player);
 
+        //Add player
         createAmbientMusicGenerator(this).then(m => {
             m.init();
         })
@@ -66,18 +68,18 @@ export class GameWorld {
         }
     }
 
-    draw(ctx) {
+    draw(ctx, camWidth, camHeight) {
         //Draw tiles
         const width = this.worldWidth;
         const height = this.worldHeight;
-        const camX = 0;
-        const camY = 0;
+        const camX = Math.max(0, Math.min(width - camWidth, this._player.x - camWidth/2));
+        const camY = Math.max(0, Math.min(height - camHeight, this._player.y - camHeight/2));
         //TODO only draw whats in cam
         for (let x = 0; x < width; x++) {
             for (let y = 0; y < height; y++) {
                 const tile = this.getTile(x, y);
                 if (!!tile) {
-                    tile.draw(ctx, x, y);
+                    tile.draw(ctx, x - camX, y - camY);
                     //Draw borders
                     const top = this.getTile(x, y - 1);
                     const bottom = this.getTile(x, y + 1);
@@ -87,29 +89,29 @@ export class GameWorld {
                     let line = tile.getSeparationStyle(top);
                     if (line) {
                         ctx.fillStyle = line;
-                        ctx.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, 1);
+                        ctx.fillRect(x * TILE_SIZE - camX * TILE_SIZE, y * TILE_SIZE - camY * TILE_SIZE, TILE_SIZE, 1);
                     }
                     line = tile.getSeparationStyle(bottom);
                     if (line) {
                         ctx.fillStyle = line;
-                        ctx.fillRect(x * TILE_SIZE, (y + 1) * TILE_SIZE - 1, TILE_SIZE, 1);
+                        ctx.fillRect(x * TILE_SIZE - camX * TILE_SIZE, (y + 1) * TILE_SIZE - 1 - camY * TILE_SIZE, TILE_SIZE, 1);
                     }
                     line = tile.getSeparationStyle(left);
                     if (line) {
                         ctx.fillStyle = line;
-                        ctx.fillRect(x * TILE_SIZE, y * TILE_SIZE, 1, TILE_SIZE);
+                        ctx.fillRect(x * TILE_SIZE - camX * TILE_SIZE, y * TILE_SIZE - camY * TILE_SIZE, 1, TILE_SIZE);
                     }
                     line = tile.getSeparationStyle(right);
                     if (line) {
                         ctx.fillStyle = line;
-                        ctx.fillRect((x + 1) * TILE_SIZE - 1, y * TILE_SIZE, 1, TILE_SIZE);
+                        ctx.fillRect((x + 1) * TILE_SIZE - 1 - camX * TILE_SIZE, y * TILE_SIZE - camY * TILE_SIZE, 1, TILE_SIZE);
                     }
                 }
             }
         }
         //Draw objects
         for (let obj of this._objects) {
-            obj.draw(0, 0, ctx); //TODO cam position
+            obj.draw(camX, camY, ctx); //TODO cam position
         }
     }
 
