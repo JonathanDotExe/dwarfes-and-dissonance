@@ -23,8 +23,12 @@ export class WorldGenerator {
 
     constructor(seed) {
         this._noise = new ValueNoise(seed);
+        this._noise2 = new ValueNoise(seed + 69);
+        this._noise3 = new ValueNoise(seed + 42);
         this._seed = seed;
         this.scale = 0.05;
+        this.scale2 = 0.0125;
+        this.scale3 = 0.2;
     }
 
     generate(world, x, y, width, height) {
@@ -32,7 +36,7 @@ export class WorldGenerator {
         //Generate basic terrain
         for (let i = 0; i < width; i++) {
             for (let j = 0; j < height; j++) {
-                let val = this._noise.evalXY((x + i) * this.scale, (x + j) * this.scale);
+                let val = this._noise.evalXY((x + i) * this.scale, (x + j) * this.scale) * 0.55 + this._noise2.evalXY((x + i) * this.scale2, (x + j) * this.scale2) * 0.4 + this._noise3.evalXY((x + i) * this.scale3, (x + j) * this.scale3) * 0.05;
                 //Interpolate water on the sides to create island
                 var mul = 1;
                 if (i/width < 0.1) {
@@ -49,13 +53,13 @@ export class WorldGenerator {
                 }
                 val *= mul;
                 let tile = STONE_TILE;
-                if (val < 0.3) {
+                if (val < 0.25) {
                     tile = WATER_TILE;
                 }
-                else if(val < 0.35) {
+                else if(val < 0.3) {
                     tile = SAND_TILE;
                 }
-                else if(val < 0.7) {
+                else if(val < 0.6) {
                     tile = GRASS_TILE;
                 }
                 world.setTile(x + i, y + j, tile);

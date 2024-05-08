@@ -35,9 +35,9 @@ export class GameWorld {
         ];*/
         this._tiles = [];
         //Create array
-        for (let i = 0; i < 512; i++) {
+        for (let i = 0; i < 265; i++) {
             const arr = [];
-            for (let j = 0; j < 512; j++) {
+            for (let j = 0; j < 265; j++) {
                 arr.push(null);
             }
             this._tiles.push(arr);
@@ -46,7 +46,7 @@ export class GameWorld {
         this._player = new Player(100, 100);
         //Generate world
         const gen = new WorldGenerator();
-        gen.generate(this, 0, 0, 512, 512);
+        gen.generate(this, 0, 0, this.worldWidth, this.worldHeight);
 
         //Add objects
         this.addObject(new Goblin(10, 7));
