@@ -6,7 +6,7 @@ export class WorldGenerator {
 
     constructor(seed) {
         this._noise = new ValueNoise(seed);
-        this.scale = 0.1;
+        this.scale = 0.05;
     }
 
     generate(world, x, y, width, height) {
@@ -15,18 +15,20 @@ export class WorldGenerator {
             for (let j = 0; j < height; j++) {
                 const val = this._noise.evalXY((x + i) * this.scale, (x + j) * this.scale);
                 let tile = STONE_TILE;
-                if (val < 0.4) {
+                if (val < 0.3) {
                     tile = WATER_TILE;
                 }
-                else if(val < 0.5) {
+                else if(val < 0.35) {
                     tile = SAND_TILE;
                 }
-                else if(val < 0.8) {
+                else if(val < 0.7) {
                     tile = GRASS_TILE;
                 }
                 world.setTile(x + i, y + j, tile);
             }
         }
+
+
     }
 
 }

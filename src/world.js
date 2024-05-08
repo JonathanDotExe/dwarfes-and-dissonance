@@ -35,9 +35,9 @@ export class GameWorld {
         ];*/
         this._tiles = [];
         //Create array
-        for (let i = 0; i < 64; i++) {
+        for (let i = 0; i < 512; i++) {
             const arr = [];
-            for (let j = 0; j < 64; j++) {
+            for (let j = 0; j < 512; j++) {
                 arr.push(null);
             }
             this._tiles.push(arr);
@@ -46,7 +46,7 @@ export class GameWorld {
         this._player = new Player(10, 5);
         //Generate world
         const gen = new WorldGenerator();
-        gen.generate(this, 0, 0, 64, 64);
+        gen.generate(this, 0, 0, 512, 512);
 
         //Add objects
         this.addObject(new Goblin(10, 7));
@@ -74,9 +74,8 @@ export class GameWorld {
         const height = this.worldHeight;
         const camX = Math.max(0, Math.min(width - camWidth, this._player.x - camWidth/2));
         const camY = Math.max(0, Math.min(height - camHeight, this._player.y - camHeight/2));
-        //TODO only draw whats in cam
-        for (let x = 0; x < width; x++) {
-            for (let y = 0; y < height; y++) {
+        for (let x = Math.floor(camX); x < Math.ceil(camX + camWidth); x++) {
+            for (let y = Math.floor(camY); y < Math.ceil(camY + camHeight); y++) {
                 const tile = this.getTile(x, y);
                 if (!!tile) {
                     tile.draw(ctx, x - camX, y - camY);
@@ -110,8 +109,9 @@ export class GameWorld {
             }
         }
         //Draw objects
+        //TODO only draw whats in cam
         for (let obj of this._objects) {
-            obj.draw(camX, camY, ctx); //TODO cam position
+            obj.draw(camX, camY, ctx);
         }
     }
 
