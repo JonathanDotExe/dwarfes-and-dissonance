@@ -43,7 +43,7 @@ export class GameWorld {
             this._tiles.push(arr);
         }
         this._objects = [];
-        this._player = new Player(10, 5);
+        this._player = new Player(100, 100);
         //Generate world
         const gen = new WorldGenerator();
         gen.generate(this, 0, 0, 512, 512);
