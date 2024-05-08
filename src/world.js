@@ -72,8 +72,8 @@ export class GameWorld {
         //Draw tiles
         const width = this.worldWidth;
         const height = this.worldHeight;
-        const camX = Math.max(0, Math.min(width - camWidth, this._player.x - camWidth/2));
-        const camY = Math.max(0, Math.min(height - camHeight, this._player.y - camHeight/2));
+        const camX = Math.round(Math.max(0, Math.min(width - camWidth, this._player.x - camWidth/2)) * TILE_SIZE) / TILE_SIZE;
+        const camY = Math.round(Math.max(0, Math.min(height - camHeight, this._player.y - camHeight/2)) * TILE_SIZE) / TILE_SIZE;
         for (let x = Math.floor(camX); x < Math.ceil(camX + camWidth); x++) {
             for (let y = Math.floor(camY); y < Math.ceil(camY + camHeight); y++) {
                 const tile = this.getTile(x, y);
