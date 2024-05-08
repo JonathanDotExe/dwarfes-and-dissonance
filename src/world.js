@@ -5,6 +5,7 @@ import {Tree} from "./object/static/tree.js";
 import {Chest} from "./object/static/chest.js";
 import {Piranha} from "./object/enemies/piranha.js";
 import { createAmbientMusicGenerator } from "./music/music.js";
+import { WorldGenerator } from "./worldgenerator.js";
 export const WORLD_SIZE = 256;
 
 
@@ -15,7 +16,7 @@ export class GameWorld {
         const g = GRASS_TILE;
         const s = SAND_TILE;
         const r = STONE_TILE;
-        this._tiles = [
+        /*this._tiles = [
             [w, w, w, w, w, w, w, s, s, s, g, g, g, g, g, g, g, g, g, g],
             [w, w, w, w, w, w, s, s, s, g, g, g, g, g, g, g, g, g, g, g],
             [w, w, w, w, s, s, s, g, g, g, g, g, g, g, g, g, g, g, g, g],
@@ -31,9 +32,22 @@ export class GameWorld {
             [g, g, g, r, r, r, r, r, g, g, g, g, g, g, w, w, w, w, g, g],
             [g, g, r, r, r, r, r, g, g, g, g, g, g, g, w, w, w, g, g, g],
             [g, g, r, r, r, r, r, g, g, g, g, g, g, g, w, w, w, g, g, g],
-        ];
+        ];*/
+        this._tiles = [];
         this._objects = [];
+        //Create array
+        for (let i = 0; i < 64; i++) {
+            const arr = [];
+            for (let j = 0; j < 64; j++) {
+                arr.push(null);
+            }
+            this._tiles.push(arr);
+        }
+        //Generate world
+        const gen = new WorldGenerator();
+        gen.generate(this, 0, 0, 64, 64);
 
+        //Add objects
         this.addObject(new Goblin(10, 7));
         this.addObject(new Player(10, 5));
         this.addObject(new Tree(10,12));
