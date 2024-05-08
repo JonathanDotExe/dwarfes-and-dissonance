@@ -1,8 +1,23 @@
 import { ValueNoise } from '../node_modules/value-noise-js/dist/value-noise.mjs'
+import { Goblin } from './object/enemies/goblin.js';
+import { Piranha } from './object/enemies/piranha.js';
 import { Tree } from './object/static/tree.js';
 import { GRASS_TILE, SAND_TILE, STONE_TILE, WATER_TILE } from './object/tile.js';
 
 const TREE_CHUNK_SIZE = 16;
+
+function placeInChunks(x, y, width, height, chunkSize, place, amount, rng) {
+    for (let i = 0; i < width; i += chunkSize) {
+        for (let j = 0; j < height; j +=chunkSize) {
+            const num = Math.floor(rng() * (amount + 1));
+            for (let k = 0; k < num; k++) {
+                const placeX = i + Math.floor(rng() * chunkSize);
+                const placeY = j + Math.floor(rng() * chunkSize);
+                place(placeX, placeY);
+            }
+        }
+    }
+}
 
 export class WorldGenerator {
 
@@ -37,7 +52,7 @@ export class WorldGenerator {
                 if (val < 0.3) {
                     tile = WATER_TILE;
                 }
-                else if(val < 0.4) {
+                else if(val < 0.35) {
                     tile = SAND_TILE;
                 }
                 else if(val < 0.7) {
@@ -46,23 +61,46 @@ export class WorldGenerator {
                 world.setTile(x + i, y + j, tile);
             }
         }
+        //Decoration per chunks
         //Trees
-        //Single trees
-        for (let i = 0; i < width; i += TREE_CHUNK_SIZE) {
-            for (let j = 0; j < height; j +=TREE_CHUNK_SIZE) {
-                const numTrees = Math.floor(rng() * 10);
-                for (let k = 0; k < numTrees; k++) {
-                    const treeX = x + i + Math.floor(rng() * TREE_CHUNK_SIZE);
-                    const treeY = y + j + Math.floor(rng() * TREE_CHUNK_SIZE);
-
-                    //Only place trees on grass
-                    if (world.getTile(treeX, treeY) == GRASS_TILE) {
-                        world.addObject(new Tree(treeX, treeY));
-                    }
+        placeInChunks(x, y, width, height, 16, (treeX, treeY) => {
+            if (world.getTile(treeX, treeY) == GRASS_TILE) {
+                world.addObject(new Tree(treeX, treeY));
+            }
+        }, 10, rng);
+        //Forests
+        placeInChunks(x, y, width, height, 64, (x, y) => {
+            //Place 20 trees
+            for (let i = 0; i < 20; i++) {
+                const treeX = x + Math.floor(rng() * 16);
+                const treeY = y + Math.floor(rng() * 16);
+                if (world.getTile(treeX, treeY) == GRASS_TILE) {
+                    world.addObject(new Tree(treeX, treeY));
                 }
             }
-        }
-
+        }, 2, rng);
+        //Goblins
+        placeInChunks(x, y, width, height, 64, (x, y) => {
+            for (let i = 0; i < 3; i++) {
+                const goblinX = x + Math.floor(rng() * 4);
+                const goblinY = y + Math.floor(rng() * 4);
+                const goblin = new Goblin(goblinX, goblinY);
+                if (!goblin.doesCollide(world.getTile(goblinX, goblinY))) {
+                    world.addObject(goblin);
+                }
+            }
+        }, 2, rng);
+        //Piranhias
+        placeInChunks(x, y, width, height, 64, (x, y) => {
+            for (let i = 0; i < 1; i++) {
+                const piranhaX = x + Math.floor(rng() * 4);
+                const piranhaY = y + Math.floor(rng() * 4);
+                const piranha = new Piranha(piranhaX, piranhaY);
+                if (!piranha.doesCollide(world.getTile(piranhaX, piranhaY))) {
+                    world.addObject(piranha);
+                }
+            }
+        }, 2, rng);
     }
 
 }

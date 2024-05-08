@@ -19,7 +19,7 @@ export class Piranha extends Enemy{
     }
 
     doesCollide(tile) {
-        return !tile.fluid;
+        return  tile == null || !tile.fluid;
     }
 
 }

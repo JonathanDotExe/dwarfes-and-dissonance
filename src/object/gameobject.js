@@ -54,7 +54,7 @@ export class GameObject {
     }
 
     doesCollide(tile) {
-        return tile.solid || tile.fluid;
+        return tile == null || tile.solid || tile.fluid;
     }
 
     isInFluid() {
