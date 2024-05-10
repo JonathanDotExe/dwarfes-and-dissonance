@@ -254,12 +254,10 @@ export class GameWorld {
         return this._tiles.length;
     }
 
-<<<<<<< HEAD
     get player() {
         return this._player;
     }
 
-=======
     get allObjects() {
         return this._objects;
     }
@@ -276,5 +274,4 @@ export class GameWorld {
 
         return creatures;
     }
->>>>>>> main
 }

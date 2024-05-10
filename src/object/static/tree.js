@@ -7,7 +7,7 @@ treeImage.src = "/res/objects/Tree.png";
 export class Tree extends LivingObject{
 
     constructor(x,y) {
-        super(x,y, 10);
+        super(x,y, 30);
     }
 
     draw(camX, camY, ctx) {
