@@ -55,12 +55,12 @@ export class Player extends LivingObject {
         if(this.direction === undefined) {
             return;
         }
-        const attackPosX = this.x + (this.direction.x * TILE_SIZE);
-        const attackPosY = this.y + (this.direction.y * TILE_SIZE);
+        const attackPosX = this.x + this.width/2 + (this.direction.x) - 0.5;
+        const attackPosY = this.y + this.height/2 + (this.direction.y) - 0.5;
         let creatures = this.world.getObjectsInArea(attackPosX, attackPosY, 1, 1);
 
         creatures.forEach((obj) => {
-            if(obj instanceof LivingObject && !(obj instanceof Player)) {
+            if(obj instanceof LivingObject && obj !== this) {
                 obj.takeDamage(10);
             }
         })
