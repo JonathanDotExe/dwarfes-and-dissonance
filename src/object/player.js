@@ -33,7 +33,7 @@ export class Player extends LivingObject {
 
         const speed = this.isInFluid() ? 1 : 4;
 
-        this.move(motion.x * speed , motion.y * speed, deltaTime, true);
+        this.move(motion.x * speed , motion.y * speed, deltaTime);
     }
 
     draw(camX, camY, ctx) {
@@ -41,7 +41,12 @@ export class Player extends LivingObject {
         super.draw(camX, camY, ctx);
     }
 
-    attack() {
+
+    doesCollide(tile) {
+        return  tile == null || tile.solid
+    }
+  
+   attack() {
         //check if there is an enemy in the tile in front of player (current direction)
         // For now only 1 weapon -> 1 Tile range
         // Can be updated and stats gotten from a possible future weapon or inventory class (same for dmg)

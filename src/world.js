@@ -1,6 +1,11 @@
 import {GRASS_TILE, SAND_TILE, STONE_TILE, TILE_SIZE, WATER_TILE} from "./object/tile.js";
-import {Goblin} from "./object/enemy.js";
+import {Goblin} from "./object/enemies/goblin.js";
 import {Player} from "./object/player.js";
+import {Tree} from "./object/static/tree.js";
+import {Chest} from "./object/static/chest.js";
+import {Piranha} from "./object/enemies/piranha.js";
+import { createAmbientMusicGenerator } from "./music/music.js";
+import { WorldGenerator } from "./worldgenerator.js";
 import {LivingObject} from "./object/livingobject.js";
 export const WORLD_SIZE = 256;
 
@@ -12,7 +17,7 @@ export class GameWorld {
         const g = GRASS_TILE;
         const s = SAND_TILE;
         const r = STONE_TILE;
-        this._tiles = [
+        /*this._tiles = [
             [w, w, w, w, w, w, w, s, s, s, g, g, g, g, g, g, g, g, g, g],
             [w, w, w, w, w, w, s, s, s, g, g, g, g, g, g, g, g, g, g, g],
             [w, w, w, w, s, s, s, g, g, g, g, g, g, g, g, g, g, g, g, g],
@@ -28,11 +33,33 @@ export class GameWorld {
             [g, g, g, r, r, r, r, r, g, g, g, g, g, g, w, w, w, w, g, g],
             [g, g, r, r, r, r, r, g, g, g, g, g, g, g, w, w, w, g, g, g],
             [g, g, r, r, r, r, r, g, g, g, g, g, g, g, w, w, w, g, g, g],
-        ];
+        ];*/
+        this._tiles = [];
+        //Create array
+        for (let i = 0; i < 265; i++) {
+            const arr = [];
+            for (let j = 0; j < 265; j++) {
+                arr.push(null);
+            }
+            this._tiles.push(arr);
+        }
         this._objects = [];
+        this._player = new Player(100, 100);
+        //Generate world
+        const gen = new WorldGenerator();
+        gen.generate(this, 0, 0, this.worldWidth, this.worldHeight);
 
+        //Add objects
         this.addObject(new Goblin(10, 7));
-        this.addObject(new Player(10, 5));
+        this.addObject(new Tree(10,12));
+        this.addObject(new Chest(15,8));
+        this.addObject(new Piranha(1,1));
+        this.addObject(this._player);
+
+        //Add player
+        createAmbientMusicGenerator(this).then(m => {
+            m.init();
+        })
     }
 
     update(deltaTime, env) {
@@ -42,18 +69,17 @@ export class GameWorld {
         }
     }
 
-    draw(ctx) {
+    draw(ctx, camWidth, camHeight) {
         //Draw tiles
         const width = this.worldWidth;
         const height = this.worldHeight;
-        const camX = 0;
-        const camY = 0;
-        //TODO only draw whats in cam
-        for (let x = 0; x < width; x++) {
-            for (let y = 0; y < height; y++) {
+        const camX = Math.round(Math.max(0, Math.min(width - camWidth, this._player.x - camWidth/2)) * TILE_SIZE) / TILE_SIZE;
+        const camY = Math.round(Math.max(0, Math.min(height - camHeight, this._player.y - camHeight/2)) * TILE_SIZE) / TILE_SIZE;
+        for (let x = Math.floor(camX); x < Math.ceil(camX + camWidth); x++) {
+            for (let y = Math.floor(camY); y < Math.ceil(camY + camHeight); y++) {
                 const tile = this.getTile(x, y);
                 if (!!tile) {
-                    tile.draw(ctx, x, y);
+                    tile.draw(ctx, x - camX, y - camY);
                     //Draw borders
                     const top = this.getTile(x, y - 1);
                     const bottom = this.getTile(x, y + 1);
@@ -63,29 +89,30 @@ export class GameWorld {
                     let line = tile.getSeparationStyle(top);
                     if (line) {
                         ctx.fillStyle = line;
-                        ctx.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, 1);
+                        ctx.fillRect(x * TILE_SIZE - camX * TILE_SIZE, y * TILE_SIZE - camY * TILE_SIZE, TILE_SIZE, 1);
                     }
                     line = tile.getSeparationStyle(bottom);
                     if (line) {
                         ctx.fillStyle = line;
-                        ctx.fillRect(x * TILE_SIZE, (y + 1) * TILE_SIZE - 1, TILE_SIZE, 1);
+                        ctx.fillRect(x * TILE_SIZE - camX * TILE_SIZE, (y + 1) * TILE_SIZE - 1 - camY * TILE_SIZE, TILE_SIZE, 1);
                     }
                     line = tile.getSeparationStyle(left);
                     if (line) {
                         ctx.fillStyle = line;
-                        ctx.fillRect(x * TILE_SIZE, y * TILE_SIZE, 1, TILE_SIZE);
+                        ctx.fillRect(x * TILE_SIZE - camX * TILE_SIZE, y * TILE_SIZE - camY * TILE_SIZE, 1, TILE_SIZE);
                     }
                     line = tile.getSeparationStyle(right);
                     if (line) {
                         ctx.fillStyle = line;
-                        ctx.fillRect((x + 1) * TILE_SIZE - 1, y * TILE_SIZE, 1, TILE_SIZE);
+                        ctx.fillRect((x + 1) * TILE_SIZE - 1 - camX * TILE_SIZE, y * TILE_SIZE - camY * TILE_SIZE, 1, TILE_SIZE);
                     }
                 }
             }
         }
         //Draw objects
+        //TODO only draw whats in cam
         for (let obj of this._objects) {
-            obj.draw(0, 0, ctx); //TODO cam position
+            obj.draw(camX, camY, ctx);
         }
     }
 
@@ -117,7 +144,7 @@ export class GameWorld {
         return this._tiles[y][x];
     }
 
-    doCollisionDetection(x, y, width, height, movementX, movementY, canSwim) {
+    doCollisionDetection(x, y, width, height, movementX, movementY, collide) {
         const goalX = x + movementX;
         const goalY = y + movementY;
         
@@ -128,7 +155,7 @@ export class GameWorld {
                 x = i - width;
                 for (let j = Math.floor(y); j < y + height; j++) {
                     const t = this.getTile(i, j);
-                    if (t == null || t.solid || (t.fluid && !canSwim)) {
+                    if (t == null || collide(t)) {
                         break loop;
                     }
                 }
@@ -140,7 +167,7 @@ export class GameWorld {
             for (let i = Math.floor(x); i >= Math.floor(goalX); i--) {
                 for (let j = Math.floor(y); j < y + height; j++) {
                     const t = this.getTile(i, j);
-                    if (t == null || t.solid || (t.fluid && !canSwim)) {
+                    if (t == null || collide(t)) {
                         break loop;
                     }
                 }
@@ -155,7 +182,7 @@ export class GameWorld {
                 y = i - height;
                 for (let j = Math.floor(x); j < x + width; j++) {
                     const t = this.getTile(j, i);
-                    if (t == null || t.solid || (t.fluid && !canSwim)) {
+                    if (t == null || collide(t)) {
                         break loop;
                     }
                 }
@@ -167,7 +194,7 @@ export class GameWorld {
             for (let i = Math.floor(y); i >= Math.floor(goalY); i--) {
                 for (let j = Math.floor(x); j < x + width; j++) {
                     const t = this.getTile(j, i);
-                    if (t == null || t.solid || (t.fluid && !canSwim)) {
+                    if (t == null || collide(t)) {
                         break loop;
                     }
                 }

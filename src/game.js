@@ -1,5 +1,6 @@
 import { GameWorld } from "./world.js";
 import { Input } from "./input.js";
+import { TILE_SIZE } from "./object/tile.js";
 
 export class Game {
 
@@ -22,7 +23,7 @@ export class Game {
             //Update/draw
             world.update(delta, env);
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            world.draw(ctx);
+            world.draw(ctx, canvas.width/TILE_SIZE, canvas.height/TILE_SIZE);
 
             window.requestAnimationFrame(loop);
         }
@@ -35,6 +36,16 @@ export class Game {
 
 window.addEventListener('load', () => {
     const canvas = document.querySelector('#game')
-    const game = new Game(canvas);
-    game.start();
+    const start = document.querySelector('#start');
+    canvas.addEventListener('click', () => {
+        canvas.requestFullscreen();
+    });
+    let started = false;
+    start.addEventListener('click', () => {
+        if (!started) {
+            const game = new Game(canvas);
+            started = true;
+            game.start();
+        }
+    });
 });
