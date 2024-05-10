@@ -25,7 +25,7 @@ export class Player extends LivingObject {
     }
 
     doesCollide(tile) {
-        return tile.solid
+        return  tile == null || tile.solid
     }
 
 }
