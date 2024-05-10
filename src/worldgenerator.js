@@ -2,6 +2,7 @@ import { ValueNoise } from '../node_modules/value-noise-js/dist/value-noise.mjs'
 import { distanceSquaredToLineSegment, distanceToLineSegment } from './lib/distance.js';
 import { Goblin } from './object/enemies/goblin.js';
 import { Piranha } from './object/enemies/piranha.js';
+import { Chest } from './object/static/chest.js';
 import { Tree } from './object/static/tree.js';
 import { GRASS_TILE, SAND_TILE, STONE_FLOOR_TILE, STONE_TILE, WATER_TILE } from './object/tile.js';
 
@@ -165,18 +166,24 @@ export class WorldGenerator {
             if (world.getTile(treeX, treeY) == GRASS_TILE) {
                 world.addObject(new Tree(treeX, treeY));
             }
-        }, 10, rng);
+        }, 6, rng);
         //Forests
         placeInChunks(x, y, width, height, 64, (x, y) => {
             //Place 20 trees
             for (let i = 0; i < 20; i++) {
-                const treeX = x + Math.floor(rng() * 16);
-                const treeY = y + Math.floor(rng() * 16);
+                const treeX = x + Math.floor(rng() * 10);
+                const treeY = y + Math.floor(rng() * 10);
                 if (world.getTile(treeX, treeY) == GRASS_TILE) {
                     world.addObject(new Tree(treeX, treeY));
                 }
             }
-        }, 2, rng);
+        }, 4, rng);
+        //Chests
+        placeInChunks(x, y, width, height, 32, (x, y) => {
+            if (world.getTile(x, y) == STONE_FLOOR_TILE) {
+                world.addObject(new Chest(x, y));
+            }
+        }, 4, rng);
         //Goblins
         placeInChunks(x, y, width, height, 64, (x, y) => {
             for (let i = 0; i < 3; i++) {
