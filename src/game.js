@@ -44,6 +44,7 @@ window.addEventListener('load', () => {
     start.addEventListener('click', () => {
         if (!started) {
             const game = new Game(canvas);
+            started = true;
             game.start();
         }
     });
