@@ -1,5 +1,6 @@
 import { LivingObject } from "./livingobject.js";
 import { TILE_SIZE } from "./tile.js";
+import {Enemy} from "./enemies/enemy";
 
 const playerImage = new Image();
 playerImage.src = "/res/objects/dwarf_blue.png";
@@ -59,7 +60,7 @@ export class Player extends LivingObject {
         let creatures = this.world.getObjectsInArea(attackPosX, attackPosY, 1, 1);
 
         creatures.forEach((obj) => {
-            if(obj instanceof LivingObject && !(obj instanceof Player)) {
+            if(obj instanceof Enemy) {
                 obj.takeDamage(10);
             }
         })
