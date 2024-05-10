@@ -6,8 +6,8 @@ import { Tree } from './object/static/tree.js';
 import { GRASS_TILE, SAND_TILE, STONE_FLOOR_TILE, STONE_TILE, WATER_TILE } from './object/tile.js';
 
 const CAVE_CONNECTION_RANGE = 64;
-const CAVE_CONNECTION_COUNT = 3;
-const MAX_CAVE_WIDTH = 5;
+const CAVE_CONNECTION_COUNT = 4;
+const MAX_CAVE_WIDTH = 6;
 const CAVE_THRESHOLD = 0.5;
 
 function placeInChunks(x, y, width, height, chunkSize, place, amount, rng, minAmount=0) {
@@ -39,10 +39,12 @@ export class WorldGenerator {
         this._noise = new ValueNoise(seed);
         this._noise2 = new ValueNoise(seed + 69);
         this._noise3 = new ValueNoise(seed + 42);
+        this._caveNoise = new ValueNoise(seed + 420);
         this._seed = seed;
         this.scale = 0.05;
         this.scale2 = 0.0125;
         this.scale3 = 0.2;
+        this.caveScale = 0.05;
     }
 
     generate(world, x, y, width, height) {
@@ -115,7 +117,7 @@ export class WorldGenerator {
         for (let i = 0; i < width; i++) {
             const arr = [];
             for (let j = 0; j < height; j++) {
-                arr.push(1);
+                arr.push(0.8 + 0.2 * this._caveNoise.evalXY((x + i) * this.caveScale, (x + j) * this.caveScale));
             }
             caveMap.push(arr);
         }
@@ -135,8 +137,12 @@ export class WorldGenerator {
             for (let i = startX; i <= endX; i++) {
                 for (let j = startY; j <= endY; j++) {
                     const dst = distanceToLineSegment(start.x, start.y, end.x, end.y, i + 0.5, j + 0.5);
-                    //TODO weight
+                    const dstStart = Math.sqrt(Math.pow(startX - i, 2) + Math.pow(startY - j, 2));
+                    const dstEnd = Math.sqrt(Math.pow(endX - i, 2) + Math.pow(endY - j, 2));
+                    const totalDst = (dstStart + dstEnd);
+                    const weight = totalDst == 0 ? 1 : (start.weight * dstStart + end.weight * dstEnd)/totalDst;
                     let factor = Math.min(dst/MAX_CAVE_WIDTH, 1) * 0.5 + 0.5;
+                    factor += (1 - factor) * (1 - weight) * 0.5;
                     if (i in caveMap && j in caveMap[i]) {
                         caveMap[i][j] *= factor;
                     }
