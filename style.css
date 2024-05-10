@@ -19,10 +19,13 @@ canvas {
 
 #titlescreen{
     position: relative;
+    background-image: url("res/titlescreen/titlebgv1.png");
+    width: 1280px;
+    height: 720px;
+    margin: auto;
 }
 
-#startbutton{
-    position: absolute;
-    left: 640px;
-    top: 550px;
+#startcont{
+    position: relative;
+    top: 80%;
 }
