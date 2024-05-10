@@ -69,21 +69,21 @@ export class GameWorld {
     }
 
     draw(ctx, camWidth, camHeight) {
-        //Draw tiles
+        //Draw unsolid tiles
         const width = this.worldWidth;
         const height = this.worldHeight;
         const camX = Math.round(Math.max(0, Math.min(width - camWidth, this._player.x - camWidth/2)) * TILE_SIZE) / TILE_SIZE;
         const camY = Math.round(Math.max(0, Math.min(height - camHeight, this._player.y - camHeight/2)) * TILE_SIZE) / TILE_SIZE;
         for (let x = Math.floor(camX); x < Math.ceil(camX + camWidth); x++) {
             for (let y = Math.floor(camY); y < Math.ceil(camY + camHeight); y++) {
-                const tile = this.getTile(x, y);
-                if (!!tile) {
+                const tile = this.getDisplayTile(x, y);
+                if (!!tile && !tile.solid) {
                     tile.draw(ctx, x - camX, y - camY);
                     //Draw borders
-                    const top = this.getTile(x, y - 1);
-                    const bottom = this.getTile(x, y + 1);
-                    const left = this.getTile(x - 1, y);
-                    const right = this.getTile(x + 1, y);
+                    const top = this.getDisplayTile(x, y - 1);
+                    const bottom = this.getDisplayTile(x, y + 1);
+                    const left = this.getDisplayTile(x - 1, y);
+                    const right = this.getDisplayTile(x + 1, y);
                     
                     let line = tile.getSeparationStyle(top);
                     if (line) {
@@ -113,6 +113,41 @@ export class GameWorld {
         for (let obj of this._objects) {
             obj.draw(camX, camY, ctx);
         }
+        //Draw solid tiles
+        for (let x = Math.floor(camX); x < Math.ceil(camX + camWidth); x++) {
+            for (let y = Math.floor(camY); y < Math.ceil(camY + camHeight); y++) {
+                const tile = this.getDisplayTile(x, y);
+                if (!!tile && tile.solid) {
+                    tile.draw(ctx, x - camX, y - camY);
+                    //Draw borders
+                    const top = this.getDisplayTile(x, y - 1);
+                    const bottom = this.getDisplayTile(x, y + 1);
+                    const left = this.getDisplayTile(x - 1, y);
+                    const right = this.getDisplayTile(x + 1, y);
+                    
+                    let line = tile.getSeparationStyle(top);
+                    if (line) {
+                        ctx.fillStyle = line;
+                        ctx.fillRect(x * TILE_SIZE - camX * TILE_SIZE, y * TILE_SIZE - camY * TILE_SIZE, TILE_SIZE, 1);
+                    }
+                    line = tile.getSeparationStyle(bottom);
+                    if (line) {
+                        ctx.fillStyle = line;
+                        ctx.fillRect(x * TILE_SIZE - camX * TILE_SIZE, (y + 1) * TILE_SIZE - 1 - camY * TILE_SIZE, TILE_SIZE, 1);
+                    }
+                    line = tile.getSeparationStyle(left);
+                    if (line) {
+                        ctx.fillStyle = line;
+                        ctx.fillRect(x * TILE_SIZE - camX * TILE_SIZE, y * TILE_SIZE - camY * TILE_SIZE, 1, TILE_SIZE);
+                    }
+                    line = tile.getSeparationStyle(right);
+                    if (line) {
+                        ctx.fillStyle = line;
+                        ctx.fillRect((x + 1) * TILE_SIZE - 1 - camX * TILE_SIZE, y * TILE_SIZE - camY * TILE_SIZE, 1, TILE_SIZE);
+                    }
+                }
+            }
+        }
     }
 
     addObject(obj) {
@@ -141,6 +176,11 @@ export class GameWorld {
         }
         
         return this._tiles[y][x];
+    }
+
+    getDisplayTile(x, y) {
+        const tile = this.getTile(x, y);
+        return !!tile ? tile.getDisplayTile(x, y, this) : null;
     }
 
     doCollisionDetection(x, y, width, height, movementX, movementY, collide) {
@@ -211,6 +251,10 @@ export class GameWorld {
 
     get worldHeight() {
         return this._tiles.length;
+    }
+
+    get player() {
+        return this._player;
     }
 
 }

@@ -87,7 +87,6 @@ export class WorldGenerator {
         placeInChunks(0, 0, width, height, 32, (x, y) => {
             caveNodes.push(new CaveNode(x, y, rng()))
         }, 2, rng, 2);
-        console.log(caveNodes)
         //Connect nodes
         const edges = new Set();
         for (let i = 0; i < caveNodes.length; i++) {
@@ -100,7 +99,6 @@ export class WorldGenerator {
                     neighborIndices.push(j);
                 }
             }
-            console.log(neighborIndices)
             //Pick neighbors
             const connections = 1 + Math.floor(CAVE_CONNECTION_COUNT * rng());
             for (let j = 0; j < connections && neighborIndices.length > 0; j++) {
@@ -112,7 +110,6 @@ export class WorldGenerator {
                 neighborIndices.splice(index, 1); //Remove options
             }
         }
-        console.log(edges)
         //Generate cave map
         const caveMap = [];
         for (let i = 0; i < width; i++) {
@@ -122,7 +119,6 @@ export class WorldGenerator {
             }
             caveMap.push(arr);
         }
-        console.log(edges)
         //Apply graph
         for (let edge of edges) {
             const e = Array.from(edge);
@@ -150,7 +146,6 @@ export class WorldGenerator {
                 }
             }
         }
-        console.log(caveMap)
         //Apply map
         for (let i = 0; i < caveMap.length; i++) {
             for (let j = 0; j <= caveMap[i].length; j++) {

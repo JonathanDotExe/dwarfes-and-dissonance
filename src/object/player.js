@@ -8,6 +8,7 @@ export class Player extends LivingObject {
 
     constructor(x, y) {
         super(x, y, 100);
+        this.sightRange = 6;
     }
 
     update(deltaTime, env) {
