@@ -45,3 +45,4 @@ export const GRASS_TILE = new Tile(loadTileImage("grass"), false, false);
 export const SAND_TILE = new Tile(loadTileImage("sand"), false, false);
 export const WATER_TILE = new Tile(loadTileImage("water"), false, true);
 export const STONE_TILE = new Tile(loadTileImage("stone"), true, false);
+export const STONE_FLOOR_TILE = new Tile(loadTileImage("stone_floor"), false, false);

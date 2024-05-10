@@ -1,22 +1,36 @@
 import { ValueNoise } from '../node_modules/value-noise-js/dist/value-noise.mjs'
+import { distanceSquaredToLineSegment, distanceToLineSegment } from './lib/distance.js';
 import { Goblin } from './object/enemies/goblin.js';
 import { Piranha } from './object/enemies/piranha.js';
 import { Tree } from './object/static/tree.js';
-import { GRASS_TILE, SAND_TILE, STONE_TILE, WATER_TILE } from './object/tile.js';
+import { GRASS_TILE, SAND_TILE, STONE_FLOOR_TILE, STONE_TILE, WATER_TILE } from './object/tile.js';
 
-const TREE_CHUNK_SIZE = 16;
+const CAVE_CONNECTION_RANGE = 64;
+const CAVE_CONNECTION_COUNT = 3;
+const MAX_CAVE_WIDTH = 5;
+const CAVE_THRESHOLD = 0.5;
 
-function placeInChunks(x, y, width, height, chunkSize, place, amount, rng) {
+function placeInChunks(x, y, width, height, chunkSize, place, amount, rng, minAmount=0) {
     for (let i = 0; i < width; i += chunkSize) {
         for (let j = 0; j < height; j +=chunkSize) {
-            const num = Math.floor(rng() * (amount + 1));
+            const num = Math.floor(rng() * (amount - minAmount + 1) + minAmount);
             for (let k = 0; k < num; k++) {
-                const placeX = i + Math.floor(rng() * chunkSize);
-                const placeY = j + Math.floor(rng() * chunkSize);
+                const placeX = x + i + Math.floor(rng() * chunkSize);
+                const placeY = y + j + Math.floor(rng() * chunkSize);
                 place(placeX, placeY);
             }
         }
     }
+}
+
+class CaveNode {
+
+    constructor(x, y, weight) {
+        this.x = x;
+        this.y = y;
+        this.weight = weight;
+    }
+
 }
 
 export class WorldGenerator {
@@ -65,6 +79,80 @@ export class WorldGenerator {
                 world.setTile(x + i, y + j, tile);
             }
         }
+        //Caves
+        const caveNodes = [];
+        placeInChunks(0, 0, width, height, 32, (x, y) => {
+            caveNodes.push(new CaveNode(x, y, rng()))
+        }, 2, rng, 2);
+        console.log(caveNodes)
+        //Connect nodes
+        const edges = new Set();
+        for (let i = 0; i < caveNodes.length; i++) {
+            const node = caveNodes[i];
+            //Find neighbors
+            const neighborIndices = [];
+            for (let j = 0; j < caveNodes.length; j++) {
+                const n = caveNodes[j];
+                if (Math.pow(n.x - node.x, 2) + Math.pow(n.y - node.y, 2) < Math.pow(CAVE_CONNECTION_RANGE, 2)) {
+                    neighborIndices.push(j);
+                }
+            }
+            console.log(neighborIndices)
+            //Pick neighbors
+            const connections = 1 + Math.floor(CAVE_CONNECTION_COUNT * rng());
+            for (let j = 0; j < connections && neighborIndices.length > 0; j++) {
+                const index = Math.floor(rng() * neighborIndices.length);
+                const edge = new Set([i, neighborIndices[index]]);
+                if (edge.size == 2) {
+                    edges.add(edge);
+                }
+                neighborIndices.splice(index, 1); //Remove options
+            }
+        }
+        console.log(edges)
+        //Generate cave map
+        const caveMap = [];
+        for (let i = 0; i < width; i++) {
+            const arr = [];
+            for (let j = 0; j < height; j++) {
+                arr.push(1);
+            }
+            caveMap.push(arr);
+        }
+        console.log(edges)
+        //Apply graph
+        for (let edge of edges) {
+            const e = Array.from(edge);
+            const start = caveNodes[e[0]];
+            const end = caveNodes[e[1]];
+
+            const startX = Math.floor(Math.min(start.x, end.x) - MAX_CAVE_WIDTH);
+            const startY = Math.floor(Math.min(start.y, end.y) - MAX_CAVE_WIDTH);
+            const endX = Math.ceil(Math.max(start.x, end.x) + MAX_CAVE_WIDTH);
+            const endY = Math.ceil(Math.max(start.y, end.y) + MAX_CAVE_WIDTH);
+
+            //Interpolate factors
+            for (let i = startX; i <= endX; i++) {
+                for (let j = startY; j <= endY; j++) {
+                    const dst = distanceToLineSegment(start.x, start.y, end.x, end.y, i + 0.5, j + 0.5);
+                    //TODO weight
+                    let factor = Math.min(dst/MAX_CAVE_WIDTH, 1) * 0.5 + 0.5;
+                    if (i in caveMap && j in caveMap[i]) {
+                        caveMap[i][j] *= factor;
+                    }
+                }
+            }
+        }
+        console.log(caveMap)
+        //Apply map
+        for (let i = 0; i < caveMap.length; i++) {
+            for (let j = 0; j <= caveMap[i].length; j++) {
+                if (world.getTile(i, j) == STONE_TILE && caveMap[i][j] < CAVE_THRESHOLD) {
+                    world.setTile(i, j, STONE_FLOOR_TILE);
+                }
+            }
+        }
+
         //Decoration per chunks
         //Trees
         placeInChunks(x, y, width, height, 16, (treeX, treeY) => {
@@ -96,13 +184,11 @@ export class WorldGenerator {
         }, 2, rng);
         //Piranhias
         placeInChunks(x, y, width, height, 64, (x, y) => {
-            for (let i = 0; i < 1; i++) {
-                const piranhaX = x + Math.floor(rng() * 4);
-                const piranhaY = y + Math.floor(rng() * 4);
-                const piranha = new Piranha(piranhaX, piranhaY);
-                if (!piranha.doesCollide(world.getTile(piranhaX, piranhaY))) {
-                    world.addObject(piranha);
-                }
+            const piranhaX = x + Math.floor(rng() * 4);
+            const piranhaY = y + Math.floor(rng() * 4);
+            const piranha = new Piranha(piranhaX, piranhaY);
+            if (!piranha.doesCollide(world.getTile(piranhaX, piranhaY))) {
+                world.addObject(piranha);
             }
         }, 2, rng);
     }
