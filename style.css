@@ -1,0 +1,28 @@
+button {
+    border: none;
+    cursor: pointer;
+    appearance: none;
+    background-color: inherit;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    height: 100%;
+}
+canvas {
+    image-rendering: pixelated;
+    margin: auto;
+    vertical-align: middle;
+}
+
+#titlescreen{
+    position: relative;
+}
+
+#startbutton{
+    position: absolute;
+    left: 640px;
+    top: 550px;
+}
