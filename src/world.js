@@ -223,7 +223,7 @@ export class GameWorld {
         let creatures = [];
         for(let i = 0; i < this._objects.length; i++) {
             let obj = this._objects[i];
-            if((obj.x >= x && obj.x <= x + length * TILE_SIZE) && (obj.y >= y && obj.y <= y + height * TILE_SIZE)) {
+            if(((obj.x >= x) && (obj.x <= x + length * TILE_SIZE)) && ((obj.y >= y) && (obj.y <= y + height * TILE_SIZE))) {
                 creatures[i] = obj;
             }
         }

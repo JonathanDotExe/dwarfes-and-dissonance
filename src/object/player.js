@@ -1,6 +1,6 @@
 import { LivingObject } from "./livingobject.js";
 import { TILE_SIZE } from "./tile.js";
-import {Enemy} from "./enemies/enemy";
+import {Enemy} from "./enemies/enemy.js";
 
 const playerImage = new Image();
 playerImage.src = "/res/objects/dwarf_blue.png";
@@ -55,10 +55,10 @@ export class Player extends LivingObject {
         if(this.direction === undefined) {
             return;
         }
-        const attackPosX = this.x + (this.direction.x * TILE_SIZE);
-        const attackPosY = this.y + (this.direction.y * TILE_SIZE);
-        let creatures = this.world.getObjectsInArea(attackPosX, attackPosY, 1, 1);
-
+        //const attackPosX = this.x + this.direction.x;
+        //const attackPosY = this.y + this.direction.y - TILE_SIZE/2;
+        //let creatures = this.world.getObjectsInArea(attackPosX, attackPosY, 1, 1);
+       let creatures = this.world.getObjectsInArea(this.x + this.direction.x, this.y + this.direction.y, this.direction.x, this.direction.y);
         creatures.forEach((obj) => {
             if(obj instanceof Enemy) {
                 obj.takeDamage(10);
