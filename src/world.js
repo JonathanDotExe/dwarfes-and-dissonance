@@ -6,6 +6,7 @@ import {Chest} from "./object/static/chest.js";
 import {Piranha} from "./object/enemies/piranha.js";
 import { createAmbientMusicGenerator } from "./music/music.js";
 import { WorldGenerator } from "./worldgenerator.js";
+import {LivingObject} from "./object/livingobject.js";
 export const WORLD_SIZE = 256;
 
 
@@ -213,4 +214,20 @@ export class GameWorld {
         return this._tiles.length;
     }
 
+    get allObjects() {
+        return this._objects;
+    }
+
+    getObjectsInArea(x,y,length,height) {
+        // Check if living objects in area
+        let creatures = new Array();
+        for(let i = 0; i < this._objects.length; i++) {
+            let obj = this._objects[i];
+            if((obj.x >= x && obj.x <= x + length * TILE_SIZE) && (obj.y >= y && obj.y <= y + height * TILE_SIZE)) {
+                creatures[i] = obj;
+            }
+        }
+
+        return creatures;
+    }
 }
