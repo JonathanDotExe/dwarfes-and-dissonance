@@ -191,37 +191,12 @@ export class GameWorld {
         return this._objects;
     }
 
-    getLivingInArea(x,y,length,height) {
-        // Define Area
-        // Durchgehen bis ma am näheste dron is
-        // Ah nu non living objects
-        let startingX;
-        let startingY;
-
-        let diffX = 9999999;
-        let diffY = 9999999;
-
-        for(let i = 0; i < this._tiles[0].length; i++) {
-            if(x - (i *TILE_SIZE) < diffX && x - (i *TILE_SIZE) >= 0) {
-                diffX = x - (i *TILE_SIZE);
-                startingX = i *TILE_SIZE;
-            }
-        }
-        for(let i = 0; i < this._tiles.length; i++) {
-            if(y - (i *TILE_SIZE) < diffY && y - (i *TILE_SIZE) >= 0) {
-                diffY = y - (i *TILE_SIZE);
-                startingY = i *TILE_SIZE;
-            }
-        }
-
-        let endX = (x + length * TILE_SIZE);
-        let endY = (y + height * TILE_SIZE);
-
+    getObjectsInArea(x,y,length,height) {
         // Check if living objects in area
         let creatures = new Array();
         for(let i = 0; i < this._objects.length; i++) {
             let obj = this._objects[i];
-            if(obj instanceof LivingObject && ((obj.x >= startingX && obj.x <= endX) && (obj.y >= startingY && obj.y >= endY))) {
+            if((obj.x >= x && obj.x <= x + length * TILE_SIZE) && (obj.y >= y && obj.y <= y + height * TILE_SIZE)) {
                 creatures[i] = obj;
             }
         }
