@@ -5,6 +5,7 @@ export class Input {
         this._right = false;
         this._up = false;
         this._down = false;
+        this._attack = false;
 
         window.addEventListener("keydown", e => {
             const key = e.key.toLowerCase();
@@ -36,6 +37,9 @@ export class Input {
                 this._right = false;
             }
         });
+        window.addEventListener("click",e => {
+            this._attack = true;
+        });
     }
 
     get movementAxis() {
@@ -47,6 +51,13 @@ export class Input {
             length = 1;
         }
         return {x : x/length, y: y/length};
+    }
+
+    get currentlyAttacking() {
+        return this._attack;
+    }
+    doneAttacking() {
+        this._attack = false;
     }
 
 }

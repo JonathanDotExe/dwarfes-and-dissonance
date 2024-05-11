@@ -5,22 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dwarfes and Dissonance</title>
     <script type="module" src="src/game.js"></script>
-    <style>
-        html, body {
-            margin: 0;
-            padding: 0;
-            text-align: center;
-            height: 100%;
-        }
-        canvas {
-            image-rendering: pixelated;
-            margin: auto;
-            vertical-align: middle;
-        }
-    </style>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/seedrandom/3.0.5/seedrandom.min.js"></script>
+    <script type="module" src="src/titlescreen.js"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <canvas width="640" height="480" id="game"></canvas>
-    <button id="start">Start</button>
+<div id="titlescreen">
+    <div id="startcont">
+        <button id="start">
+            <img id="startbutton" src="res/titlescreen/startbutton.png"  alt="start">
+        </button>
+    </div>
+</div>
+<canvas id="game" width="1280" height="720"></canvas>
+
 </body>
 </html>
