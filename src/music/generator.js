@@ -2,9 +2,8 @@ import { AudioChannel, MusicPlayer } from "./player.js";
 
 export class MusicGeneratorTrack {
 
-    constructor(identifier, gain = 1) {
+    constructor(identifier) {
         this._identifier = identifier;
-        this._gain = gain;
     }
 
     get identifier() {
@@ -15,18 +14,12 @@ export class MusicGeneratorTrack {
         return null;
     }
 
-    createChannel(ctx) {
-        let gain = ctx.createGain();
-        gain.gain.setValueAtTime(this._gain, 0);
-        return new AudioChannel(gain, gain);
-    }
-
 }
 
 export class RandomMusicGeneratorTrack extends MusicGeneratorTrack {
 
-    constructor(identifier, loops, chance, gain = 1) {
-        super(identifier, gain);
+    constructor(identifier, loops, chance) {
+        super(identifier);
         this._loops = loops;
         this._chance = chance;
     }
@@ -40,24 +33,38 @@ export class RandomMusicGeneratorTrack extends MusicGeneratorTrack {
 
 }
 
+export class MusicGeneratorSection {
+
+    constructor(tracks) {
+        this._tracks = tracks;
+    }
+
+    get tracks() {
+        return this._tracks;
+    }
+
+}
+
 export class MusicGenerator {
 
-    constructor(world, bpm, bars, tracks) {
+    constructor(world, bpm, bars, channels, sections) {
         this._player = new MusicPlayer(bpm, bars);
-        this._tracks = tracks;
+        this._channels = channels;
+        this._sections = sections;
         this._world = world;
+        this._currentSection = 0;
     }
     
     init() {
         //Create tracks
-        for (let track of this._tracks) {
-            const ch = track.createChannel(this._player.audioContext);
-            this._player.addChannel(track.identifier, ch);
+        for (let key in this._channels) {
+            const ch = this._channels[key](this._player.audioContext);
+            this._player.addChannel(key, ch);
         }
         //Start
         this._player.onLoopStart = (player) => {
-            for (let track of this._tracks) {
-                console.log(track.identifier);
+            const section = this._sections[this._currentSection];
+            for (let track of section.tracks) {
                 const loop = track.selectLoop(this.world);
                 if (!!loop) {
                     player.play(track.identifier, loop);

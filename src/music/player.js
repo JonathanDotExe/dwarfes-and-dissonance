@@ -39,6 +39,12 @@ export class AudioChannel {
 
 }
 
+export function createGainChannel(ctx, g) {
+    let gain = ctx.createGain();
+    gain.gain.setValueAtTime(g, 0);
+    return new AudioChannel(gain, gain);
+}
+
 export class MusicPlayer {
 
     constructor(bpm, bars) { //BPM 108, bars 8

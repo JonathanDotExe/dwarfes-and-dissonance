@@ -1,5 +1,5 @@
-import { MusicGenerator, RandomMusicGeneratorTrack } from "./generator.js";
-import { AudioLoop } from "./player.js";
+import { MusicGenerator, MusicGeneratorSection, RandomMusicGeneratorTrack } from "./generator.js";
+import { AudioLoop, createGainChannel } from "./player.js";
 
 
 async function loadAudio(url, ctx) {
@@ -36,42 +36,46 @@ const AUDIO_PROMISE = new Promise(async (resolve, reject) => {
 
 export async function createAmbientMusicGenerator(world) {
     await AUDIO_PROMISE;
-    return new MusicGenerator(world, 108, 8, [
-        new RandomMusicGeneratorTrack(
-            'piano',
-            [new AudioLoop(AUDIO_FILES.pianoCalm1, 1), new AudioLoop(AUDIO_FILES.pianoCalm2, 1), new AudioLoop(AUDIO_FILES.pianoCalm3, 1), new AudioLoop(AUDIO_FILES.pianoEpic1, 1), new AudioLoop(AUDIO_FILES.pianoEpic2, 1)],
-            1,
-            1
-        ),
-        new RandomMusicGeneratorTrack(
-            'drums',
-            [new AudioLoop(AUDIO_FILES.drumsCalm1, 1), new AudioLoop(AUDIO_FILES.drumsCalm2, 0), new AudioLoop(AUDIO_FILES.drumsCalm3, 0)],
-            0.7,
-            1
-        ),
-        new RandomMusicGeneratorTrack(
-            'epiano',
-            [new AudioLoop(AUDIO_FILES.epianoCalm1, 0), new AudioLoop(AUDIO_FILES.epianoCalm2, 0)],
-            0.3,
-            0.5
-        ),
-        new RandomMusicGeneratorTrack(
-            'pad',
-            [new AudioLoop(AUDIO_FILES.padCalm1, 0), new AudioLoop(AUDIO_FILES.padCalm2, 0)],
-            0.5,
-            0.2
-        ),
-        new RandomMusicGeneratorTrack(
-            'guitar',
-            [new AudioLoop(AUDIO_FILES.eguitarCalm1, 1)],
-            0.5,
-            0.6
-        ),
-        new RandomMusicGeneratorTrack(
-            'doublebass',
-            [new AudioLoop(AUDIO_FILES.doublebass1, 0)],
-            0.5,
-            0.3
-        )
-    ]);
+    return new MusicGenerator(world, 108, 8,
+        {
+            'piano': (ctx) => createGainChannel(ctx, 1),
+            'drums': (ctx) => createGainChannel(ctx, 1),
+            'epiano': (ctx) => createGainChannel(ctx, 0.5),
+            'pad': (ctx) => createGainChannel(ctx, 0.2),
+            'guitar': (ctx) => createGainChannel(ctx, 0.6),
+            'doublebass': (ctx) => createGainChannel(ctx, 0.3),
+        },
+        [new MusicGeneratorSection(
+            [
+                new RandomMusicGeneratorTrack(
+                    'piano',
+                    [new AudioLoop(AUDIO_FILES.pianoCalm1, 1), new AudioLoop(AUDIO_FILES.pianoCalm2, 1), new AudioLoop(AUDIO_FILES.pianoCalm3, 1), new AudioLoop(AUDIO_FILES.pianoEpic1, 1), new AudioLoop(AUDIO_FILES.pianoEpic2, 1)],
+                    1
+                ),
+                new RandomMusicGeneratorTrack(
+                    'drums',
+                    [new AudioLoop(AUDIO_FILES.drumsCalm1, 1), new AudioLoop(AUDIO_FILES.drumsCalm2, 0), new AudioLoop(AUDIO_FILES.drumsCalm3, 0)],
+                    0.7
+                ),
+                new RandomMusicGeneratorTrack(
+                    'epiano',
+                    [new AudioLoop(AUDIO_FILES.epianoCalm1, 0), new AudioLoop(AUDIO_FILES.epianoCalm2, 0)],
+                    0.3
+                ),
+                new RandomMusicGeneratorTrack(
+                    'pad',
+                    [new AudioLoop(AUDIO_FILES.padCalm1, 0), new AudioLoop(AUDIO_FILES.padCalm2, 0)],
+                    0.5
+                ),
+                new RandomMusicGeneratorTrack(
+                    'guitar',
+                    [new AudioLoop(AUDIO_FILES.eguitarCalm1, 1)],
+                    0.5
+                ),
+                new RandomMusicGeneratorTrack(
+                    'doublebass',
+                    [new AudioLoop(AUDIO_FILES.doublebass1, 0)],
+                    0.5
+                )
+            ])]);
 }
