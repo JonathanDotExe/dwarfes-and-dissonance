@@ -74,5 +74,9 @@ export class MusicGenerator {
         this._player.start();
     }
 
+    update(delta) {
+        
+    }
+
 
 }
