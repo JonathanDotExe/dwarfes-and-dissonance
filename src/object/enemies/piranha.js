@@ -11,6 +11,7 @@ export class Piranha extends Enemy{
         super(x, y, 9, 1, 1);
         this.count = 0;
         this.dir = 0;
+        this.lastTime = 0;
     }
 
     draw(camX, camY, ctx) {
@@ -22,4 +23,22 @@ export class Piranha extends Enemy{
         return  tile == null || !tile.fluid;
     }
 
+    update(deltaTime, env) {
+        super.update(deltaTime, env);
+        if(this.attackNow === undefined) {
+            return;
+        }
+        if(this.attackNow) {
+            let curTime = new Date().getTime();
+            if((curTime - this.lastTime > 250) || this.lastTime === undefined) {
+                this.setNotAttack();
+                this.attack(this.player);
+                this.lastTime = curTime;
+            }
+        }
+    }
+
+    attack(player) {
+        player.takeDamage(5);
+    }
 }

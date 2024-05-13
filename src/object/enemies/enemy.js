@@ -27,8 +27,8 @@ export class Enemy extends LivingObject {
         // Range of enemy is his postion plus half his hitbox in each direction, aka. half the player
 
 
-        const attackPosX = this.x - this.width/2;
-        const attackPosY = this.y - this.height/2;
+        const attackPosX = this.x - this.width/4;
+        const attackPosY = this.y - this.height/4;
         let creatures = this.world.getObjectsInArea(attackPosX, attackPosY, 1, 1);
 
         creatures.forEach((obj) => {

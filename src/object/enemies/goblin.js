@@ -10,6 +10,7 @@ export class Goblin extends Enemy {
         super(x, y, 25, 2, 2);
         this.count = 0;
         this.dir = 0;
+        this.lastTime = 0;
     }
 
     draw(camX, camY, ctx) {
@@ -27,6 +28,7 @@ export class Goblin extends Enemy {
             if((curTime - this.lastTime > 500) || this.lastTime === undefined) {
                 this.setNotAttack();
                 this.attack(this.player);
+                this.lastTime = curTime;
             }
         }
     }
