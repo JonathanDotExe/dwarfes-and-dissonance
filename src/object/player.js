@@ -54,6 +54,7 @@ export class Player extends LivingObject {
         if(this.direction === undefined) {
             return;
         }
+
         const attackPosX = this.x + this.width/2 + (this.direction.x) - 0.5;
         const attackPosY = this.y + this.height/2 + (this.direction.y) - 0.5;
         let creatures = this.world.getObjectsInArea(attackPosX, attackPosY, 1, 1);

@@ -17,4 +17,21 @@ export class Goblin extends Enemy {
         super.draw(camX, camY, ctx);
     }
 
+    update(deltaTime, env) {
+        super.update(deltaTime, env);
+        if(this.attackNow === undefined) {
+            return;
+        }
+        if(this.attackNow) {
+            let curTime = new Date().getTime();
+            if((curTime - this.lastTime > 500) || this.lastTime === undefined) {
+                this.setNotAttack();
+                this.attack(this.player);
+            }
+        }
+    }
+
+    attack(player) {
+        player.takeDamage(10);
+    }
 }
