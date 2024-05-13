@@ -10,6 +10,7 @@ export class Player extends LivingObject {
     constructor(x, y) {
         super(x, y, 100);
         this.sightRange = 6;
+        this.lastTime = 0;
     }
 
     update(deltaTime, env) {
@@ -24,11 +25,9 @@ export class Player extends LivingObject {
         // attacking
         if(env.input.currentlyAttacking) {
             let curTime = new Date().getTime();
-            let lastTime;
-            if((curTime - lastTime > 500) || lastTime === undefined) {
+            if((curTime - this.lastTime > 500) || this.lastTime === undefined) {
                 this.attack();
-                env.input.doneAttacking();
-                lastTime = curTime;
+                this.lastTime = curTime;
             }
         }
 
@@ -47,7 +46,7 @@ export class Player extends LivingObject {
         return  tile == null || tile.solid
     }
   
-   attack() {
+    attack() {
         //check if there is an enemy in the tile in front of player (current direction)
         // For now only 1 weapon -> 1 Tile range
         // Can be updated and stats gotten from a possible future weapon or inventory class (same for dmg)
