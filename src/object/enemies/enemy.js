@@ -23,36 +23,8 @@ export class Enemy extends LivingObject {
         super.update(deltaTime, env);
         //TODO implement inRange method
 
-        // Attack player if on Enemy
-        // Range of enemy is his postion plus half his hitbox in each direction, aka. half the player
-
-
-        const attackPosX = this.x - this.width/4;
-        const attackPosY = this.y - this.height/4;
-        let creatures = this.world.getObjectsInArea(attackPosX, attackPosY, 1, 1);
-
-        creatures.forEach((obj) => {
-            if(obj instanceof Player) {
-                this.attackFlag = true;
-                this.player = obj;
-            }
-        })
-
-
         // if(inRange(objectPosition))
         this.moveRand(deltaTime);
-    }
-
-    get attackNow() {
-        return this.attackFlag;
-    }
-
-    setNotAttack() {
-        this.attackFlag = false;
-    }
-
-    get playerRef() {
-        return this.player;
     }
 
     moveRand(deltaTime){
@@ -101,4 +73,16 @@ export class Enemy extends LivingObject {
         this.move(xMotion, yMotion, deltaTime);
     }
 
+    enemyAttack(attackX, attackY, rangeX, rangeY, damage) {
+        // Attack player if on Enemy
+        // Range of enemy is his postion plus half his hitbox in each direction, aka. half the player
+
+        let creatures = this.world.getObjectsInArea(attackX, attackY, rangeX, rangeY);
+
+        creatures.forEach((obj) => {
+            if(obj instanceof Player) {
+                obj.takeDamage(damage);
+            }
+        })
+    }
 }

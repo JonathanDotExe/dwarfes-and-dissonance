@@ -7,6 +7,19 @@ piranhaImage.src = "./res/objects/piranha.png";
 
 export class Piranha extends Enemy{
 
+    // AttackPosX and Y need to be written as getter
+    // otherwise they don't get updated with the update() method.
+    get attackPosX() {
+        return (this.x - this.width/4);
+    }
+    get attackPosY() {
+        return (this.y - this.width/4);
+    }
+    rangeX = 1;
+    rangeY = 1;
+    damage = 5;
+    cooldown = 250;
+
     constructor(x, y) {
         super(x, y, 9, 1, 1);
         this.count = 0;
@@ -25,20 +38,12 @@ export class Piranha extends Enemy{
 
     update(deltaTime, env) {
         super.update(deltaTime, env);
-        if(this.attackNow === undefined) {
-            return;
-        }
-        if(this.attackNow) {
-            let curTime = new Date().getTime();
-            if((curTime - this.lastTime > 250) || this.lastTime === undefined) {
-                this.setNotAttack();
-                this.attack(this.player);
-                this.lastTime = curTime;
-            }
-        }
-    }
 
-    attack(player) {
-        player.takeDamage(5);
+        // Attack
+        let curTime = new Date().getTime();
+        if((curTime - this.lastTime > this.cooldown) || this.lastTime === undefined) {
+            this.enemyAttack(this.attackPosX, this.attackPosY, this.rangeX, this.rangeY, this.damage);
+            this.lastTime = curTime;
+        }
     }
 }
