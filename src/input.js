@@ -6,6 +6,7 @@ export class Input {
         this._up = false;
         this._down = false;
         this._attack = false;
+        this._interact = false;
 
         window.addEventListener("keydown", e => {
             const key = e.key.toLowerCase();
@@ -21,6 +22,9 @@ export class Input {
             else if (key == 'd') {
                 this._right = true;
             }
+            else if (key == 'e') {
+                this._interact = true;
+            }
         });
         window.addEventListener("keyup", e => {
             const key = e.key.toLowerCase();
@@ -35,6 +39,9 @@ export class Input {
             }
             else if (key == 'd') {
                 this._right = false;
+            }
+            else if (key == 'e') {
+                this._interact = false;
             }
         });
         window.addEventListener("mousedown",e => {
@@ -60,4 +67,7 @@ export class Input {
         return this._attack;
     }
 
+    get currentlyInteracting() {
+        return this._interact;
+    }
 }

@@ -23,4 +23,8 @@ export class Chest extends GameObject{
         }
         super.draw(camX, camY, ctx);
     }
+
+    open() {
+        this.interacted = true;
+    }
 }

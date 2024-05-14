@@ -1,5 +1,6 @@
 import { LivingObject } from "./livingobject.js";
 import { TILE_SIZE } from "./tile.js";
+import {Chest} from "./static/chest.js";
 
 const playerFront = new Image();
 playerFront.src = "/res/objects/player_front_knife.png";
@@ -12,6 +13,8 @@ playerLeft.src = "/res/objects/player_left_knife.png";
 
 const playerRight = new Image();
 playerRight.src = "/res/objects/player_right_knife.png";
+
+const INTERACT_COOLDWN = 250;
 
 export class Player extends LivingObject {
 
@@ -45,6 +48,14 @@ export class Player extends LivingObject {
             }
         }
 
+        // interacting
+        if(env.input.currentlyInteracting) {
+            let curTime = new Date().getTime();
+            if((curTime - this.lastTime > INTERACT_COOLDWN) || this.lastTime === undefined) {
+                this.interact();
+                this.lastTime = curTime;
+            }
+        }
         const speed = this.isInFluid() ? 1 : 4;
 
         this.move(motion.x * speed , motion.y * speed, deltaTime);
@@ -112,6 +123,22 @@ export class Player extends LivingObject {
         creatures.forEach((obj) => {
             if(obj instanceof LivingObject && obj !== this) {
                 obj.takeDamage(10);
+            }
+        })
+    }
+
+    interact() {
+        if(this.direction === undefined) {
+            return;
+        }
+
+        const interactPosX = this.x + this.witdh/2 + this.direction.x - 0.5;
+        const interactPosY = this.y + this.height/2 + this.direction.y - 0.5;
+        let objInRange = this.world.getObjectsInArea(interactPosX, interactPosY, 1, 1);
+
+        objInRange.forEach((obj) => {
+            if (obj instanceof Chest) {
+                obj.open();
             }
         })
     }
