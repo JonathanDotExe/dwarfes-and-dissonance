@@ -23,10 +23,11 @@ export class RandomMusicGeneratorTrack extends MusicGeneratorTrack {
         this._loops = loops;
         this._options = {chance: 1, minEnergy: 0, maxEnergy: 1};
         Object.assign(this._options, options);
+        console.log(this._options)
     }
 
     selectLoop(world, energyLevel) {
-        if (energyLevel >= this._options._minEnergy && energyLevel < this._options._maxEnergy && Math.random() <= this._chance) {
+        if (energyLevel >= this._options.minEnergy && energyLevel < this._options.maxEnergy && Math.random() <= this._options.chance) {
             return this._loops[Math.floor(Math.random() * this._loops.length)]
         }
         return super.selectLoop(world);
@@ -63,7 +64,6 @@ export class MusicGenerator {
         this._channels = channels;
         this._sections = sections;
         this._world = world;
-        this._currentSection = 0;
         this._energyLevel = 0;
     }
     
@@ -75,9 +75,11 @@ export class MusicGenerator {
         }
         //Start
         this._player.onLoopStart = (player) => {
-            const section = this._sections[this._currentSection];
+            //Find section
+            const sections = this._sections.filter(s => s.minEnergy <= this._energyLevel && s.maxEnergy > this._energyLevel);
+            const section = sections[Math.floor(Math.random() * sections.length)];
             for (let track of section.tracks) {
-                const loop = track.selectLoop(this.world);
+                const loop = track.selectLoop(this.world, this._energyLevel);
                 if (!!loop) {
                     player.play(track.identifier, loop);
                 }
@@ -88,13 +90,14 @@ export class MusicGenerator {
 
     update(delta) {
         //Energy level ramp
-        this._energyLevel += (Math.random() - 0.3)/10 * delta;
+        this._energyLevel += (Math.random() - 0.3)/20 * delta;
         if (this._energyLevel < 0) {
             this._energyLevel = 0;
         }
         if (this._energyLevel >= 1) {
             this._energyLevel = Math.random() * 0.5;
         }
+
         console.log(this._energyLevel);
     }
 
