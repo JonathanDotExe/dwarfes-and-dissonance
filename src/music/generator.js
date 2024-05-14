@@ -65,6 +65,8 @@ export class MusicGenerator {
         this._sections = sections;
         this._world = world;
         this._energyLevel = 0;
+        this._time = 1;
+        this._energyChange = 0;
     }
     
     init() {
@@ -89,8 +91,13 @@ export class MusicGenerator {
     }
 
     update(delta) {
+        this._time += delta;
+        if (this._time >= 1) {
+            this._time = 0;
+            this._energyChange = (Math.random() - 0.3)/20;
+        }
         //Energy level ramp
-        this._energyLevel += (Math.random() - 0.3)/20 * delta;
+        this._energyLevel += this._energyChange * delta;
         if (this._energyLevel < 0) {
             this._energyLevel = 0;
         }
