@@ -1,8 +1,17 @@
 import { LivingObject } from "./livingobject.js";
 import { TILE_SIZE } from "./tile.js";
 
-const playerImage = new Image();
-playerImage.src = "/res/objects/dwarf_blue.png";
+const playerFront = new Image();
+playerFront.src = "/res/objects/player_front_knife.png";
+
+const playerBack = new Image();
+playerBack.src = "/res/objects/player_back_knife.png";
+
+const playerLeft = new Image();
+playerLeft.src = "/res/objects/player_left_knife.png";
+
+const playerRight = new Image();
+playerRight.src = "/res/objects/player_right_knife.png";
 
 export class Player extends LivingObject {
 
@@ -37,8 +46,32 @@ export class Player extends LivingObject {
     }
 
     draw(camX, camY, ctx) {
-        ctx.drawImage(playerImage, (this.x - camX) * TILE_SIZE, (this.y - camY) * TILE_SIZE);
-        super.draw(camX, camY, ctx);
+        if(this.direction===undefined){
+            ctx.drawImage(playerFront, (this.x - camX) * TILE_SIZE, (this.y - camY) * TILE_SIZE);
+        }else{
+            const x = this.direction.x;
+            const y = this.direction.y;
+
+            if(x < 0) {
+                ctx.drawImage(playerLeft, (this.x - camX) * TILE_SIZE, (this.y - camY) * TILE_SIZE);
+                super.draw(camX, camY, ctx);
+                return;
+            }
+            if(x > 0) {
+                ctx.drawImage(playerRight, (this.x - camX) * TILE_SIZE, (this.y - camY) * TILE_SIZE);
+                super.draw(camX, camY, ctx);
+                return;
+            }
+            if(y < 0) {
+                ctx.drawImage(playerBack, (this.x - camX) * TILE_SIZE, (this.y - camY) * TILE_SIZE);
+                super.draw(camX, camY, ctx);
+                return;
+            }
+            if(y > 0) {
+                ctx.drawImage(playerFront, (this.x - camX) * TILE_SIZE, (this.y - camY) * TILE_SIZE);
+                super.draw(camX, camY, ctx);
+            }
+        }
     }
 
 
