@@ -22,6 +22,11 @@ export class Player extends LivingObject {
         this.lastTime = 0;
     }
 
+    init(world) {
+        super.init(world);
+        this.respawn();
+    }
+
     update(deltaTime, env) {
         super.update(deltaTime, env);
         const motion = env.input.movementAxis;
@@ -43,6 +48,18 @@ export class Player extends LivingObject {
         const speed = this.isInFluid() ? 1 : 4;
 
         this.move(motion.x * speed , motion.y * speed, deltaTime);
+    }
+
+    kill() {
+        this.respawn();
+    }
+
+    respawn() {
+        this._health = this._maxHealth;
+        do {
+            this.x = Math.floor(Math.random() * this.world.worldWidth)
+            this.y = Math.floor(Math.random() * this.world.worldHeight)
+        } while(this._world.getTile(this.x, this.y)?.solid);
     }
 
     draw(camX, camY, ctx) {
