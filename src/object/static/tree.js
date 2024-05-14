@@ -14,4 +14,8 @@ export class Tree extends LivingObject{
         ctx.drawImage(treeImage, (this.x - camX) * TILE_SIZE, (this.y - camY) * TILE_SIZE);
         super.draw(camX, camY, ctx);
     }
+
+    get solid() {
+        return true;
+    }
 }
