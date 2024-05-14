@@ -55,6 +55,7 @@ export class MusicPlayer {
         //this._audioCtx.sampleRate = 48000;
         this.onLoopStart = (player) => {};
         this._nextLoopTime = 0;
+        this._preDecisionBars = 2;
     }
 
     addChannel(key, ch) {
@@ -74,7 +75,7 @@ export class MusicPlayer {
         this._nextLoopTime = this._audioCtx.currentTime + this.barDuration * 2; //Start in two bars
         const t = this;
         const func = () => {  //Loop every half bar and check if it's time to generate the next audio
-            if (this._nextLoopTime - t._audioCtx.currentTime <= t.loopDuration) {
+            if (t._nextLoopTime - t._audioCtx.currentTime <= t._preDecisionBars * t.barDuration) {
                 t.onLoopStart(t);
                 t._nextLoopTime += t.loopDuration;
             }

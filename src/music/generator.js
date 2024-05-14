@@ -94,7 +94,7 @@ export class MusicGenerator {
         this._time += delta;
         if (this._time >= 1) {
             this._time = 0;
-            this._energyChange = (Math.random() - 0.3)/20;
+            this._energyChange = (Math.random() - 0.3) * 0.025;
         }
         //Energy level ramp
         this._energyLevel += this._energyChange * delta;
@@ -102,10 +102,8 @@ export class MusicGenerator {
             this._energyLevel = 0;
         }
         if (this._energyLevel >= 1) {
-            this._energyLevel = Math.random() * 0.5;
+            this._energyLevel = Math.random() * 0.8;
         }
-
-        console.log(this._energyLevel);
     }
 
 
