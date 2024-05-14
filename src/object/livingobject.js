@@ -30,7 +30,7 @@ export class LivingObject extends GameObject {
             const x = TILE_SIZE * (this.x - camX);
             const y = TILE_SIZE * (this.y - camY) - 10;
 
-            ctx.fillStyle = 'red#7d0000';
+            ctx.fillStyle = '#7d0000';
             ctx.fillRect(x, y, this.width * TILE_SIZE, 5);
             ctx.fillStyle = 'red';
             ctx.fillRect(x, y, this.width * this.healthPercent * TILE_SIZE, 5);

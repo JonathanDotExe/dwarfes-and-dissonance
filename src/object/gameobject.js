@@ -90,4 +90,8 @@ export class GameObject {
         return this._world;
     }
 
+    get solid() {
+        return false;
+    }
+
 }

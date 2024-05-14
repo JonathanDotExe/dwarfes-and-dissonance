@@ -201,6 +201,13 @@ export class GameWorld {
                 }
             }
             x = Math.min(x, goalX);
+            //Objects
+            const objs = this.getObjectsInArea(x + width, y, movementX, height);
+            for (let obj of objs) {
+                if (obj.solid) {
+                    x = Math.min(x, obj.x - width);
+                }
+            }
         }
         else if (movementX < 0) {
             loop:
@@ -214,6 +221,13 @@ export class GameWorld {
                 x = i;
             }
             x = Math.max(x, goalX);
+            //Objects
+            const objs = this.getObjectsInArea(x, y, movementX, height);
+            for (let obj of objs) {
+                if (obj.solid) {
+                    x = Math.max(x, obj.x + obj.width);
+                }
+            }
         }
         //Y axis
         if (movementY > 0) {
@@ -228,6 +242,13 @@ export class GameWorld {
                 }
             }
             y = Math.min(y, goalY);
+            //Objects
+            const objs = this.getObjectsInArea(x, y + height, width, movementY);
+            for (let obj of objs) {
+                if (obj.solid) {
+                    y = Math.min(y, obj.y - height);
+                }
+            }
         }
         else if (movementY < 0) {
             loop:
@@ -241,6 +262,13 @@ export class GameWorld {
                 y = i;
             }
             y = Math.max(y, goalY);
+            //Objects
+            const objs = this.getObjectsInArea(x, y, width, movementY);
+            for (let obj of objs) {
+                if (obj.solid) {
+                    y = Math.max(y, obj.y + obj.height);
+                }
+            }
         }
 
         return {x: x, y: y};
@@ -267,8 +295,8 @@ export class GameWorld {
         let creatures = new Array();
         for(let i = 0; i < this._objects.length; i++) {
             let obj = this._objects[i];
-            if((obj.x + obj.width >= x && obj.x <= x + length) && (obj.y + obj.height >= y && obj.y <= y + height)) {
-                creatures[i] = obj;
+            if((obj.x + obj.width > x && obj.x < x + length) && (obj.y + obj.height > y && obj.y < y + height)) {
+                creatures.push(obj);
             }
         }
 

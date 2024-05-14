@@ -12,7 +12,6 @@ export class Chest extends GameObject{
     constructor(x,y){
         super(x,y);
         this.interacted = false;
-        this.solid = true;
     }
 
     draw(camX, camY, ctx) {
@@ -22,5 +21,9 @@ export class Chest extends GameObject{
             ctx.drawImage(chestImage, (this.x - camX) * TILE_SIZE, (this.y - camY) * TILE_SIZE);
         }
         super.draw(camX, camY, ctx);
+    }
+
+    get solid() {
+        return true;
     }
 }

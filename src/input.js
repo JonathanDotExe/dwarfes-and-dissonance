@@ -37,8 +37,11 @@ export class Input {
                 this._right = false;
             }
         });
-        window.addEventListener("click",e => {
+        window.addEventListener("mousedown",e => {
             this._attack = true;
+        });
+        window.addEventListener("mouseup",e => {
+            this._attack = false;
         });
     }
 
@@ -55,9 +58,6 @@ export class Input {
 
     get currentlyAttacking() {
         return this._attack;
-    }
-    doneAttacking() {
-        this._attack = false;
     }
 
 }
