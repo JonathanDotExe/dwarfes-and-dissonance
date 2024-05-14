@@ -18,14 +18,15 @@ export class MusicGeneratorTrack {
 
 export class RandomMusicGeneratorTrack extends MusicGeneratorTrack {
 
-    constructor(identifier, loops, chance) {
+    constructor(identifier, loops, options = {chance: 1, minEnergy: 0, maxEnergy: 1}) {
         super(identifier);
         this._loops = loops;
-        this._chance = chance;
+        this._options = {chance: 1, minEnergy: 0, maxEnergy: 1};
+        Object.assign(this._options, options);
     }
 
-    selectLoop(world) {
-        if (Math.random() <= this._chance) {
+    selectLoop(world, energyLevel) {
+        if (energyLevel >= this._options._minEnergy && energyLevel < this._options._maxEnergy && Math.random() <= this._chance) {
             return this._loops[Math.floor(Math.random() * this._loops.length)]
         }
         return super.selectLoop(world);
@@ -35,12 +36,22 @@ export class RandomMusicGeneratorTrack extends MusicGeneratorTrack {
 
 export class MusicGeneratorSection {
 
-    constructor(tracks) {
+    constructor(tracks, minEnergy = 0, maxEnergy = 1) {
         this._tracks = tracks;
+        this._minEnergy = minEnergy;
+        this._maxEnergy = maxEnergy;
     }
 
     get tracks() {
         return this._tracks;
+    }
+
+    get minEnergy() {
+        return this._minEnergy;
+    }
+
+    get maxEnergy() {
+        return this._maxEnergy;
     }
 
 }
@@ -53,7 +64,7 @@ export class MusicGenerator {
         this._sections = sections;
         this._world = world;
         this._currentSection = 0;
-        this._stressLevel = 0;
+        this._energyLevel = 0;
     }
     
     init() {
@@ -76,11 +87,15 @@ export class MusicGenerator {
     }
 
     update(delta) {
-        this._stressLevel += Math.random()/10 * delta;
-        if (this._stressLevel >= 1) {
-            this._stressLevel = Math.random() * 0.5;
+        //Energy level ramp
+        this._energyLevel += (Math.random() - 0.3)/10 * delta;
+        if (this._energyLevel < 0) {
+            this._energyLevel = 0;
         }
-        console.log(this._stressLevel);
+        if (this._energyLevel >= 1) {
+            this._energyLevel = Math.random() * 0.5;
+        }
+        console.log(this._energyLevel);
     }
 
 

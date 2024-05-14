@@ -63,58 +63,60 @@ export async function createAmbientMusicGenerator(world) {
                 [
                     new RandomMusicGeneratorTrack(
                         'piano',
-                        [new AudioLoop(AUDIO_FILES.pianoCalm1, 1), new AudioLoop(AUDIO_FILES.pianoCalm2, 1), new AudioLoop(AUDIO_FILES.pianoCalm3, 1)],
-                        1
+                        [new AudioLoop(AUDIO_FILES.pianoCalm1, 1), new AudioLoop(AUDIO_FILES.pianoCalm2, 1), new AudioLoop(AUDIO_FILES.pianoCalm3, 1)]
                     ),
                     new RandomMusicGeneratorTrack(
                         'drums',
                         [new AudioLoop(AUDIO_FILES.drumsCalm1, 1), new AudioLoop(AUDIO_FILES.drumsCalm2, 0), new AudioLoop(AUDIO_FILES.drumsCalm3, 0)],
-                        0.7
+                        { chance: 0.7 }
                     ),
                     new RandomMusicGeneratorTrack(
                         'epiano',
                         [new AudioLoop(AUDIO_FILES.epianoCalm1, 0), new AudioLoop(AUDIO_FILES.epianoCalm2, 0)],
-                        0.3
+                        { chance: 0.6, minEnergy: 0.3 }
                     ),
                     new RandomMusicGeneratorTrack(
                         'pad',
                         [new AudioLoop(AUDIO_FILES.padCalm1, 0), new AudioLoop(AUDIO_FILES.padCalm2, 0)],
-                        0.5
+                        { minEnergy: 0.3 }
                     ),
                     new RandomMusicGeneratorTrack(
                         'guitar',
                         [new AudioLoop(AUDIO_FILES.eguitarCalm1, 1)],
-                        0.5
+                        { chance: 0.4, minEnergy: 0.1 }
                     ),
                     new RandomMusicGeneratorTrack(
                         'doublebass',
                         [new AudioLoop(AUDIO_FILES.doublebass1, 0)],
-                        0.5
+                        { minEnergy: 0.2 }
                     )
-                ]),
+                ], 0, 0.5),
             new MusicGeneratorSection(
                 [
                     new RandomMusicGeneratorTrack(
                         'piano',
-                        [new AudioLoop(AUDIO_FILES.pianoEpic1, 1), new AudioLoop(AUDIO_FILES.pianoEpic2, 1)],
-                        1
+                        [new AudioLoop(AUDIO_FILES.pianoEpic1, 1), new AudioLoop(AUDIO_FILES.pianoEpic2, 1)]
                     ),
                     new RandomMusicGeneratorTrack(
                         'drums',
                         [new AudioLoop(AUDIO_FILES.drumsEpic1, 0), new AudioLoop(AUDIO_FILES.drumsEpic2, 0), new AudioLoop(AUDIO_FILES.drumsEpic3, 0)],
-                        1
+                        { minEnergy: 0.6 }
                     ),
                     new RandomMusicGeneratorTrack(
                         'pad',
                         [new AudioLoop(AUDIO_FILES.padCalm1, 0), new AudioLoop(AUDIO_FILES.padCalm2, 0)],
-                        0.5
+                        { chance: 0.5, minEnergy: 0.8 }
                     ),
                     new RandomMusicGeneratorTrack(
                         'guitar',
                         [new AudioLoop(AUDIO_FILES.eguitarCalm1, 1)],
-                        0.5
+                        { chance: 0.3, minEnergy: 0.7 }
+                    ),
+                    new RandomMusicGeneratorTrack(
+                        'doublebass',
+                        [new AudioLoop(AUDIO_FILES.doublebass1, 0)],
+                        { minEnergy: 0.65 }
                     )
-                ]
-            )
+                ], 0.5, 1)
         ]);
 }
