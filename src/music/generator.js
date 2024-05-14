@@ -18,17 +18,21 @@ export class MusicGeneratorTrack {
 
 export class RandomMusicGeneratorTrack extends MusicGeneratorTrack {
 
-    constructor(identifier, loops, options = {chance: 1, minEnergy: 0, maxEnergy: 1}) {
+    constructor(identifier, loops, options = {}) {
         super(identifier);
         this._loops = loops;
-        this._options = {chance: 1, minEnergy: 0, maxEnergy: 1};
+        this._options = {chance: 1, minEnergy: 0, maxEnergy: 1, dependsOnAll: [], excludesAll: []};
         Object.assign(this._options, options);
         console.log(this._options)
     }
 
     selectLoop(world, energyLevel) {
         if (energyLevel >= this._options.minEnergy && energyLevel < this._options.maxEnergy && Math.random() <= this._options.chance) {
-            return this._loops[Math.floor(Math.random() * this._loops.length)]
+            return { 
+                loop: this._loops[Math.floor(Math.random() * this._loops.length)],
+                dependsOnAll: this._options.dependsOnAll,
+                excludesAll: this._options.excludesAll,
+            }
         }
         return super.selectLoop(world);
     }
@@ -80,11 +84,23 @@ export class MusicGenerator {
             //Find section
             const sections = this._sections.filter(s => s.minEnergy <= this._energyLevel && s.maxEnergy > this._energyLevel);
             const section = sections[Math.floor(Math.random() * sections.length)];
+            const loops = {};
+            //Select loops
             for (let track of section.tracks) {
                 const loop = track.selectLoop(this.world, this._energyLevel);
                 if (!!loop) {
-                    player.play(track.identifier, loop);
+                    loops[track.identifier] = loop;
                 }
+            }
+            //Filter loops
+            for (let key in loops) {
+                if (loops[key].excludesAll.some(e => e in loops) || loops[key].dependsOnAll.some(e => !(e in loops))) {
+                    delete loops[key];
+                }
+            }
+            //Play loops
+            for (let key in loops) {
+                player.play(key, loops[key]);
             }
         };
         this._player.start();
