@@ -1,4 +1,5 @@
 import {LivingObject} from "../livingobject.js";
+import {Player} from "../player.js";
 
 export class Enemy extends LivingObject {
 
@@ -25,8 +26,6 @@ export class Enemy extends LivingObject {
         // if(inRange(objectPosition))
         this.moveRand(deltaTime);
     }
-
-
 
     moveRand(deltaTime){
         let xMotion = 0;
@@ -74,4 +73,16 @@ export class Enemy extends LivingObject {
         this.move(xMotion, yMotion, deltaTime);
     }
 
+    enemyAttack(attackX, attackY, rangeX, rangeY, damage) {
+        // Attack player if on Enemy
+        // Range of enemy is his postion plus half his hitbox in each direction, aka. half the player
+
+        let creatures = this.world.getObjectsInArea(attackX, attackY, rangeX, rangeY);
+
+        creatures.forEach((obj) => {
+            if(obj instanceof Player) {
+                obj.takeDamage(damage);
+            }
+        })
+    }
 }
