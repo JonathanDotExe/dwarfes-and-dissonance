@@ -55,11 +55,6 @@ export class GameWorld {
         this.addObject(new Chest(15,8));
         this.addObject(new Piranha(1,1));
         this.addObject(this._player);
-
-        //Add player
-        createAmbientMusicGenerator(this).then(m => {
-            m.init();
-        })
     }
 
     update(deltaTime, env) {

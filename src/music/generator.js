@@ -53,6 +53,7 @@ export class MusicGenerator {
         this._sections = sections;
         this._world = world;
         this._currentSection = 0;
+        this._stressLevel = 0;
     }
     
     init() {
@@ -75,7 +76,11 @@ export class MusicGenerator {
     }
 
     update(delta) {
-        
+        this._stressLevel += Math.random()/10 * delta;
+        if (this._stressLevel >= 1) {
+            this._stressLevel = Math.random() * 0.5;
+        }
+        console.log(this._stressLevel);
     }
 
 

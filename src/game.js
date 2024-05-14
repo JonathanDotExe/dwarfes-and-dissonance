@@ -1,6 +1,7 @@
 import { GameWorld } from "./world.js";
 import { Input } from "./input.js";
 import { TILE_SIZE } from "./object/tile.js";
+import { createAmbientMusicGenerator } from "./music/music.js";
 
 export class Game {
 
@@ -10,7 +11,10 @@ export class Game {
         this._world = new GameWorld();
     }
 
-    start() {
+    async start() {
+        //Music
+        const music = await createAmbientMusicGenerator(this._world);
+        music.init();
         let lastTime = 0;
         const world = this._world;
         const ctx = this._canvas.getContext('2d');
@@ -22,6 +26,7 @@ export class Game {
             lastTime = time;
             //Update/draw
             world.update(delta, env);
+            music.update(delta);
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             world.draw(ctx, canvas.width/TILE_SIZE, canvas.height/TILE_SIZE);
 

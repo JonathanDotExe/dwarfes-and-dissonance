@@ -40,8 +40,8 @@ const AUDIO_PROMISE = new Promise(async (resolve, reject) => {
     AUDIO_FILES.pianoOctave1 = await loadAudio("/res/loops/ambient/piano_octave1.flac", audioCtx);
     AUDIO_FILES.pianoOctave2 = await loadAudio("/res/loops/ambient/piano_octave2.flac", audioCtx);
     AUDIO_FILES.pizzStrings1 = await loadAudio("/res/loops/ambient/pizz_strings1.flac", audioCtx);
-    AUDIO_FILES.violin_epic1 = await loadAudio("/res/loops/ambient/violin_epic1.flac", audioCtx);
-    AUDIO_FILES.violin_epic2 = await loadAudio("/res/loops/ambient/violin_epic2.flac", audioCtx);
+    AUDIO_FILES.violinEpic1 = await loadAudio("/res/loops/ambient/violins_epic1.flac", audioCtx);
+    AUDIO_FILES.violin2Epic1 = await loadAudio("/res/loops/ambient/violin2_epic1.flac", audioCtx);
 
     resolve(AUDIO_FILES);
 });
