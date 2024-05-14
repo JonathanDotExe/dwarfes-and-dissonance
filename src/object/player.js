@@ -115,4 +115,8 @@ export class Player extends LivingObject {
             }
         })
     }
+
+    get x() {
+        return this.x;
+    }
 }
