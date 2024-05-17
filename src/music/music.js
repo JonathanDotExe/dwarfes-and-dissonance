@@ -57,6 +57,16 @@ export async function createAmbientMusicGenerator(world) {
             'pad': (ctx) => createGainChannel(ctx, 0.2),
             'guitar': (ctx) => createGainChannel(ctx, 0.6),
             'doublebass': (ctx) => createGainChannel(ctx, 0.3),
+            'chello': (ctx) => createGainChannel(ctx, 0.3),
+            'violin1': (ctx) => createGainChannel(ctx, 1),
+            'violin2': (ctx) => createGainChannel(ctx, 1),
+            'glockenspiel1': (ctx) => createGainChannel(ctx, 0.6),
+            'octave_piano1': (ctx) => createGainChannel(ctx, 0.5),
+            'glockenspiel2': (ctx) => createGainChannel(ctx, 0.6),
+            'octave_piano2': (ctx) => createGainChannel(ctx, 0.5),
+            'brass': (ctx) => createGainChannel(ctx, 1),
+            'pizz_strings': (ctx) => createGainChannel(ctx, 1),
+            'pizz_drums': (ctx) => createGainChannel(ctx, 1),
         },
         [
             new MusicGeneratorSection(
@@ -68,12 +78,12 @@ export async function createAmbientMusicGenerator(world) {
                     new RandomMusicGeneratorTrack(
                         'drums',
                         [new AudioLoop(AUDIO_FILES.drumsCalm1, 1), new AudioLoop(AUDIO_FILES.drumsCalm2, 0), new AudioLoop(AUDIO_FILES.drumsCalm3, 0)],
-                        { chance: 0.7 }
+                        { chance: 0.7, excludesAll: ['pizz_drums'] }
                     ),
                     new RandomMusicGeneratorTrack(
                         'epiano',
                         [new AudioLoop(AUDIO_FILES.epianoCalm1, 0), new AudioLoop(AUDIO_FILES.epianoCalm2, 0)],
-                        { chance: 0.6, minEnergy: 0.3 }
+                        { chance: 0.6, minEnergy: 0.3, dependsOnAll: ['pad'], excludesAll: ['pizz_strings'] }
                     ),
                     new RandomMusicGeneratorTrack(
                         'pad',
@@ -83,13 +93,33 @@ export async function createAmbientMusicGenerator(world) {
                     new RandomMusicGeneratorTrack(
                         'guitar',
                         [new AudioLoop(AUDIO_FILES.eguitarCalm1, 1)],
-                        { chance: 0.4, minEnergy: 0.1 }
+                        { chance: 0.4, minEnergy: 0.1, excludesAll: ['epiano'] }
+                    ),
+                    new RandomMusicGeneratorTrack(
+                        'chello',
+                        [new AudioLoop(AUDIO_FILES.chello1, 0)],
+                        { minEnergy: 0.35 }
                     ),
                     new RandomMusicGeneratorTrack(
                         'doublebass',
                         [new AudioLoop(AUDIO_FILES.doublebass1, 0)],
                         { minEnergy: 0.2 }
-                    )
+                    ),
+                    new RandomMusicGeneratorTrack(
+                        'glockenspiel2',
+                        [new AudioLoop(AUDIO_FILES.glockenspiel2, 0)],
+                        { chance: 0.3, minEnergy: 0.3, excludesAll: ['epiano'] }
+                    ),
+                    new RandomMusicGeneratorTrack(
+                        'pizz_strings',
+                        [new AudioLoop(AUDIO_FILES.pizzStrings1, 0)],
+                        { chance: 0.3, minEnergy: 0.4, excludesAll: ['epiano'] }
+                    ),
+                    new RandomMusicGeneratorTrack(
+                        'pizz_drums',
+                        [new AudioLoop(AUDIO_FILES.drumsPizz1, 0)],
+                        { dependsOnAll: ['pizz_strings'] }
+                    ),
                 ], 0, 0.5),
             new MusicGeneratorSection(
                 [
@@ -113,10 +143,60 @@ export async function createAmbientMusicGenerator(world) {
                         { chance: 0.3, minEnergy: 0.7 }
                     ),
                     new RandomMusicGeneratorTrack(
+                        'chello',
+                        [new AudioLoop(AUDIO_FILES.chello1, 0)],
+                        { minEnergy: 0.65 }
+                    ),
+                    new RandomMusicGeneratorTrack(
                         'doublebass',
                         [new AudioLoop(AUDIO_FILES.doublebass1, 0)],
-                        { minEnergy: 0.65 }
-                    )
+                        { minEnergy: 0.5 }
+                    ),
+                    //Melody 1
+                    new RandomMusicGeneratorTrack(
+                        'violin1',
+                        [new AudioLoop(AUDIO_FILES.violinEpic1, 1)],
+                        { minEnergy: 0.7, chance: 0.8, excludesAll: ['pizz_strings'] }
+                    ),
+                    new RandomMusicGeneratorTrack(
+                        'violin2',
+                        [new AudioLoop(AUDIO_FILES.violin2Epic1, 0)],
+                        { minEnergy: 0.85, dependsOnAll: ['violin1'] }
+                    ),
+                    new RandomMusicGeneratorTrack(
+                        'octave_piano1',
+                        [new AudioLoop(AUDIO_FILES.pianoOctave1, 1)],
+                        { minEnergy: 0.75, dependsOnAll: ['violin1'] }
+                    ),
+                    new RandomMusicGeneratorTrack(
+                        'brass',
+                        [new AudioLoop(AUDIO_FILES.brassEpic1, 1)],
+                        { minEnergy: 0.85, chance: 0.5, dependsOnAll: ['violin1'] }
+                    ),
+                    new RandomMusicGeneratorTrack(
+                        'glockenspiel1',
+                        [new AudioLoop(AUDIO_FILES.glockenspiel2, 1)],
+                        { minEnergy: 0.85, chance: 0.5, dependsOnAll: ['violin1'] }
+                    ),
+                    //Melody 2
+                    new RandomMusicGeneratorTrack(
+                        'glockenspiel2',
+                        [new AudioLoop(AUDIO_FILES.glockenspielEpic2, 0)],
+                        { minEnergy: 0.6, chance: 0.5, dependsOnAll: ['octave_piano2'] }
+                    ),
+                    new RandomMusicGeneratorTrack(
+                        'octave_piano2',
+                        [new AudioLoop(AUDIO_FILES.pianoOctave2, 0)],
+                        { minEnergy: 0.6, chance: 0.5 , excludesAll: ['violin1']}
+                    ),
+                    //Pizz
+                    //TODO only trigger for dwarfes
+                    new RandomMusicGeneratorTrack(
+                        'pizz_strings',
+                        [new AudioLoop(AUDIO_FILES.pizzStrings1, 0)],
+                        { chance: 0.2, minEnergy: 0.6 }
+                    ),
+
                 ], 0.5, 1)
         ]);
 }

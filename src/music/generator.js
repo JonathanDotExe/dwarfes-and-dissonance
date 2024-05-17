@@ -93,11 +93,16 @@ export class MusicGenerator {
                 }
             }
             //Filter loops
-            for (let key in loops) {
-                if (loops[key].excludesAll.some(e => e in loops) || loops[key].dependsOnAll.some(e => !(e in loops))) {
-                    delete loops[key];
+            let size;
+            do { //Filter till there are no changes
+                size = Object.keys(loops).length
+                for (let key in loops) {
+                    if (loops[key].excludesAll.some(e => e in loops) || loops[key].dependsOnAll.some(e => !(e in loops))) {
+                        console.log('Delete ' + key)
+                        delete loops[key];
+                    }
                 }
-            }
+            } while (size != Object.keys(loops).length);
             //Play loops
             for (let key in loops) {
                 player.play(key, loops[key].loop);
@@ -118,7 +123,7 @@ export class MusicGenerator {
             this._energyLevel = 0;
         }
         if (this._energyLevel >= 1) {
-            this._energyLevel = Math.random() * 0.8;
+            this._energyLevel = Math.random() * 0.7;
         }
     }
 
