@@ -88,7 +88,7 @@ export class MusicGenerator {
             //Select loops
             for (let track of section.tracks) {
                 const loop = track.selectLoop(this.world, this._energyLevel);
-                if (!!loop) {
+                if (loop) {
                     loops[track.identifier] = loop;
                 }
             }
@@ -100,7 +100,7 @@ export class MusicGenerator {
             }
             //Play loops
             for (let key in loops) {
-                player.play(key, loops[key]);
+                player.play(key, loops[key].loop);
             }
         };
         this._player.start();
