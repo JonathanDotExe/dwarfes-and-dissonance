@@ -1,3 +1,4 @@
+import { STONE_FLOOR_TILE } from "../object/tile.js";
 import { AudioChannel, MusicPlayer } from "./player.js";
 
 export class MusicGeneratorTrack {
@@ -21,13 +22,13 @@ export class RandomMusicGeneratorTrack extends MusicGeneratorTrack {
     constructor(identifier, loops, options = {}) {
         super(identifier);
         this._loops = loops;
-        this._options = {chance: 1, minEnergy: 0, maxEnergy: 1, dependsOnAll: [], excludesAll: []};
+        this._options = {chance: 1, minEnergy: 0, maxEnergy: 1, dependsOnAll: [], excludesAll: [], canPlay: (world) => true};
         Object.assign(this._options, options);
         console.log(this._options)
     }
 
     selectLoop(world, energyLevel) {
-        if (energyLevel >= this._options.minEnergy && energyLevel < this._options.maxEnergy && Math.random() <= this._options.chance) {
+        if (this._options.canPlay(world) && energyLevel >= this._options.minEnergy && energyLevel < this._options.maxEnergy && Math.random() <= this._options.chance) {
             return { 
                 loop: this._loops[Math.floor(Math.random() * this._loops.length)],
                 dependsOnAll: this._options.dependsOnAll,
@@ -82,12 +83,15 @@ export class MusicGenerator {
         //Start
         this._player.onLoopStart = (player) => {
             //Find section
-            const sections = this._sections.filter(s => s.minEnergy <= this._energyLevel && s.maxEnergy > this._energyLevel);
+            const energyLevel = this._world.getTile(Math.floor(this._world.player.x), Math.floor(this._world.player.y)) == STONE_FLOOR_TILE ? Math.min(this._energyLevel + 0.3, 1) : this._energyLevel;
+
+            const sections = this._sections.filter(s => s.minEnergy <= energyLevel && s.maxEnergy > energyLevel);
             const section = sections[Math.floor(Math.random() * sections.length)];
             const loops = {};
+            console.log(energyLevel + "/" + this._energyLevel);
             //Select loops
             for (let track of section.tracks) {
-                const loop = track.selectLoop(this.world, this._energyLevel);
+                const loop = track.selectLoop(this._world, energyLevel);
                 if (loop) {
                     loops[track.identifier] = loop;
                 }
@@ -122,8 +126,15 @@ export class MusicGenerator {
         if (this._energyLevel < 0) {
             this._energyLevel = 0;
         }
-        if (this._energyLevel >= 1) {
-            this._energyLevel = Math.random() * 0.7;
+        if (this._energyLevel > 1) {
+            this._energyLevel = Math.random() * 0.6;
+        }
+        //Water
+        if (this._world._player.isInFluid()) {
+            this._player.activateWaterFilter();
+        }
+        else {
+            this._player.deactivateWaterFilter();
         }
     }
 

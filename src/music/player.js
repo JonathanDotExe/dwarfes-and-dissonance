@@ -1,4 +1,3 @@
-
 export class AudioLoop {
 
     constructor(buffer, preBars) {
@@ -52,17 +51,22 @@ export class MusicPlayer {
         this._bars = bars;
         this._channels = {};
         this._audioCtx = new (window.AudioContext || window.webkitAudioContext)({sampleRate: 48000});
-        //this._audioCtx.sampleRate = 48000;
         this.onLoopStart = (player) => {};
         this._nextLoopTime = 0;
         this._preDecisionBars = 2;
+        //Filter
+        this._filter = this._audioCtx.createBiquadFilter();
+        this._filter.frequency.setValueAtTime(700, this._audioCtx.currentTime);
+        this._filter.Q.setValueAtTime(1, this._audioCtx.currentTime);
+        this._filter.connect(this._audioCtx.destination);
+        this.deactivateWaterFilter();
     }
 
     addChannel(key, ch) {
         if (key in this._channels) {
             throw "Channel with key " + key + " already created.";
         }
-        ch.connect(this._audioCtx.destination);
+        ch.connect(this._filter);
         this._channels[key] = ch;
         return key;
     }
@@ -82,6 +86,14 @@ export class MusicPlayer {
             setTimeout(func, t.barDuration/2);
         };
         func();
+    }
+
+    activateWaterFilter() {
+        this._filter.type ='lowpass';
+    }
+
+    deactivateWaterFilter() {
+        this._filter.type = 'peaking';
     }
 
     get bpm() {

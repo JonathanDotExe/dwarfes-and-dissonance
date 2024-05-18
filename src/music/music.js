@@ -1,3 +1,6 @@
+import { Chest } from "../object/static/chest.js";
+import { Tree } from "../object/static/tree.js";
+import { SAND_TILE } from "../object/tile.js";
 import { MusicGenerator, MusicGeneratorSection, RandomMusicGeneratorTrack } from "./generator.js";
 import { AudioLoop, createGainChannel } from "./player.js";
 
@@ -52,7 +55,7 @@ export async function createAmbientMusicGenerator(world) {
     return new MusicGenerator(world, 108, 8,
         {
             'piano': (ctx) => createGainChannel(ctx, 1),
-            'drums': (ctx) => createGainChannel(ctx, 1),
+            'drums': (ctx) => createGainChannel(ctx, 0.6),
             'epiano': (ctx) => createGainChannel(ctx, 0.5),
             'pad': (ctx) => createGainChannel(ctx, 0.2),
             'guitar': (ctx) => createGainChannel(ctx, 0.6),
@@ -83,7 +86,12 @@ export async function createAmbientMusicGenerator(world) {
                     new RandomMusicGeneratorTrack(
                         'epiano',
                         [new AudioLoop(AUDIO_FILES.epianoCalm1, 0), new AudioLoop(AUDIO_FILES.epianoCalm2, 0)],
-                        { chance: 0.6, minEnergy: 0.3, dependsOnAll: ['pad'], excludesAll: ['pizz_strings'] }
+                        { canPlay: (world) => world.getObjectsInArea(world.player.x - 10, world.player.y - 10, 20, 20).filter(o => o instanceof Tree).length >= 10, excludesAll: ['pizz_strings'] }
+                    ),
+                    new RandomMusicGeneratorTrack(
+                        'pad',
+                        [new AudioLoop(AUDIO_FILES.padCalm1, 0), new AudioLoop(AUDIO_FILES.padCalm2, 0)],
+                        { canPlay: (world) => world.getObjectsInArea(world.player.x - 10, world.player.y - 10, 20, 20).filter(o => o instanceof Tree).length >= 10 }
                     ),
                     new RandomMusicGeneratorTrack(
                         'pad',
@@ -93,7 +101,19 @@ export async function createAmbientMusicGenerator(world) {
                     new RandomMusicGeneratorTrack(
                         'guitar',
                         [new AudioLoop(AUDIO_FILES.eguitarCalm1, 1)],
-                        { chance: 0.4, minEnergy: 0.1, excludesAll: ['epiano'] }
+                        { canPlay: (world) => {
+                            let sandCount = 0;
+                            const startX = Math.floor(world.player.x) - 3;
+                            const startY = Math.floor(world.player.y) - 3;
+                            for (let i = startX; i < startX + 7; i++) {
+                                for (let j = startY; j < startY + 7; j++) {
+                                    if (world.getTile(i, j) == SAND_TILE) {
+                                        sandCount++;
+                                    }
+                                }
+                            }
+                            return sandCount >= 20;
+                        }, excludesAll: ['epiano'] }
                     ),
                     new RandomMusicGeneratorTrack(
                         'chello',
@@ -107,8 +127,13 @@ export async function createAmbientMusicGenerator(world) {
                     ),
                     new RandomMusicGeneratorTrack(
                         'glockenspiel2',
-                        [new AudioLoop(AUDIO_FILES.glockenspiel2, 0)],
-                        { chance: 0.3, minEnergy: 0.3, excludesAll: ['epiano'] }
+                        [new AudioLoop(AUDIO_FILES.glockenspielEpic2, 0)],
+                        { canPlay: (world) => world.getObjectsInArea(world.player.x - 10, world.player.y - 10, 20, 20).filter(o => o instanceof Chest).length > 0 }
+                    ),
+                    new RandomMusicGeneratorTrack(
+                        'octave_piano2',
+                        [new AudioLoop(AUDIO_FILES.pianoOctave2, 0)],
+                        { canPlay: (world) => world.getObjectsInArea(world.player.x - 10, world.player.y - 10, 20, 20).filter(o => o instanceof Chest).length > 0 }
                     ),
                     new RandomMusicGeneratorTrack(
                         'pizz_strings',
@@ -140,7 +165,19 @@ export async function createAmbientMusicGenerator(world) {
                     new RandomMusicGeneratorTrack(
                         'guitar',
                         [new AudioLoop(AUDIO_FILES.eguitarCalm1, 1)],
-                        { chance: 0.3, minEnergy: 0.7 }
+                        { canPlay: (world) => {
+                            let sandCount = 0;
+                            const startX = Math.floor(world.player.x) - 3;
+                            const startY = Math.floor(world.player.y) - 3;
+                            for (let i = startX; i < startX + 7; i++) {
+                                for (let j = startY; j < startY + 7; j++) {
+                                    if (world.getTile(i, j) == SAND_TILE) {
+                                        sandCount++;
+                                    }
+                                }
+                            }
+                            return sandCount >= 20;
+                         } }
                     ),
                     new RandomMusicGeneratorTrack(
                         'chello',
@@ -175,7 +212,7 @@ export async function createAmbientMusicGenerator(world) {
                     ),
                     new RandomMusicGeneratorTrack(
                         'glockenspiel1',
-                        [new AudioLoop(AUDIO_FILES.glockenspiel2, 1)],
+                        [new AudioLoop(AUDIO_FILES.glockenspiel1, 1)],
                         { minEnergy: 0.85, chance: 0.5, dependsOnAll: ['violin1'] }
                     ),
                     //Melody 2
@@ -197,6 +234,6 @@ export async function createAmbientMusicGenerator(world) {
                         { chance: 0.2, minEnergy: 0.6 }
                     ),
 
-                ], 0.5, 1)
+                ], 0.5, 2)
         ]);
 }

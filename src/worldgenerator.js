@@ -76,7 +76,7 @@ export class WorldGenerator {
                 else if(val < 0.3) {
                     tile = SAND_TILE;
                 }
-                else if(val < 0.6) {
+                else if(val < 0.55) {
                     tile = GRASS_TILE;
                 }
                 world.setTile(x + i, y + j, tile);
@@ -172,13 +172,18 @@ export class WorldGenerator {
                     world.addObject(new Tree(treeX, treeY));
                 }
             }
-        }, 4, rng);
+        }, 8, rng);
         //Chests
         placeInChunks(x, y, width, height, 32, (x, y) => {
             if (world.getTile(x, y) == STONE_FLOOR_TILE) {
                 world.addObject(new Chest(x, y));
             }
         }, 4, rng);
+        placeInChunks(x, y, width, height, 32, (x, y) => {
+            if (world.getTile(x, y) != null && !world.getTile(x, y).solid && !world.getTile(x, y).fluid) {
+                world.addObject(new Chest(x, y));
+            }
+        }, 2, rng);
         //Goblins
         placeInChunks(x, y, width, height, 64, (x, y) => {
             for (let i = 0; i < 3; i++) {
