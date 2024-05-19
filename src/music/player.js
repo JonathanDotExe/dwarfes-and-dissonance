@@ -1,3 +1,5 @@
+import { SimpleReverb } from "../lib/reverb.js";
+
 export class AudioLoop {
 
     constructor(buffer, preBars) {
@@ -58,8 +60,19 @@ export class MusicPlayer {
         this._filter = this._audioCtx.createBiquadFilter();
         this._filter.frequency.setValueAtTime(700, this._audioCtx.currentTime);
         this._filter.Q.setValueAtTime(1, this._audioCtx.currentTime);
-        this._filter.connect(this._audioCtx.destination);
         this.deactivateWaterFilter();
+        this._filter.connect(this._audioCtx.destination);
+        //Reverb
+        this._reverb = new SimpleReverb(this._audioCtx, {
+            seconds: 5,
+            decay: 5
+        });
+        this._reverb.connect(this._audioCtx.destination);
+        //Mix
+        this._wetGain = this._audioCtx.createGain();
+        this._filter.connect(this._wetGain);
+        this._wetGain.connect(this._reverb.input);
+        this.deactivateCaveReverb();       
     }
 
     addChannel(key, ch) {
@@ -94,6 +107,14 @@ export class MusicPlayer {
 
     deactivateWaterFilter() {
         this._filter.type = 'peaking';
+    }
+
+    activateCaveReverb() {
+        this._wetGain.gain.value = 1.5;
+    }
+
+    deactivateCaveReverb() {
+        this._wetGain.gain.value = 0;
     }
 
     get bpm() {

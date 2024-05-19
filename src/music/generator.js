@@ -22,7 +22,7 @@ export class RandomMusicGeneratorTrack extends MusicGeneratorTrack {
     constructor(identifier, loops, options = {}) {
         super(identifier);
         this._loops = loops;
-        this._options = {chance: 1, minEnergy: 0, maxEnergy: 1, dependsOnAll: [], excludesAll: [], canPlay: (world) => true};
+        this._options = {chance: 1, minEnergy: 0, maxEnergy: 2, dependsOnAll: [], excludesAll: [], canPlay: (world) => true};
         Object.assign(this._options, options);
         console.log(this._options)
     }
@@ -83,7 +83,7 @@ export class MusicGenerator {
         //Start
         this._player.onLoopStart = (player) => {
             //Find section
-            const energyLevel = this._world.getTile(Math.floor(this._world.player.x), Math.floor(this._world.player.y)) == STONE_FLOOR_TILE ? Math.min(this._energyLevel + 0.3, 1) : this._energyLevel;
+            const energyLevel = this._world.getTile(Math.floor(this._world.player.x + this._world.player.width/2), Math.floor(this._world.player.y + this._world.player.height/2)) == STONE_FLOOR_TILE ? Math.min(this._energyLevel + 0.3, 1) : this._energyLevel;
 
             const sections = this._sections.filter(s => s.minEnergy <= energyLevel && s.maxEnergy > energyLevel);
             const section = sections[Math.floor(Math.random() * sections.length)];
@@ -135,6 +135,13 @@ export class MusicGenerator {
         }
         else {
             this._player.deactivateWaterFilter();
+        }
+        //Cave
+        if (this._world.getTile(Math.floor(this._world.player.x + this._world.player.width/2), Math.floor(this._world.player.y + this._world.player.height/2)) == STONE_FLOOR_TILE) {
+            this._player.activateCaveReverb();
+        }
+        else {
+            this._player.deactivateCaveReverb();
         }
     }
 
