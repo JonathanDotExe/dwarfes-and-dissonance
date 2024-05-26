@@ -48,9 +48,10 @@ export function createGainChannel(ctx, g) {
 
 export class MusicPlayer {
 
-    constructor(bpm, bars) { //BPM 108, bars 8
+    constructor(bpm, bars, beatsPerBar) {
         this._bpm = bpm;
         this._bars = bars;
+        this._beatsPerBar = beatsPerBar;
         this._channels = {};
         this._audioCtx = new (window.AudioContext || window.webkitAudioContext)({sampleRate: 48000});
         this.onLoopStart = (player) => {};
@@ -126,7 +127,7 @@ export class MusicPlayer {
     }
 
     get barDuration() {
-        return 60.0/(this.bpm) * 4;
+        return 60.0/(this.bpm) * this.beatsPerBar;
     }
 
     get loopDuration() {

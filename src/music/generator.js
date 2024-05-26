@@ -64,8 +64,8 @@ export class MusicGeneratorSection {
 
 export class MusicGenerator {
 
-    constructor(world, bpm, bars, channels, sections) {
-        this._player = new MusicPlayer(bpm, bars);
+    constructor(world, bpm, bars, beatsPerBar, channels, sections) {
+        this._player = new MusicPlayer(bpm, bars, beatsPerBar);
         this._channels = channels;
         this._sections = sections;
         this._world = world;
@@ -144,6 +144,5 @@ export class MusicGenerator {
             this._player.deactivateCaveReverb();
         }
     }
-
 
 }
