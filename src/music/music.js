@@ -1,7 +1,7 @@
 import { Chest } from "../object/static/chest.js";
 import { Tree } from "../object/static/tree.js";
 import { SAND_TILE } from "../object/tile.js";
-import { MusicGenerator, MusicGeneratorSection, RandomMusicGeneratorTrack } from "./generator.js";
+import { AmbientEnergySupplier, FightEnergySupplier, MusicGenerator, MusicGeneratorSection, RandomMusicGeneratorTrack } from "./generator.js";
 import { AudioLoop, createGainChannel } from "./player.js";
 
 
@@ -121,7 +121,7 @@ export async function createFightMusicGenerator(world) {
                 { minEnergy: 0.65 }
             ),
         ], 0, 2)
-    ])
+    ], new FightEnergySupplier());
 }
 
 export async function createAmbientMusicGenerator(world) {
@@ -309,5 +309,5 @@ export async function createAmbientMusicGenerator(world) {
                     ),
 
                 ], 0.5, 2)
-        ]);
+        ], new AmbientEnergySupplier());
 }
