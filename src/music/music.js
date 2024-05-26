@@ -50,8 +50,9 @@ const AUDIO_PROMISE = new Promise(async (resolve, reject) => {
     AUDIO_FILES.fight.brass1 = await loadAudio("/res/loops/fight/brass1.flac", audioCtx);
     AUDIO_FILES.fight.brass2 = await loadAudio("/res/loops/fight/brass2.flac", audioCtx);
     AUDIO_FILES.fight.brass3 = await loadAudio("/res/loops/fight/brass3.flac", audioCtx);
-    AUDIO_FILES.fight.chello_spic1 = await loadAudio("/res/loops/fight/chello_spic1.flac", audioCtx);
-    AUDIO_FILES.fight.chello_spic2 = await loadAudio("/res/loops/fight/chello_spic2.flac", audioCtx);
+    AUDIO_FILES.fight.chelloSpic1 = await loadAudio("/res/loops/fight/chello_spic1.flac", audioCtx);
+    AUDIO_FILES.fight.chelloSpic2 = await loadAudio("/res/loops/fight/chello_spic2.flac", audioCtx);
+    AUDIO_FILES.fight.chelloSpic3 = await loadAudio("/res/loops/fight/chello_spic3.flac", audioCtx);
     AUDIO_FILES.fight.doublebass1 = await loadAudio("/res/loops/fight/doublebass1.flac", audioCtx);
     AUDIO_FILES.fight.doublebass2 = await loadAudio("/res/loops/fight/doublebass2.flac", audioCtx);
     AUDIO_FILES.fight.glideSynth1 = await loadAudio("/res/loops/fight/glide_synth1.flac", audioCtx);
@@ -59,7 +60,7 @@ const AUDIO_PROMISE = new Promise(async (resolve, reject) => {
     AUDIO_FILES.fight.ride1 = await loadAudio("/res/loops/fight/ride1.flac", audioCtx);
     AUDIO_FILES.fight.snare1 = await loadAudio("/res/loops/fight/snare1.flac", audioCtx);
     AUDIO_FILES.fight.timpani1 = await loadAudio("/res/loops/fight/timpani1.flac", audioCtx);
-    AUDIO_FILES.fight.violin_spic1 = await loadAudio("/res/loops/fight/violin_spic1.flac", audioCtx);
+    AUDIO_FILES.fight.violinSpic1 = await loadAudio("/res/loops/fight/violin_spic1.flac", audioCtx);
 
     resolve(AUDIO_FILES);
 });
@@ -80,8 +81,44 @@ export async function createFightMusicGenerator(world) {
     [
         new MusicGeneratorSection([
             new RandomMusicGeneratorTrack(
-                '',
-                [new AudioLoop(AUDIO_FILES.ambient.pianoCalm1, 1), new AudioLoop(AUDIO_FILES.ambient.pianoCalm2, 1), new AudioLoop(AUDIO_FILES.ambient.pianoCalm3, 1)]
+                'chello_spic',
+                [new AudioLoop(AUDIO_FILES.fight.chelloSpic1, 0)],
+                { maxEnergy: 0.15 }
+            ),
+            new RandomMusicGeneratorTrack(
+                'chello_spic',
+                [new AudioLoop(AUDIO_FILES.fight.chelloSpic2, 0)],
+                { minEnergy: 0.15, maxEnergy: 0.3 }
+            ),
+            new RandomMusicGeneratorTrack(
+                'chello_spic',
+                [new AudioLoop(AUDIO_FILES.fight.chelloSpic3, 0)],
+                { minEnergy: 0.3 }
+            ),
+            new RandomMusicGeneratorTrack(
+                'doublebass',
+                [new AudioLoop(AUDIO_FILES.fight.doublebass1, 0)],
+                { minEnergy: 0.15, maxEnergy: 0.3 }
+            ),
+            new RandomMusicGeneratorTrack(
+                'doublebass',
+                [new AudioLoop(AUDIO_FILES.fight.doublebass2, 0)],
+                { minEnergy: 0.3 }
+            ),
+            new RandomMusicGeneratorTrack(
+                'snare',
+                [new AudioLoop(AUDIO_FILES.fight.snare1, 0)],
+                { minEnergy: 0.25 }
+            ),
+            new RandomMusicGeneratorTrack(
+                'timpani',
+                [new AudioLoop(AUDIO_FILES.fight.timpani1, 0)],
+                { minEnergy: 0.45 }
+            ),
+            new RandomMusicGeneratorTrack(
+                'violin_spic',
+                [new AudioLoop(AUDIO_FILES.fight.violinSpic1, 0)],
+                { minEnergy: 0.65 }
             ),
         ], 0, 2)
     ])

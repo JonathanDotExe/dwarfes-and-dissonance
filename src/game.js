@@ -1,7 +1,7 @@
 import { GameWorld } from "./world.js";
 import { Input } from "./input.js";
 import { TILE_SIZE } from "./object/tile.js";
-import { createAmbientMusicGenerator } from "./music/music.js";
+import { createFightMusicGenerator } from "./music/music.js";
 
 export class Game {
 
@@ -13,7 +13,7 @@ export class Game {
 
     async start() {
         //Music
-        const music = await createAmbientMusicGenerator(this._world);
+        const music = await createFightMusicGenerator(this._world);
         music.init();
         let lastTime = 0;
         const world = this._world;

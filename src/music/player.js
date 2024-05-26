@@ -126,6 +126,10 @@ export class MusicPlayer {
         return this._bars;
     }
 
+    get beatsPerBar() {
+        return this._beatsPerBar;
+    }
+
     get barDuration() {
         return 60.0/(this.bpm) * this.beatsPerBar;
     }
