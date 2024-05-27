@@ -154,7 +154,7 @@ export class Enemy extends LivingObject {
         if(diffMoveX < diffX) {
             xMove = -1;
         } else if(diffMoveX > diffX) {
-            xMove = 2;
+            xMove = 1;
         }
 
         let diffMoveY = 0;
