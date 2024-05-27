@@ -5,6 +5,12 @@ import { Piranha } from './object/enemies/piranha.js';
 import { Chest } from './object/static/chest.js';
 import { Tree } from './object/static/tree.js';
 import { GRASS_TILE, SAND_TILE, STONE_FLOOR_TILE, STONE_TILE, WATER_TILE } from './object/tile.js';
+import { Ork } from './object/enemies/ork.js';
+import { Flyingeye } from './object/enemies/flyingeye.js';
+import {Dwarf} from "./object/static/dwarf.js";
+import {Bighouse} from "./object/static/bighouse.js";
+import {Smallhouse} from "./object/static/smallhouse.js";
+
 
 const CAVE_CONNECTION_RANGE = 64;
 const CAVE_CONNECTION_COUNT = 4;
@@ -56,27 +62,23 @@ export class WorldGenerator {
                 let val = this._noise.evalXY((x + i) * this.scale, (x + j) * this.scale) * 0.55 + this._noise2.evalXY((x + i) * this.scale2, (x + j) * this.scale2) * 0.4 + this._noise3.evalXY((x + i) * this.scale3, (x + j) * this.scale3) * 0.05;
                 //Interpolate water on the sides to create island
                 var mul = 1;
-                if (i/width < 0.1) {
-                    mul = i/width * 10;
+                if (i / width < 0.1) {
+                    mul = i / width * 10;
+                } else if (i / width > 0.9) {
+                    mul = (1 - i / width) * 10;
                 }
-                else if (i/width > 0.9) {
-                    mul =  (1 - i/width) * 10;
-                }
-                if (j/height < 0.1) {
-                    mul = Math.min(j/height * 10, mul);
-                }
-                else if (j/height > 0.9) {
-                    mul =  Math.min((1 - j/height) * 10, mul);
+                if (j / height < 0.1) {
+                    mul = Math.min(j / height * 10, mul);
+                } else if (j / height > 0.9) {
+                    mul = Math.min((1 - j / height) * 10, mul);
                 }
                 val *= mul;
                 let tile = STONE_TILE;
                 if (val < 0.25) {
                     tile = WATER_TILE;
-                }
-                else if(val < 0.3) {
+                } else if (val < 0.3) {
                     tile = SAND_TILE;
-                }
-                else if(val < 0.6) {
+                } else if (val < 0.6) {
                     tile = GRASS_TILE;
                 }
                 world.setTile(x + i, y + j, tile);
@@ -137,8 +139,8 @@ export class WorldGenerator {
                     const dstStart = Math.sqrt(Math.pow(startX - i, 2) + Math.pow(startY - j, 2));
                     const dstEnd = Math.sqrt(Math.pow(endX - i, 2) + Math.pow(endY - j, 2));
                     const totalDst = (dstStart + dstEnd);
-                    const weight = totalDst == 0 ? 1 : (start.weight * dstStart + end.weight * dstEnd)/totalDst;
-                    let factor = Math.min(dst/MAX_CAVE_WIDTH, 1) * 0.5 + 0.5;
+                    const weight = totalDst == 0 ? 1 : (start.weight * dstStart + end.weight * dstEnd) / totalDst;
+                    let factor = Math.min(dst / MAX_CAVE_WIDTH, 1) * 0.5 + 0.5;
                     factor += (1 - factor) * (1 - weight) * 0.5;
                     if (i in caveMap && j in caveMap[i]) {
                         caveMap[i][j] *= factor;
@@ -189,7 +191,7 @@ export class WorldGenerator {
                     world.addObject(goblin);
                 }
             }
-        }, 2, rng);
+        }, 3, rng);
         //Piranhias
         placeInChunks(x, y, width, height, 64, (x, y) => {
             const piranhaX = x + Math.floor(rng() * 4);
@@ -199,6 +201,47 @@ export class WorldGenerator {
                 world.addObject(piranha);
             }
         }, 2, rng);
-    }
+        //Orks
+        placeInChunks(x, y, width, height, 64, (x, y) => {
+            const orkX = x + Math.floor(rng() * 4);
+            const orkY = y + Math.floor(rng() * 4);
+            const ork = new Ork(orkX, orkY);
+            if (!ork.doesCollide(world.getTile(orkX, orkY))) {
+                world.addObject(ork);
+            }
+        }, 3, rng);
 
+        //Flyingeye
+        placeInChunks(x, y, width, height, 64, (x, y) => {
+            const flyingeyeX = x + Math.floor(rng() * 4);
+            const flyingeyeY = y + Math.floor(rng() * 4);
+            const flyingeye = new Flyingeye(flyingeyeX, flyingeyeY);
+            if (!flyingeye.doesCollide(world.getTile(flyingeyeX, flyingeyeY))) {
+                world.addObject(flyingeye);
+            }
+        }, 1, rng);
+
+        //Villages
+        placeInChunks(x, y, width, height, 64, (x, y) => {
+            for (let i = 0; i < 3; i++) {
+                const dwarfX = x + Math.floor(rng() * 4);
+                const dwarfY = y + Math.floor(rng() * 4);
+                const dwarf = new Dwarf(dwarfX, dwarfY);
+                const bigHouse = new Bighouse(dwarfX, dwarfY - 5);
+                const smallHouse = new Smallhouse(dwarfX + 5, dwarfY - 2);
+                if (!dwarf.doesCollide(world.getTile(dwarfX, dwarfY))) {
+                    world.addObject(dwarf);
+                }
+                if(i === 1 && !bigHouse.doesCollide(world.getTile(dwarfX, dwarfY - 5))){
+                    world.addObject(bigHouse);
+                }
+                if(i === 2 && !smallHouse.doesCollide(world.getTile(dwarfX + 5, dwarfY - 2))){
+                    world.addObject(smallHouse);
+                }
+            }
+        }, 3, rng);
+
+
+
+    }
 }

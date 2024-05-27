@@ -1,5 +1,6 @@
 import { LivingObject } from "./livingobject.js";
 import { TILE_SIZE } from "./tile.js";
+import {Dwarf} from "./static/dwarf.js";
 
 const playerFront = new Image();
 playerFront.src = "/res/objects/player_front_knife.png";
@@ -112,7 +113,18 @@ export class Player extends LivingObject {
         creatures.forEach((obj) => {
             if(obj instanceof LivingObject && obj !== this) {
                 obj.takeDamage(10);
+            } else if(obj instanceof Dwarf && obj !== this){
+                obj.healPlayer(this);
             }
         })
     }
+
+    heal(amount) {
+        if(this._health + amount > this._maxHealth){
+            this._health = this._maxHealth;
+        } else{
+            this._health += amount;
+        }
+    }
+
 }

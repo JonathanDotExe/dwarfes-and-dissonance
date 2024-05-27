@@ -7,6 +7,13 @@ import {Piranha} from "./object/enemies/piranha.js";
 import { createAmbientMusicGenerator } from "./music/music.js";
 import { WorldGenerator } from "./worldgenerator.js";
 import {LivingObject} from "./object/livingobject.js";
+import {Flyingeye} from "./object/enemies/flyingeye.js";
+import {Ork} from "./object/enemies/ork.js";
+import {Dwarf} from "./object/static/dwarf.js";
+import {Bighouse} from "./object/static/bighouse.js";
+import {Smallhouse} from "./object/static/smallhouse.js";
+
+
 export const WORLD_SIZE = 256;
 
 
@@ -50,11 +57,17 @@ export class GameWorld {
         gen.generate(this, 0, 0, this.worldWidth, this.worldHeight);
 
         //Add objects
+        this.addObject(new Ork(20, 15));
+        this.addObject(new Flyingeye(30,20));
         this.addObject(new Goblin(10, 7));
         this.addObject(new Tree(10,12));
         this.addObject(new Chest(15,8));
         this.addObject(new Piranha(1,1));
+        this.addObject(new Dwarf(5, 5));
+        this.addObject(new Bighouse(20, 20));
+        this.addObject(new Smallhouse(10, 10));
         this.addObject(this._player);
+
 
         //Add player
         createAmbientMusicGenerator(this).then(m => {
