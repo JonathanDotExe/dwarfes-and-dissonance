@@ -118,8 +118,8 @@ export class FightEnergySupplier extends EnergySupplier {
 
 export class MusicGenerator {
 
-    constructor(world, bpm, bars, beatsPerBar, channels, sections, energySupplier) {
-        this._player = new MusicPlayer(bpm, bars, beatsPerBar);
+    constructor(world, bpm, bars, beatsPerBar, channels, sections, energySupplier, ctx) {
+        this._player = new MusicPlayer(bpm, bars, beatsPerBar, ctx);
         this._channels = channels;
         this._sections = sections;
         this._world = world;

@@ -65,7 +65,7 @@ const AUDIO_PROMISE = new Promise(async (resolve, reject) => {
     resolve(AUDIO_FILES);
 });
 
-export async function createFightMusicGenerator(world) {
+export async function createFightMusicGenerator(world, ctx) {
     await AUDIO_PROMISE;
     return new MusicGenerator(world, 145, 4, 3, {
         'chello_spic': (ctx) => createGainChannel(ctx, 1),
@@ -121,10 +121,10 @@ export async function createFightMusicGenerator(world) {
                 { minEnergy: 0.75 }
             ),
         ], 0, 2)
-    ], new FightEnergySupplier());
+    ], new FightEnergySupplier(), ctx);
 }
 
-export async function createAmbientMusicGenerator(world) {
+export async function createAmbientMusicGenerator(world, ctx) {
     await AUDIO_PROMISE;
     return new MusicGenerator(world, 108, 8, 4,
         {
@@ -137,9 +137,9 @@ export async function createAmbientMusicGenerator(world) {
             'chello': (ctx) => createGainChannel(ctx, 0.3),
             'violin1': (ctx) => createGainChannel(ctx, 1),
             'violin2': (ctx) => createGainChannel(ctx, 1),
-            'glockenspiel1': (ctx) => createGainChannel(ctx, 0.4),
+            'glockenspiel1': (ctx) => createGainChannel(ctx, 0.3),
             'octave_piano1': (ctx) => createGainChannel(ctx, 0.3),
-            'glockenspiel2': (ctx) => createGainChannel(ctx, 0.4),
+            'glockenspiel2': (ctx) => createGainChannel(ctx, 0.2),
             'octave_piano2': (ctx) => createGainChannel(ctx, 0.3),
             'brass': (ctx) => createGainChannel(ctx, 1),
             'pizz_strings': (ctx) => createGainChannel(ctx, 1),
@@ -202,12 +202,12 @@ export async function createAmbientMusicGenerator(world) {
                     new RandomMusicGeneratorTrack(
                         'glockenspiel2',
                         [new AudioLoop(AUDIO_FILES.ambient.glockenspielEpic2, 0)],
-                        { canPlay: (world) => world.getObjectsInArea(world.player.x - 10, world.player.y - 10, 20, 20).filter(o => o instanceof Chest).length > 0 }
+                        { canPlay: (world) => world.getObjectsInArea(world.player.x - 6, world.player.y - 6, 12, 12).filter(o => o instanceof Chest).length > 0 }
                     ),
                     new RandomMusicGeneratorTrack(
                         'octave_piano2',
                         [new AudioLoop(AUDIO_FILES.ambient.pianoOctave2, 0)],
-                        { canPlay: (world) => world.getObjectsInArea(world.player.x - 10, world.player.y - 10, 20, 20).filter(o => o instanceof Chest).length > 0 }
+                        { canPlay: (world) => world.getObjectsInArea(world.player.x - 6, world.player.y - 6, 12, 12).filter(o => o instanceof Chest).length > 0 }
                     ),
                     new RandomMusicGeneratorTrack(
                         'pizz_strings',
@@ -309,5 +309,5 @@ export async function createAmbientMusicGenerator(world) {
                     ),
 
                 ], 0.5, 2)
-        ], new AmbientEnergySupplier());
+        ], new AmbientEnergySupplier(), ctx);
 }

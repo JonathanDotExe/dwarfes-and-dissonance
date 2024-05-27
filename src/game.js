@@ -10,12 +10,12 @@ export class Game {
         this._canvas = canvas;
         this._input = new Input();
         this._world = new GameWorld();
-        
     }
 
     async start() {
         //Music
-        this._music = await createAmbientMusicGenerator(this._world);
+        this._audioCtx = new (window.AudioContext || window.webkitAudioContext)({sampleRate: 48000});
+        this._music = await createAmbientMusicGenerator(this._world, this._audioCtx);
         this._fightMusic = null;
         this._music.init();
         let lastTime = 0;
@@ -45,7 +45,7 @@ export class Game {
             else if (!t._fightMusic && world.getObjectsInArea(world.player.x - 8, world.player.y - 8, 16 + world.player.width, 16 + world.player.height).filter(e => e instanceof Enemy).length > 0) {
                 //Start fight
                 t._music.fadeOut();
-                t._fightMusic = await createFightMusicGenerator(world);
+                t._fightMusic = await createFightMusicGenerator(world, t._audioCtx);
                 t._fightMusic.init();
             }
 

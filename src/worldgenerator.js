@@ -179,11 +179,6 @@ export class WorldGenerator {
                 world.addObject(new Chest(x, y));
             }
         }, 4, rng);
-        placeInChunks(x, y, width, height, 32, (x, y) => {
-            if (world.getTile(x, y) != null && !world.getTile(x, y).solid && !world.getTile(x, y).fluid) {
-                world.addObject(new Chest(x, y));
-            }
-        }, 2, rng);
         //Goblins
         placeInChunks(x, y, width, height, 64, (x, y) => {
             const amount = 3 + Math.floor(rng() * 3)

@@ -48,12 +48,12 @@ export function createGainChannel(ctx, g) {
 
 export class MusicPlayer {
 
-    constructor(bpm, bars, beatsPerBar) {
+    constructor(bpm, bars, beatsPerBar, ctx) {
         this._bpm = bpm;
         this._bars = bars;
         this._beatsPerBar = beatsPerBar;
         this._channels = {};
-        this._audioCtx = new (window.AudioContext || window.webkitAudioContext)({sampleRate: 48000});
+        this._audioCtx =  ctx;
         this.onLoopStart = (player) => {};
         this._nextLoopTime = 0;
         this._preDecisionBars = 2;
@@ -127,11 +127,11 @@ export class MusicPlayer {
 
 
     fadeIn() {
-        this._masterGain.gain.linearRampToValueAtTime(1, this._audioCtx.currentTime + 2);
+        this._masterGain.gain.exponentialRampToValueAtTime(1, this._audioCtx.currentTime + 2);
     }
 
     fadeOut() {
-        this._masterGain.gain.linearRampToValueAtTime(0, this._audioCtx.currentTime + 2);
+        this._masterGain.gain.exponentialRampToValueAtTime(Number.EPSILON, this._audioCtx.currentTime + 2);
     }
 
     stop() {
