@@ -186,7 +186,7 @@ export class WorldGenerator {
         }, 2, rng);
         //Goblins
         placeInChunks(x, y, width, height, 64, (x, y) => {
-            for (let i = 0; i < 3; i++) {
+            for (let i = 0; i < 3 + rng() * 5; i++) {
                 const goblinX = x + Math.floor(rng() * 4);
                 const goblinY = y + Math.floor(rng() * 4);
                 const goblin = new Goblin(goblinX, goblinY);
@@ -194,7 +194,7 @@ export class WorldGenerator {
                     world.addObject(goblin);
                 }
             }
-        }, 2, rng);
+        }, 4, rng);
         //Piranhias
         placeInChunks(x, y, width, height, 64, (x, y) => {
             const piranhaX = x + Math.floor(rng() * 4);
@@ -203,7 +203,7 @@ export class WorldGenerator {
             if (!piranha.doesCollide(world.getTile(piranhaX, piranhaY))) {
                 world.addObject(piranha);
             }
-        }, 2, rng);
+        }, 4, rng);
     }
 
 }

@@ -57,23 +57,28 @@ export class MusicPlayer {
         this.onLoopStart = (player) => {};
         this._nextLoopTime = 0;
         this._preDecisionBars = 2;
+        //Gain
+        this._masterGain = this._audioCtx.createGain();
+        this._masterGain.connect(this._audioCtx.destination);
         //Filter
         this._filter = this._audioCtx.createBiquadFilter();
         this._filter.frequency.setValueAtTime(700, this._audioCtx.currentTime);
         this._filter.Q.setValueAtTime(1, this._audioCtx.currentTime);
         this.deactivateWaterFilter();
-        this._filter.connect(this._audioCtx.destination);
+        this._filter.connect(this._masterGain);
         //Reverb
         this._reverb = new SimpleReverb(this._audioCtx, {
             seconds: 5,
             decay: 5
         });
-        this._reverb.connect(this._audioCtx.destination);
+        this._reverb.connect(this._masterGain);
         //Mix
         this._wetGain = this._audioCtx.createGain();
         this._filter.connect(this._wetGain);
         this._wetGain.connect(this._reverb.input);
-        this.deactivateCaveReverb();       
+        this.deactivateCaveReverb();
+        this._running = true;
+        this._masterGain.gain.value = 1;
     }
 
     addChannel(key, ch) {
@@ -93,11 +98,13 @@ export class MusicPlayer {
         this._nextLoopTime = this._audioCtx.currentTime + this.barDuration * 2; //Start in two bars
         const t = this;
         const func = () => {  //Loop every half bar and check if it's time to generate the next audio
-            if (t._nextLoopTime - t._audioCtx.currentTime <= t._preDecisionBars * t.barDuration) {
-                t.onLoopStart(t);
-                t._nextLoopTime += t.loopDuration;
+            if (this._running) {
+                if (t._nextLoopTime - t._audioCtx.currentTime <= t._preDecisionBars * t.barDuration) {
+                    t.onLoopStart(t);
+                    t._nextLoopTime += t.loopDuration;
+                }
+                setTimeout(func, t.barDuration/2);
             }
-            setTimeout(func, t.barDuration/2);
         };
         func();
     }
@@ -116,6 +123,20 @@ export class MusicPlayer {
 
     deactivateCaveReverb() {
         this._wetGain.gain.value = 0;
+    }
+
+
+    fadeIn() {
+        this._masterGain.gain.linearRampToValueAtTime(1, this._audioCtx.currentTime + 2);
+    }
+
+    fadeOut() {
+        this._masterGain.gain.linearRampToValueAtTime(0, this._audioCtx.currentTime + 2);
+    }
+
+    stop() {
+        this._running = false;
+        this.fadeOut();
     }
 
     get bpm() {

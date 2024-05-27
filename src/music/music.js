@@ -83,42 +83,42 @@ export async function createFightMusicGenerator(world) {
             new RandomMusicGeneratorTrack(
                 'chello_spic',
                 [new AudioLoop(AUDIO_FILES.fight.chelloSpic1, 0)],
-                { maxEnergy: 0.15 }
+                { maxEnergy: 0.2 }
             ),
             new RandomMusicGeneratorTrack(
                 'chello_spic',
                 [new AudioLoop(AUDIO_FILES.fight.chelloSpic2, 0)],
-                { minEnergy: 0.15, maxEnergy: 0.3 }
+                { minEnergy: 0.2, maxEnergy: 0.4 }
             ),
             new RandomMusicGeneratorTrack(
                 'chello_spic',
                 [new AudioLoop(AUDIO_FILES.fight.chelloSpic3, 0)],
-                { minEnergy: 0.3 }
+                { minEnergy: 0.4 }
             ),
             new RandomMusicGeneratorTrack(
                 'doublebass',
                 [new AudioLoop(AUDIO_FILES.fight.doublebass1, 0)],
-                { minEnergy: 0.15, maxEnergy: 0.3 }
+                { minEnergy: 0.2, maxEnergy: 0.4 }
             ),
             new RandomMusicGeneratorTrack(
                 'doublebass',
                 [new AudioLoop(AUDIO_FILES.fight.doublebass2, 0)],
-                { minEnergy: 0.3 }
+                { minEnergy: 0.2 }
             ),
             new RandomMusicGeneratorTrack(
                 'snare',
                 [new AudioLoop(AUDIO_FILES.fight.snare1, 0)],
-                { minEnergy: 0.25 }
+                { minEnergy: 0.35 }
             ),
             new RandomMusicGeneratorTrack(
                 'timpani',
                 [new AudioLoop(AUDIO_FILES.fight.timpani1, 0)],
-                { minEnergy: 0.45 }
+                { minEnergy: 0.55 }
             ),
             new RandomMusicGeneratorTrack(
                 'violin_spic',
                 [new AudioLoop(AUDIO_FILES.fight.violinSpic1, 0)],
-                { minEnergy: 0.65 }
+                { minEnergy: 0.75 }
             ),
         ], 0, 2)
     ], new FightEnergySupplier());

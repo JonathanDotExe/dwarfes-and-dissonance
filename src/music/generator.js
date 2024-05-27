@@ -78,6 +78,7 @@ export class EnergySupplier {
 export class AmbientEnergySupplier extends EnergySupplier {
 
     constructor() {
+        super();
         this._energyLevel = 0;
         this._time = 1;
         this._energyChange = 0;
@@ -181,6 +182,18 @@ export class MusicGenerator {
         else {
             this._player.deactivateCaveReverb();
         }
+    }
+
+    fadeIn() {
+        this._player.fadeIn();
+    }
+
+    fadeOut() {
+        this._player.fadeOut();
+    }
+
+    stop() {
+        this._player.stop();
     }
 
 }
