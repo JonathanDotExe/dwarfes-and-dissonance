@@ -1,6 +1,5 @@
 import { LivingObject } from "./livingobject.js";
 import { TILE_SIZE } from "./tile.js";
-import {Dwarf} from "./static/dwarf.js";
 
 const playerFront = new Image();
 playerFront.src = "/res/objects/player_front_knife.png";
@@ -21,6 +20,7 @@ export class Player extends LivingObject {
         super(x, y, 100);
         this.sightRange = 6;
         this.lastTime = 0;
+        this.direction = {x: 0, y: 1};
     }
 
     init(world) {
@@ -64,31 +64,27 @@ export class Player extends LivingObject {
     }
 
     draw(camX, camY, ctx) {
-        if(this.direction===undefined){
-            ctx.drawImage(playerFront, (this.x - camX) * TILE_SIZE, (this.y - camY) * TILE_SIZE);
-        }else{
-            const x = this.direction.x;
-            const y = this.direction.y;
+        const x = this.direction.x;
+        const y = this.direction.y;
 
-            if(x < 0) {
-                ctx.drawImage(playerLeft, (this.x - camX) * TILE_SIZE, (this.y - camY) * TILE_SIZE);
-                super.draw(camX, camY, ctx);
-                return;
-            }
-            if(x > 0) {
-                ctx.drawImage(playerRight, (this.x - camX) * TILE_SIZE, (this.y - camY) * TILE_SIZE);
-                super.draw(camX, camY, ctx);
-                return;
-            }
-            if(y < 0) {
-                ctx.drawImage(playerBack, (this.x - camX) * TILE_SIZE, (this.y - camY) * TILE_SIZE);
-                super.draw(camX, camY, ctx);
-                return;
-            }
-            if(y > 0) {
-                ctx.drawImage(playerFront, (this.x - camX) * TILE_SIZE, (this.y - camY) * TILE_SIZE);
-                super.draw(camX, camY, ctx);
-            }
+        if(x < 0) {
+            ctx.drawImage(playerLeft, (this.x - camX) * TILE_SIZE, (this.y - camY) * TILE_SIZE);
+            super.draw(camX, camY, ctx);
+            return;
+        }
+        if(x > 0) {
+            ctx.drawImage(playerRight, (this.x - camX) * TILE_SIZE, (this.y - camY) * TILE_SIZE);
+            super.draw(camX, camY, ctx);
+            return;
+        }
+        if(y < 0) {
+            ctx.drawImage(playerBack, (this.x - camX) * TILE_SIZE, (this.y - camY) * TILE_SIZE);
+            super.draw(camX, camY, ctx);
+            return;
+        }
+        if(y > 0) {
+            ctx.drawImage(playerFront, (this.x - camX) * TILE_SIZE, (this.y - camY) * TILE_SIZE);
+            super.draw(camX, camY, ctx);
         }
     }
 
@@ -113,6 +109,7 @@ export class Player extends LivingObject {
         creatures.forEach((obj) => {
             if(obj instanceof LivingObject && obj !== this) {
                 obj.takeDamage(10);
+                obj.applyForce(this.direction.x * 8, this.direction.y * 8);
             } else if(obj instanceof Dwarf && obj !== this){
                 obj.healPlayer(this);
             }

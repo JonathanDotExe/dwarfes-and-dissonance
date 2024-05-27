@@ -62,23 +62,27 @@ export class WorldGenerator {
                 let val = this._noise.evalXY((x + i) * this.scale, (x + j) * this.scale) * 0.55 + this._noise2.evalXY((x + i) * this.scale2, (x + j) * this.scale2) * 0.4 + this._noise3.evalXY((x + i) * this.scale3, (x + j) * this.scale3) * 0.05;
                 //Interpolate water on the sides to create island
                 var mul = 1;
-                if (i / width < 0.1) {
-                    mul = i / width * 10;
-                } else if (i / width > 0.9) {
-                    mul = (1 - i / width) * 10;
+                if (i/width < 0.1) {
+                    mul = i/width * 10;
                 }
-                if (j / height < 0.1) {
-                    mul = Math.min(j / height * 10, mul);
-                } else if (j / height > 0.9) {
-                    mul = Math.min((1 - j / height) * 10, mul);
+                else if (i/width > 0.9) {
+                    mul =  (1 - i/width) * 10;
+                }
+                if (j/height < 0.1) {
+                    mul = Math.min(j/height * 10, mul);
+                }
+                else if (j/height > 0.9) {
+                    mul =  Math.min((1 - j/height) * 10, mul);
                 }
                 val *= mul;
                 let tile = STONE_TILE;
                 if (val < 0.25) {
                     tile = WATER_TILE;
-                } else if (val < 0.3) {
+                }
+                else if(val < 0.3) {
                     tile = SAND_TILE;
-                } else if (val < 0.6) {
+                }
+                else if(val < 0.6) {
                     tile = GRASS_TILE;
                 }
                 world.setTile(x + i, y + j, tile);
@@ -139,8 +143,8 @@ export class WorldGenerator {
                     const dstStart = Math.sqrt(Math.pow(startX - i, 2) + Math.pow(startY - j, 2));
                     const dstEnd = Math.sqrt(Math.pow(endX - i, 2) + Math.pow(endY - j, 2));
                     const totalDst = (dstStart + dstEnd);
-                    const weight = totalDst == 0 ? 1 : (start.weight * dstStart + end.weight * dstEnd) / totalDst;
-                    let factor = Math.min(dst / MAX_CAVE_WIDTH, 1) * 0.5 + 0.5;
+                    const weight = totalDst == 0 ? 1 : (start.weight * dstStart + end.weight * dstEnd)/totalDst;
+                    let factor = Math.min(dst/MAX_CAVE_WIDTH, 1) * 0.5 + 0.5;
                     factor += (1 - factor) * (1 - weight) * 0.5;
                     if (i in caveMap && j in caveMap[i]) {
                         caveMap[i][j] *= factor;
@@ -182,8 +186,9 @@ export class WorldGenerator {
             }
         }, 4, rng);
         //Goblins
-        placeInChunks(x, y, width, height, 64, (x, y) => {
-            for (let i = 0; i < 3; i++) {
+        placeInChunks(x, y, width, height, 32, (x, y) => {
+            const amount = 3 + Math.floor(rng() * 3)
+            for (let i = 0; i < amount; i++) {
                 const goblinX = x + Math.floor(rng() * 4);
                 const goblinY = y + Math.floor(rng() * 4);
                 const goblin = new Goblin(goblinX, goblinY);
@@ -191,7 +196,7 @@ export class WorldGenerator {
                     world.addObject(goblin);
                 }
             }
-        }, 3, rng);
+        }, 4, rng);
         //Piranhias
         placeInChunks(x, y, width, height, 64, (x, y) => {
             const piranhaX = x + Math.floor(rng() * 4);
