@@ -186,7 +186,8 @@ export class WorldGenerator {
         }, 2, rng);
         //Goblins
         placeInChunks(x, y, width, height, 64, (x, y) => {
-            for (let i = 0; i < 3 + rng() * 5; i++) {
+            const amount = 3 + Math.floor(rng() * 3)
+            for (let i = 0; i < amount; i++) {
                 const goblinX = x + Math.floor(rng() * 4);
                 const goblinY = y + Math.floor(rng() * 4);
                 const goblin = new Goblin(goblinX, goblinY);

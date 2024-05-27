@@ -10,6 +10,12 @@ export class Tree extends LivingObject{
         super(x,y, 30);
     }
 
+    update(deltaTime, env) {
+        this.xMotion = 0;
+        this.yMotion = 0;
+        super.update(deltaTime, env);
+    }
+
     draw(camX, camY, ctx) {
         ctx.drawImage(treeImage, (this.x - camX) * TILE_SIZE, (this.y - camY) * TILE_SIZE);
         super.draw(camX, camY, ctx);
@@ -18,4 +24,5 @@ export class Tree extends LivingObject{
     get solid() {
         return true;
     }
+
 }

@@ -15,11 +15,11 @@ playerRight.src = "/res/objects/player_right_knife.png";
 
 export class Player extends LivingObject {
 
-    direction;
     constructor(x, y) {
         super(x, y, 100);
         this.sightRange = 6;
         this.lastTime = 0;
+        this.direction = {x: 0, y: 1};
     }
 
     init(world) {
@@ -63,31 +63,27 @@ export class Player extends LivingObject {
     }
 
     draw(camX, camY, ctx) {
-        if(this.direction===undefined){
-            ctx.drawImage(playerFront, (this.x - camX) * TILE_SIZE, (this.y - camY) * TILE_SIZE);
-        }else{
-            const x = this.direction.x;
-            const y = this.direction.y;
+        const x = this.direction.x;
+        const y = this.direction.y;
 
-            if(x < 0) {
-                ctx.drawImage(playerLeft, (this.x - camX) * TILE_SIZE, (this.y - camY) * TILE_SIZE);
-                super.draw(camX, camY, ctx);
-                return;
-            }
-            if(x > 0) {
-                ctx.drawImage(playerRight, (this.x - camX) * TILE_SIZE, (this.y - camY) * TILE_SIZE);
-                super.draw(camX, camY, ctx);
-                return;
-            }
-            if(y < 0) {
-                ctx.drawImage(playerBack, (this.x - camX) * TILE_SIZE, (this.y - camY) * TILE_SIZE);
-                super.draw(camX, camY, ctx);
-                return;
-            }
-            if(y > 0) {
-                ctx.drawImage(playerFront, (this.x - camX) * TILE_SIZE, (this.y - camY) * TILE_SIZE);
-                super.draw(camX, camY, ctx);
-            }
+        if(x < 0) {
+            ctx.drawImage(playerLeft, (this.x - camX) * TILE_SIZE, (this.y - camY) * TILE_SIZE);
+            super.draw(camX, camY, ctx);
+            return;
+        }
+        if(x > 0) {
+            ctx.drawImage(playerRight, (this.x - camX) * TILE_SIZE, (this.y - camY) * TILE_SIZE);
+            super.draw(camX, camY, ctx);
+            return;
+        }
+        if(y < 0) {
+            ctx.drawImage(playerBack, (this.x - camX) * TILE_SIZE, (this.y - camY) * TILE_SIZE);
+            super.draw(camX, camY, ctx);
+            return;
+        }
+        if(y > 0) {
+            ctx.drawImage(playerFront, (this.x - camX) * TILE_SIZE, (this.y - camY) * TILE_SIZE);
+            super.draw(camX, camY, ctx);
         }
     }
 
@@ -101,9 +97,6 @@ export class Player extends LivingObject {
         // For now only 1 weapon -> 1 Tile range
         // Can be updated and stats gotten from a possible future weapon or inventory class (same for dmg)
         //const motion = env.input.movementAxis;
-        if(this.direction === undefined) {
-            return;
-        }
 
         const attackPosX = this.x + this.width/2 + (this.direction.x) - 0.5;
         const attackPosY = this.y + this.height/2 + (this.direction.y) - 0.5;
@@ -112,6 +105,7 @@ export class Player extends LivingObject {
         creatures.forEach((obj) => {
             if(obj instanceof LivingObject && obj !== this) {
                 obj.takeDamage(10);
+                obj.applyForce(this.direction.x * 8, this.direction.y * 8);
             }
         })
     }
