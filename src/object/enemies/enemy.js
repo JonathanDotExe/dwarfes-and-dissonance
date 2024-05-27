@@ -130,80 +130,10 @@ export class Enemy extends LivingObject {
     }
 
     moveAttack(target) {
-        /*
-        // chase Player
-        // Move towards the closest of 8 directions to player
-        // Instead of using the direct position of the player, Im will include a certain threshold,
-        // so that the enemy will walk straight towards the player instead of only using diagonales.
-        const walkStraightThreshold = 5;
-        const playerX = target.x;
-        const playerY = target.y;
-
-        let xMove = 0;
-        let yMove = 0;
-
-        let diffMoveX = 0;
-        let diffX = this.x - playerX;
-        if(diffX < 0) {
-            diffX = diffX * (-1) - walkStraightThreshold;
-        } else {
-            diffX += walkStraightThreshold;
-        }
-        // Set player one width to the left
-        // Make value positive
-        // If Different smaller than difference without moving -> enemy is to the left
-        // If Different bigger than difference without moving -> enemy is to the right
-        diffMoveX = (this.x - 1) - playerX;
-        if(diffMoveX < 0) {
-            diffMoveX = diffMoveX * (-1);
-        }
-        if(diffMoveX - diffX <= walkStraightThreshold) {
-            xMove = -1;
-        } else if(diffMoveX + diffX >= walkStraightThreshold) {
-            xMove = 1;
-        }
-
-        let diffMoveY = 0;
-        let diffY = this.y - playerY;
-        if(diffY < 0) {
-            diffY = diffY * (-1);
-        }
-        // Same for height Differenz
-        // If Different smaller than difference without moving -> enemy is higher
-        // If Different bigger than difference without moving -> enemy is lower
-        diffMoveY = (this.y - 1) - playerY;
-        if(diffMoveY < 0) {
-            diffMoveY = diffMoveY * (-1);
-        }
-        if(diffMoveY < diffY) {
-            yMove = -1;
-        } else if(diffMoveY > diffY) {
-            yMove = 1;
-        }
-
-        // if both are set, movement is gonna be diaganolly so next to recalculated
-        if(xMove !== 0.0 && yMove !== 0.0) {
-            let diagonal = 1/Math.sqrt(2);
-            if (xMove > 0) {
-                xMove = diagonal;
-            } else {
-                xMove = -(diagonal);
-            }
-
-            if (yMove > 0) {
-                yMove = diagonal;
-            } else {
-                yMove = -(diagonal);
-            }
-        }
-        return { x: xMove, y: yMove };
-        */
-
-        // Dont know how to implement grace, so Im simply gonna implement if else thing
         let dir;
         let diagonal = 1/Math.sqrt(2);
 
-        const graceArea = 100;
+        const graceArea = 2;
 
         const playerX = target.x;
         const playerY = target.y;
@@ -230,13 +160,10 @@ export class Enemy extends LivingObject {
                     dir = {x: 0, y: 1};
                 }
             }
-        } else if(this.y >= playerYUp && this.y <= playerYDown) {
+        } else {
+            // Outside of X Grace Area
             // Inside Y Grace Area
-            // Inside X Grace Area
-            if(this.x >= playerXLeft && this.x <= playerXRight) {
-                dir = this.shortestDiag(diagonal, playerX, playerY);
-            } else {
-                // Outside of X Grace Area
+            if(this.y >= playerYUp && this.y <= playerYDown) {
                 // Move left or right
                 if(this.x > playerX) {
                     // Enemy right from player
@@ -245,14 +172,12 @@ export class Enemy extends LivingObject {
                     // Enemy left from player
                     dir = {x: 1, y: 0};
                 }
+            } else {
+                // Outside of all grace Areas
+                dir = this.shortestDiag(diagonal, playerX, playerY);
             }
-        } else if((this.x < playerXLeft || this.x > playerXRight) && (this.y < playerYUp || this.y > playerYDown)) {
-            // Outside of all grace Areas
-            dir = this.shortestDiag(diagonal, playerX, playerY);
-        } else {
-            // Position of Player and Enemy are the same or some unforseen case happened.
-            return this.moveRand();
         }
+
         return dir;
     }
 
