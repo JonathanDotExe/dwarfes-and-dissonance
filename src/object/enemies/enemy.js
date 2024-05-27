@@ -19,13 +19,13 @@ export class Enemy extends LivingObject {
         return this._speed;
     }
 
-    update(deltaTime, env) {
+    /*update(deltaTime, env) {
         super.update(deltaTime, env);
         //TODO implement inRange method
 
         // if(inRange(objectPosition))
         this.moveRand(deltaTime);
-    }
+    }*/
 
     moveRand(deltaTime){
         let xMotion = 0;
