@@ -180,8 +180,9 @@ export class WorldGenerator {
             }
         }, 4, rng);
         //Goblins
-        placeInChunks(x, y, width, height, 64, (x, y) => {
-            for (let i = 0; i < 3; i++) {
+        placeInChunks(x, y, width, height, 32, (x, y) => {
+            const amount = 3 + Math.floor(rng() * 3)
+            for (let i = 0; i < amount; i++) {
                 const goblinX = x + Math.floor(rng() * 4);
                 const goblinY = y + Math.floor(rng() * 4);
                 const goblin = new Goblin(goblinX, goblinY);
@@ -189,7 +190,7 @@ export class WorldGenerator {
                     world.addObject(goblin);
                 }
             }
-        }, 2, rng);
+        }, 4, rng);
         //Piranhias
         placeInChunks(x, y, width, height, 64, (x, y) => {
             const piranhaX = x + Math.floor(rng() * 4);

@@ -54,7 +54,6 @@ export class Enemy extends LivingObject {
 
     update(deltaTime, env) {
         super.update(deltaTime, env);
-        console.log("Update")
         //Random count
         while (this.count >= 1) {
             this.count -= 1;
@@ -191,7 +190,6 @@ export class Enemy extends LivingObject {
                 yMove = -(diagonal);
             }
         }
-        console.log(xMove + "/" +  yMove)
         return { x: xMove, y: yMove };
     }
     
