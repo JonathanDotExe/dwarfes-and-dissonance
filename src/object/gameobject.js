@@ -15,6 +15,12 @@ export class GameObject {
         this._y = y;
         this._world = null;
         this._state = GameObjectState.New;
+        this._xMotion = 0;
+        this._yMotion = 0;
+    }
+
+    get friction() {
+        return 2;
     }
 
     /**
@@ -36,7 +42,11 @@ export class GameObject {
     }
 
     update(deltaTime, env) {
-
+        //Movement
+        this.move(this.xMotion, this.yMotion, delta);
+        //Friction
+        this.xMotion -= Math.sign(this.xMotion) * Math.min(this.friction * delta, Math.abs(this.xMotion));
+        this.yMotion -= Math.sign(this.yMotion) * Math.min(this.friction * delta, Math.abs(this.yMotion));
     }
 
     draw(camX, camY, ctx) {
@@ -86,12 +96,32 @@ export class GameObject {
         this._y = val;
     }
 
+    get xMotion() {
+        return this._xMotion;
+    }
+
+    get yMotion() {
+        return this._yMotion;
+    }
+
+    set xMotion(val) {
+        this._xMotion = val;
+    }
+
+    set yMotion(val) {
+        this._yMotion = val;
+    }
+
     get world() {
         return this._world;
     }
 
     get solid() {
         return false;
+    }
+
+    get inMotion() {
+        return this.xMotion != 0 || this.yMotion != 0;
     }
 
 }
