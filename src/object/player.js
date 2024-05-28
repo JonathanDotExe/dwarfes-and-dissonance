@@ -105,7 +105,7 @@ export class Player extends LivingObject {
         creatures.forEach((obj) => {
             if(obj instanceof LivingObject && obj !== this) {
                 obj.takeDamage(10);
-                obj.applyForce(this.direction.x * 8, this.direction.y * 8);
+                obj.overwriteForce(this.direction.x * 6, this.direction.y * 6);
             }
         })
     }
