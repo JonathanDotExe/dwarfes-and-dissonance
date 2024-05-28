@@ -180,7 +180,7 @@ export class WorldGenerator {
             }
         }, 4, rng);
         //Goblins
-        placeInChunks(x, y, width, height, 32, (x, y) => {
+        placeInChunks(x, y, width, height, 64, (x, y) => {
             const amount = 3 + Math.floor(rng() * 3)
             for (let i = 0; i < amount; i++) {
                 const goblinX = x + Math.floor(rng() * 4);
