@@ -77,6 +77,21 @@ export class GameObject {
         this.yMotion += forceY;
     }
 
+    overwriteForce(forceX, forceY) {
+        if (Math.sign(this.xMotion) == Math.sign(forceX)) {
+            this.xMotion = Math.sign(this.xMotion) * Math.max(this.xMotion);
+        }
+        else {
+            this.xMotion += forceX;
+        }
+        if (Math.sign(this.yMotion) == Math.sign(forceY)) {
+            this.yMotion = Math.sign(this.yMotion) * Math.max(this.yMotion);
+        }
+        else {
+            this.yMotion += forceY;
+        }
+    }
+
     get width() {
         return 1;
     }

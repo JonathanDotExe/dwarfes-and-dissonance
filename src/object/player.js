@@ -20,6 +20,7 @@ export class Player extends LivingObject {
         this.sightRange = 6;
         this.lastTime = 0;
         this.direction = {x: 0, y: 1};
+        this.score = 0;
     }
 
     init(world) {
@@ -104,8 +105,10 @@ export class Player extends LivingObject {
 
         creatures.forEach((obj) => {
             if(obj instanceof LivingObject && obj !== this) {
-                obj.takeDamage(10);
-                obj.applyForce(this.direction.x * 8, this.direction.y * 8);
+                if (obj.takeDamage(10)) {
+                    this.score += obj.killScore;
+                }
+                obj.overwriteForce(this.direction.x * 6, this.direction.y * 6);
             }
         })
     }

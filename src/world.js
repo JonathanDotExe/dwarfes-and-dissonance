@@ -144,6 +144,10 @@ export class GameWorld {
                 }
             }
         }
+        //Draw score
+        ctx.fillStyle = "yellow"
+        ctx.font = "32px serif"
+        ctx.fillText(this.player.score, 10, 40)
     }
 
     addObject(obj) {
