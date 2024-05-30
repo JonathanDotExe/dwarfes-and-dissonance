@@ -41,6 +41,37 @@ export class RandomMusicGeneratorTrack extends MusicGeneratorTrack {
 
 }
 
+export class SequenceMusicGeneratorTrack extends MusicGeneratorTrack {
+
+    constructor(identifier, loops, options = {}) {
+        super(identifier);
+        this._loops = loops;
+        this._options = {chance: 1, minEnergy: 0, maxEnergy: 2, dependsOnAll: [], excludesAll: [], canPlay: (world) => true};
+        Object.assign(this._options, options);
+        this._index = 0;
+    }
+
+    selectLoop(world, energyLevel) {
+        if (this._options.canPlay(world) && energyLevel >= this._options.minEnergy && energyLevel < this._options.maxEnergy && Math.random() <= this._options.chance) {
+            const loop = this._loops[this._index];
+            this._index = (this._index + 1) % this._loops.length;
+            if (!loop) {
+                return null;
+            }
+            return { 
+                loop: loop,
+                dependsOnAll: this._options.dependsOnAll,
+                excludesAll: this._options.excludesAll,
+            }
+        }
+        else {
+            this._index = 0;
+        }
+        return super.selectLoop(world);
+    }
+
+}
+
 export class MusicGeneratorSection {
 
     constructor(tracks, minEnergy = 0, maxEnergy = 1) {
@@ -143,7 +174,7 @@ export class MusicGenerator {
             //Select loops
             for (let track of section.tracks) {
                 const loop = track.selectLoop(this._world, energyLevel);
-                if (loop) {
+                if (!!loop) {
                     loops[track.identifier] = loop;
                 }
             }
@@ -153,7 +184,6 @@ export class MusicGenerator {
                 size = Object.keys(loops).length
                 for (let key in loops) {
                     if (loops[key].excludesAll.some(e => e in loops) || loops[key].dependsOnAll.some(e => !(e in loops))) {
-                        console.log('Delete ' + key)
                         delete loops[key];
                     }
                 }

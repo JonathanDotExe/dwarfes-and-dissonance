@@ -1,7 +1,7 @@
 import { Chest } from "../object/static/chest.js";
 import { Tree } from "../object/static/tree.js";
 import { SAND_TILE } from "../object/tile.js";
-import { AmbientEnergySupplier, FightEnergySupplier, MusicGenerator, MusicGeneratorSection, RandomMusicGeneratorTrack } from "./generator.js";
+import { AmbientEnergySupplier, FightEnergySupplier, MusicGenerator, MusicGeneratorSection, RandomMusicGeneratorTrack, SequenceMusicGeneratorTrack } from "./generator.js";
 import { AudioLoop, createGainChannel } from "./player.js";
 
 
@@ -115,9 +115,19 @@ export async function createFightMusicGenerator(world, ctx) {
                 [new AudioLoop(AUDIO_FILES.fight.timpani1, 0)],
                 { minEnergy: 0.55 }
             ),
+            new SequenceMusicGeneratorTrack(
+                'brass',
+                [new AudioLoop(AUDIO_FILES.fight.brass1, 0), null, new AudioLoop(AUDIO_FILES.fight.brass2, 0), null, new AudioLoop(AUDIO_FILES.fight.brass3, 0), null, new AudioLoop(AUDIO_FILES.fight.brass1, 0), null],
+                { minEnergy: 0.6 }
+            ),
             new RandomMusicGeneratorTrack(
                 'violin_spic',
                 [new AudioLoop(AUDIO_FILES.fight.violinSpic1, 0)],
+                { minEnergy: 0.75 }
+            ),
+            new RandomMusicGeneratorTrack(
+                'ride',
+                [new AudioLoop(AUDIO_FILES.fight.ride, 0)],
                 { minEnergy: 0.75 }
             ),
         ], 0, 2)
