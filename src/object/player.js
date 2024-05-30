@@ -20,6 +20,7 @@ export class Player extends LivingObject {
         this.sightRange = 6;
         this.lastTime = 0;
         this.direction = {x: 0, y: 1};
+        this.score = 0;
     }
 
     init(world) {
