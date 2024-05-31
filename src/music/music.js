@@ -50,6 +50,14 @@ const AUDIO_PROMISE = new Promise(async (resolve, reject) => {
     AUDIO_FILES.fight.brass1 = await loadAudio("/res/loops/fight/brass1.flac", audioCtx);
     AUDIO_FILES.fight.brass2 = await loadAudio("/res/loops/fight/brass2.flac", audioCtx);
     AUDIO_FILES.fight.brass3 = await loadAudio("/res/loops/fight/brass3.flac", audioCtx);
+    AUDIO_FILES.fight.strings1 = await loadAudio("/res/loops/fight/strings1.flac", audioCtx);
+    AUDIO_FILES.fight.strings2 = await loadAudio("/res/loops/fight/strings2.flac", audioCtx);
+    AUDIO_FILES.fight.strings3 = await loadAudio("/res/loops/fight/strings3.flac", audioCtx);
+    AUDIO_FILES.fight.strings4 = await loadAudio("/res/loops/fight/strings4.flac", audioCtx);
+    AUDIO_FILES.fight.strings5 = await loadAudio("/res/loops/fight/strings5.flac", audioCtx);
+    AUDIO_FILES.fight.chello1 = await loadAudio("/res/loops/fight/chello1.flac", audioCtx);
+    AUDIO_FILES.fight.chello2 = await loadAudio("/res/loops/fight/chello2.flac", audioCtx);
+    AUDIO_FILES.fight.chello3 = await loadAudio("/res/loops/fight/chello3.flac", audioCtx);
     AUDIO_FILES.fight.chelloSpic1 = await loadAudio("/res/loops/fight/chello_spic1.flac", audioCtx);
     AUDIO_FILES.fight.chelloSpic2 = await loadAudio("/res/loops/fight/chello_spic2.flac", audioCtx);
     AUDIO_FILES.fight.chelloSpic3 = await loadAudio("/res/loops/fight/chello_spic3.flac", audioCtx);
@@ -69,6 +77,8 @@ export async function createFightMusicGenerator(world, ctx) {
     await AUDIO_PROMISE;
     return new MusicGenerator(world, 145, 4, 3, {
         'chello_spic': (ctx) => createGainChannel(ctx, 1),
+        'chello': (ctx) => createGainChannel(ctx, 1),
+        'strings': (ctx) => createGainChannel(ctx, 1),
         'doublebass': (ctx) => createGainChannel(ctx, 1),
         'snare': (ctx) => createGainChannel(ctx, 1),
         'timpani': (ctx) => createGainChannel(ctx, 1),
@@ -129,6 +139,16 @@ export async function createFightMusicGenerator(world, ctx) {
                 'ride',
                 [new AudioLoop(AUDIO_FILES.fight.ride, 0)],
                 { minEnergy: 0.75 }
+            ),
+            new SequenceMusicGeneratorTrack(
+                'strings',
+                [new AudioLoop(AUDIO_FILES.fight.strings1, 0), new AudioLoop(AUDIO_FILES.fight.strings2, 0), new AudioLoop(AUDIO_FILES.fight.strings1, 0), new AudioLoop(AUDIO_FILES.fight.strings3, 0), new AudioLoop(AUDIO_FILES.fight.strings1, 0), new AudioLoop(AUDIO_FILES.fight.strings4, 0), new AudioLoop(AUDIO_FILES.fight.strings1, 0), new AudioLoop(AUDIO_FILES.fight.strings5, 0)],
+                { minEnergy: 0.8 }
+            ),
+            new SequenceMusicGeneratorTrack(
+                'chello',
+                [new AudioLoop(AUDIO_FILES.fight.chello1, 0), new AudioLoop(AUDIO_FILES.fight.chello2, 0), new AudioLoop(AUDIO_FILES.fight.chello1, 0), new AudioLoop(AUDIO_FILES.fight.chello2, 0), new AudioLoop(AUDIO_FILES.fight.chello1, 0), new AudioLoop(AUDIO_FILES.fight.chello2, 0), new AudioLoop(AUDIO_FILES.fight.chello1, 0), new AudioLoop(AUDIO_FILES.fight.chello3, 0)],
+                { minEnergy: 0.8 }
             ),
         ], 0, 2)
     ], new FightEnergySupplier(), ctx);
