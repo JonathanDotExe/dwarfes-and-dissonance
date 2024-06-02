@@ -4,57 +4,25 @@ import { AudioChannel, MusicPlayer } from "./player.js";
 
 export class MusicGeneratorTrack {
 
-    constructor(identifier) {
-        this._identifier = identifier;
-    }
-
-    get identifier() {
-        return this._identifier;
-    }
-
-    selectLoop(world) {
-        return null;
-    }
-
-}
-
-export class RandomMusicGeneratorTrack extends MusicGeneratorTrack {
-
     constructor(identifier, loops, options = {}) {
-        super(identifier);
+        this._identifier = identifier;
         this._loops = loops;
         this._options = {chance: 1, minEnergy: 0, maxEnergy: 2, dependsOnAll: [], excludesAll: [], canPlay: (world) => true};
         Object.assign(this._options, options);
         console.log(this._options)
     }
 
-    selectLoop(world, energyLevel) {
-        if (this._options.canPlay(world) && energyLevel >= this._options.minEnergy && energyLevel < this._options.maxEnergy && Math.random() <= this._options.chance) {
-            return { 
-                loop: this._loops[Math.floor(Math.random() * this._loops.length)],
-                dependsOnAll: this._options.dependsOnAll,
-                excludesAll: this._options.excludesAll,
-            }
-        }
-        return super.selectLoop(world);
-    }
-
-}
-
-export class SequenceMusicGeneratorTrack extends MusicGeneratorTrack {
-
-    constructor(identifier, loops, options = {}) {
-        super(identifier);
-        this._loops = loops;
-        this._options = {chance: 1, minEnergy: 0, maxEnergy: 2, dependsOnAll: [], excludesAll: [], canPlay: (world) => true};
-        Object.assign(this._options, options);
-        this._index = 0;
+    get identifier() {
+        return this._identifier;
     }
 
     selectLoop(world, energyLevel) {
+        return null
+    }
+
+    nextLoop(world, energyLevel) {
         if (this._options.canPlay(world) && energyLevel >= this._options.minEnergy && energyLevel < this._options.maxEnergy && Math.random() <= this._options.chance) {
-            const loop = this._loops[this._index];
-            this._index = (this._index + 1) % this._loops.length;
+            const loop = this.selectLoop(world, energyLevel);
             if (!loop) {
                 return null;
             }
@@ -64,10 +32,57 @@ export class SequenceMusicGeneratorTrack extends MusicGeneratorTrack {
                 excludesAll: this._options.excludesAll,
             }
         }
-        else {
-            this._index = 0;
-        }
-        return super.selectLoop(world);
+        return null;
+    }
+
+    selectionFinished() { //Always called when the selection of the next loop is finished for all generators
+
+    }
+
+}
+
+export class RandomMusicGeneratorTrack extends MusicGeneratorTrack {
+
+    constructor(identifier, loops, options = {}) {
+        super(identifier, loops, options);
+    }
+
+    selectLoop(world, energyLevel) {
+        return this._loops[Math.floor(Math.random() * this._loops.length)];
+    }
+
+}
+
+export class SequenceMusicGeneratorTrack extends MusicGeneratorTrack {
+
+    constructor(identifier, loops, options = {}) {
+        super(identifier, loops, options);
+        this._index = 0;
+    }
+
+    get index() {
+        return this._index;
+    }
+
+    selectLoop(world, energyLevel) {
+        return this._loops[this.index];
+    }
+
+    selectionFinished() {
+        this._index = (this._index + 1) % this._loops.length;
+    }
+
+}
+
+export class SyncMusicGeneratorTrack extends MusicGeneratorTrack {
+
+    constructor(identifier, loops, track, options = {}) {
+        super(identifier, loops, options);
+        this._track = track;
+    }
+
+    selectLoop(world, energyLevel) {
+        return this._loops[this._track.index];
     }
 
 }
@@ -173,10 +188,13 @@ export class MusicGenerator {
             console.log(energyLevel + "/" + this._energyLevel);
             //Select loops
             for (let track of section.tracks) {
-                const loop = track.selectLoop(this._world, energyLevel);
+                const loop = track.nextLoop(this._world, energyLevel);
                 if (!!loop) {
                     loops[track.identifier] = loop;
                 }
+            }
+            for (let track of section.tracks) {
+                track.selectionFinished();
             }
             //Filter loops
             let size;
@@ -214,16 +232,16 @@ export class MusicGenerator {
         }
     }
 
-    fadeIn() {
-        this._player.fadeIn();
+    fadeIn(time) {
+        this._player.fadeIn(time);
     }
 
-    fadeOut() {
-        this._player.fadeOut();
+    fadeOut(time) {
+        this._player.fadeOut(time);
     }
 
-    stop() {
-        this._player.stop();
+    stop(time) {
+        this._player.stop(time);
     }
 
 }

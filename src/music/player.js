@@ -58,8 +58,12 @@ export class MusicPlayer {
         this._nextLoopTime = 0;
         this._preDecisionBars = 2;
         //Gain
+        //this._compressor = this._audioCtx.createDynamicsCompressor();
+        //this._compressor.threshold.value = -6;
+        //this._compressor.ratio.value = 2;
         this._masterGain = this._audioCtx.createGain();
         this._masterGain.connect(this._audioCtx.destination);
+        //this._compressor.connect(this._audioCtx.destination);
         //Filter
         this._filter = this._audioCtx.createBiquadFilter();
         this._filter.frequency.setValueAtTime(700, this._audioCtx.currentTime);
@@ -126,17 +130,17 @@ export class MusicPlayer {
     }
 
 
-    fadeIn() {
-        this._masterGain.gain.exponentialRampToValueAtTime(1, this._audioCtx.currentTime + 2);
+    fadeIn(time) {
+        this._masterGain.gain.exponentialRampToValueAtTime(1, this._audioCtx.currentTime + time);
     }
 
-    fadeOut() {
-        this._masterGain.gain.exponentialRampToValueAtTime(Number.EPSILON, this._audioCtx.currentTime + 2);
+    fadeOut(time) {
+        this._masterGain.gain.exponentialRampToValueAtTime(Number.EPSILON, this._audioCtx.currentTime + time);
     }
 
-    stop() {
+    stop(time) {
         this._running = false;
-        this.fadeOut();
+        this.fadeOut(time);
     }
 
     get bpm() {

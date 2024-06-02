@@ -38,15 +38,16 @@ export class Game {
             const enemies = world.getObjectsInArea(world.player.x - 12, world.player.y - 12, 24 + world.player.width, 24 + world.player.height).filter(e => e instanceof Enemy);
             if (t._fightMusic && world.getObjectsInArea(world.player.x - 15, world.player.y - 15, 30 + world.player.width, 30 + world.player.height).filter(e => e instanceof Enemy).length <= 0) {
                 //End fight
-                t._fightMusic.stop();
+                t._fightMusic.stop(2);
                 t._fightMusic = null;
-                t._music.fadeIn();
+                t._music.fadeIn(3);
             }
             else if (!t._fightMusic && world.getObjectsInArea(world.player.x - 8, world.player.y - 8, 16 + world.player.width, 16 + world.player.height).filter(e => e instanceof Enemy).length > 0) {
                 //Start fight
-                t._music.fadeOut();
+                t._music.fadeOut(2.5);
                 t._fightMusic = await createFightMusicGenerator(world, t._audioCtx);
                 t._fightMusic.init();
+                t._fightMusic.fadeIn(3);
             }
 
             window.requestAnimationFrame(loop);

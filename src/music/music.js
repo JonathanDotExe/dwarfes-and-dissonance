@@ -1,7 +1,7 @@
 import { Chest } from "../object/static/chest.js";
 import { Tree } from "../object/static/tree.js";
 import { SAND_TILE } from "../object/tile.js";
-import { AmbientEnergySupplier, FightEnergySupplier, MusicGenerator, MusicGeneratorSection, RandomMusicGeneratorTrack, SequenceMusicGeneratorTrack } from "./generator.js";
+import { AmbientEnergySupplier, FightEnergySupplier, MusicGenerator, MusicGeneratorSection, RandomMusicGeneratorTrack, SequenceMusicGeneratorTrack, SyncMusicGeneratorTrack } from "./generator.js";
 import { AudioLoop, createGainChannel } from "./player.js";
 
 
@@ -75,6 +75,11 @@ const AUDIO_PROMISE = new Promise(async (resolve, reject) => {
 
 export async function createFightMusicGenerator(world, ctx) {
     await AUDIO_PROMISE;
+    const brass = new SequenceMusicGeneratorTrack(
+        'brass',
+        [new AudioLoop(AUDIO_FILES.fight.brass1, 0), null, new AudioLoop(AUDIO_FILES.fight.brass2, 0), null, new AudioLoop(AUDIO_FILES.fight.brass3, 0), null, new AudioLoop(AUDIO_FILES.fight.brass1, 0), null],
+        { minEnergy: 0.6 }
+    );
     return new MusicGenerator(world, 145, 4, 3, {
         'chello_spic': (ctx) => createGainChannel(ctx, 1),
         'chello': (ctx) => createGainChannel(ctx, 1),
@@ -125,11 +130,7 @@ export async function createFightMusicGenerator(world, ctx) {
                 [new AudioLoop(AUDIO_FILES.fight.timpani1, 0)],
                 { minEnergy: 0.55 }
             ),
-            new SequenceMusicGeneratorTrack(
-                'brass',
-                [new AudioLoop(AUDIO_FILES.fight.brass1, 0), null, new AudioLoop(AUDIO_FILES.fight.brass2, 0), null, new AudioLoop(AUDIO_FILES.fight.brass3, 0), null, new AudioLoop(AUDIO_FILES.fight.brass1, 0), null],
-                { minEnergy: 0.6 }
-            ),
+            brass,
             new RandomMusicGeneratorTrack(
                 'violin_spic',
                 [new AudioLoop(AUDIO_FILES.fight.violinSpic1, 0)],
@@ -140,14 +141,16 @@ export async function createFightMusicGenerator(world, ctx) {
                 [new AudioLoop(AUDIO_FILES.fight.ride, 0)],
                 { minEnergy: 0.75 }
             ),
-            new SequenceMusicGeneratorTrack(
+            new SyncMusicGeneratorTrack(
                 'strings',
                 [new AudioLoop(AUDIO_FILES.fight.strings1, 0), new AudioLoop(AUDIO_FILES.fight.strings2, 0), new AudioLoop(AUDIO_FILES.fight.strings1, 0), new AudioLoop(AUDIO_FILES.fight.strings3, 0), new AudioLoop(AUDIO_FILES.fight.strings1, 0), new AudioLoop(AUDIO_FILES.fight.strings4, 0), new AudioLoop(AUDIO_FILES.fight.strings1, 0), new AudioLoop(AUDIO_FILES.fight.strings5, 0)],
+                brass,
                 { minEnergy: 0.8 }
             ),
-            new SequenceMusicGeneratorTrack(
+            new SyncMusicGeneratorTrack(
                 'chello',
                 [new AudioLoop(AUDIO_FILES.fight.chello1, 0), new AudioLoop(AUDIO_FILES.fight.chello2, 0), new AudioLoop(AUDIO_FILES.fight.chello1, 0), new AudioLoop(AUDIO_FILES.fight.chello2, 0), new AudioLoop(AUDIO_FILES.fight.chello1, 0), new AudioLoop(AUDIO_FILES.fight.chello2, 0), new AudioLoop(AUDIO_FILES.fight.chello1, 0), new AudioLoop(AUDIO_FILES.fight.chello3, 0)],
+                brass,
                 { minEnergy: 0.8 }
             ),
         ], 0, 2)
@@ -158,13 +161,13 @@ export async function createAmbientMusicGenerator(world, ctx) {
     await AUDIO_PROMISE;
     return new MusicGenerator(world, 108, 8, 4,
         {
-            'piano': (ctx) => createGainChannel(ctx, 1),
-            'drums': (ctx) => createGainChannel(ctx, 0.6),
+            'piano': (ctx) => createGainChannel(ctx, 0.7),
+            'drums': (ctx) => createGainChannel(ctx, 0.7),
             'epiano': (ctx) => createGainChannel(ctx, 0.5),
             'pad': (ctx) => createGainChannel(ctx, 0.2),
             'guitar': (ctx) => createGainChannel(ctx, 0.6),
-            'doublebass': (ctx) => createGainChannel(ctx, 0.3),
-            'chello': (ctx) => createGainChannel(ctx, 0.3),
+            'doublebass': (ctx) => createGainChannel(ctx, 0.4),
+            'chello': (ctx) => createGainChannel(ctx, 0.5),
             'violin1': (ctx) => createGainChannel(ctx, 1),
             'violin2': (ctx) => createGainChannel(ctx, 1),
             'glockenspiel1': (ctx) => createGainChannel(ctx, 0.3),
@@ -180,7 +183,7 @@ export async function createAmbientMusicGenerator(world, ctx) {
                 [
                     new RandomMusicGeneratorTrack(
                         'piano',
-                        [new AudioLoop(AUDIO_FILES.ambient.pianoCalm1, 1), new AudioLoop(AUDIO_FILES.ambient.pianoCalm2, 1), new AudioLoop(AUDIO_FILES.ambient.pianoCalm3, 1)]
+                        [new AudioLoop(AUDIO_FILES.ambient.pianoCalm1, 1), new AudioLoop(AUDIO_FILES.ambient.pianoCalm1, 1), new AudioLoop(AUDIO_FILES.ambient.pianoCalm2, 1), new AudioLoop(AUDIO_FILES.ambient.pianoCalm2, 1), new AudioLoop(AUDIO_FILES.ambient.pianoCalm3, 1)]
                     ),
                     new RandomMusicGeneratorTrack(
                         'drums',
@@ -222,12 +225,12 @@ export async function createAmbientMusicGenerator(world, ctx) {
                     new RandomMusicGeneratorTrack(
                         'chello',
                         [new AudioLoop(AUDIO_FILES.ambient.chello1, 0)],
-                        { minEnergy: 0.35 }
+                        { minEnergy: 0.2 }
                     ),
                     new RandomMusicGeneratorTrack(
                         'doublebass',
                         [new AudioLoop(AUDIO_FILES.ambient.doublebass1, 0)],
-                        { minEnergy: 0.2 }
+                        { minEnergy: 0.35 }
                     ),
                     new RandomMusicGeneratorTrack(
                         'glockenspiel2',
