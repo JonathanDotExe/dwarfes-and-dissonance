@@ -52,13 +52,19 @@ export class GameWorld {
         gen.generate(this, 0, 0, this.worldWidth, this.worldHeight);
 
         //Add objects
+        /*
         this.addObject(new Goblin(10, 7));
         this.addObject(new Tree(10,12));
         this.addObject(new Chest(15,8));
         this.addObject(new Piranha(1,1));
-        this.addObject(this._player);
+         */
+
+
+
 
         //Add player
+        this.addObject(this._player);
+
         createAmbientMusicGenerator(this).then(m => {
             m.init();
         })
