@@ -1,5 +1,6 @@
 import { LivingObject } from "./livingobject.js";
 import { TILE_SIZE } from "./tile.js";
+import {Dwarf} from "./static/dwarf.js";
 
 const playerFront = new Image();
 playerFront.src = "/res/objects/player_front_knife.png";

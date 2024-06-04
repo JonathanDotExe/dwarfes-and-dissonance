@@ -196,7 +196,7 @@ export class WorldGenerator {
                     world.addObject(goblin);
                 }
             }
-        }, 4, rng);
+        }, 3, rng);
         //Piranhias
         placeInChunks(x, y, width, height, 64, (x, y) => {
             const piranhaX = x + Math.floor(rng() * 4);
@@ -205,7 +205,7 @@ export class WorldGenerator {
             if (!piranha.doesCollide(world.getTile(piranhaX, piranhaY))) {
                 world.addObject(piranha);
             }
-        }, 2, rng);
+        }, 3, rng);
         //Orks
         placeInChunks(x, y, width, height, 64, (x, y) => {
             const orkX = x + Math.floor(rng() * 4);
@@ -214,7 +214,7 @@ export class WorldGenerator {
             if (!ork.doesCollide(world.getTile(orkX, orkY))) {
                 world.addObject(ork);
             }
-        }, 3, rng);
+        }, 4, rng);
 
         //Flyingeye
         placeInChunks(x, y, width, height, 64, (x, y) => {
@@ -224,7 +224,7 @@ export class WorldGenerator {
             if (!flyingeye.doesCollide(world.getTile(flyingeyeX, flyingeyeY))) {
                 world.addObject(flyingeye);
             }
-        }, 1, rng);
+        }, 2, rng);
 
         //Villages
         placeInChunks(x, y, width, height, 64, (x, y) => {
@@ -234,13 +234,13 @@ export class WorldGenerator {
                 const dwarf = new Dwarf(dwarfX, dwarfY);
                 const bigHouse = new Bighouse(dwarfX, dwarfY - 5);
                 const smallHouse = new Smallhouse(dwarfX + 5, dwarfY - 2);
-                if (!dwarf.doesCollide(world.getTile(dwarfX, dwarfY))) {
+                if (!dwarf.doesCollide(world.getTile(dwarfX, dwarfY)) && (world.getObjectsInArea(dwarfX, dwarfY, 1, 1).length === 0)) {
                     world.addObject(dwarf);
                 }
-                if(i === 1 && !bigHouse.doesCollide(world.getTile(dwarfX, dwarfY - 5))){
+                if(i === 1 && !bigHouse.doesCollide(world.getTile(dwarfX, dwarfY - 5), world) && (world.getObjectsInArea(dwarfX, dwarfY - 5, 4, 3).length === 0)){
                     world.addObject(bigHouse);
                 }
-                if(i === 2 && !smallHouse.doesCollide(world.getTile(dwarfX + 5, dwarfY - 2))){
+                if(i === 2 && !smallHouse.doesCollide(world.getTile(dwarfX + 5, dwarfY - 2), world) && (world.getObjectsInArea(dwarfX + 5, dwarfY - 2, 4, 3).length === 0)){
                     world.addObject(smallHouse);
                 }
             }
