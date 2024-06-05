@@ -46,7 +46,7 @@ export class Player extends LivingObject {
             }
         }
 
-        const speed = this.isInFluid() ? 1 : 4;
+        const speed = this.isInFluid() ? 2 : 4;
 
         this.move(motion.x * speed , motion.y * speed, deltaTime);
     }
