@@ -79,10 +79,6 @@ export class GameWorld {
 
         //Add player
         this.addObject(this._player);
-
-        createAmbientMusicGenerator(this).then(m => {
-            m.init();
-        })
     }
 
     update(deltaTime, env) {
