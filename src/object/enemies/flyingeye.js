@@ -1,5 +1,7 @@
-import { TILE_SIZE } from "../tile.js";
+import {CaveTile, STONE_FLOOR_TILE, TILE_SIZE} from "../tile.js";
 import {Enemy} from "./enemy.js";
+import {LivingObject} from "../livingobject.js";
+import {Tree} from "../static/tree.js";
 
 const flyingeyeImage = new Image();
 flyingeyeImage.src = "/res/objects/flying_eye.png";
@@ -50,7 +52,14 @@ export class Flyingeye extends Enemy {
         return 3;
     }
 
+    doesCollide(tile) {
+        return tile == null || tile.solid || tile === STONE_FLOOR_TILE;
+    }
+
     doesCollideObject(obj) {
+        if(obj instanceof Tree){
+            return !obj.solid;
+        }
         return false;
     }
 
