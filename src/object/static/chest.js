@@ -12,7 +12,6 @@ export class Chest extends GameObject{
     constructor(x,y){
         super(x,y);
         this.interacted = false;
-        this.solid = true;
     }
 
     draw(camX, camY, ctx) {
@@ -26,6 +25,10 @@ export class Chest extends GameObject{
 
     open() {
         this.interacted = true;
-        this.world.player.changeWeapon(Math.floor(Math.random()*10));
+        this.world.player.changeWeapon(Math.floor(Math.random() * 10));
+    }
+
+    get solid() {
+        return true;
     }
 }

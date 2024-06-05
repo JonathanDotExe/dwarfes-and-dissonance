@@ -7,8 +7,17 @@ import {Piranha} from "./object/enemies/piranha.js";
 import { createAmbientMusicGenerator } from "./music/music.js";
 import { WorldGenerator } from "./worldgenerator.js";
 import {LivingObject} from "./object/livingobject.js";
+import {Flyingeye} from "./object/enemies/flyingeye.js";
+import {Ork} from "./object/enemies/ork.js";
+import {Dwarf} from "./object/static/dwarf.js";
+import {Bighouse} from "./object/static/bighouse.js";
+import {Smallhouse} from "./object/static/smallhouse.js";
+
+
 export const WORLD_SIZE = 256;
 
+const score = new Image();
+score.src = "res/score/score.png";
 
 export class GameWorld {
 
@@ -50,13 +59,19 @@ export class GameWorld {
         gen.generate(this, 0, 0, this.worldWidth, this.worldHeight);
 
         //Add objects
+        /*
         this.addObject(new Goblin(10, 7));
         this.addObject(new Tree(10,12));
         this.addObject(new Chest(15,8));
         this.addObject(new Piranha(1,1));
-        this.addObject(this._player);
+        this.addObject(new Dwarf(5, 5));
+        this.addObject(new Bighouse(20, 20));
+        this.addObject(new Smallhouse(10, 10));
+         */
 
         //Add player
+        this.addObject(this._player);
+
         createAmbientMusicGenerator(this).then(m => {
             m.init();
         })
@@ -149,6 +164,26 @@ export class GameWorld {
                 }
             }
         }
+        //Draw Score
+        const scoreWidth = TILE_SIZE*5;
+        const scoreHeight = 45;
+        ctx.drawImage(score,10,10,scoreWidth,scoreHeight);
+
+        ctx.fillStyle = "rgb(8,20,83)";
+        ctx.font = "50px serif";
+        ctx.fillText(this.player.score, 20 + scoreWidth, scoreHeight + 5);
+
+        ctx.strokeStyle = "black";
+        ctx.strokeWidth = "7px";
+        ctx.strokeText(this.player.score, 20 + scoreWidth, scoreHeight + 5);
+
+        ctx.strokeStyle = "rgb(205,156,42)";
+        ctx.strokeWidth = "5px";
+        ctx.strokeText(this.player.score, 20 + scoreWidth, scoreHeight + 5);
+
+
+
+
     }
 
     addObject(obj) {
@@ -184,7 +219,7 @@ export class GameWorld {
         return !!tile ? tile.getDisplayTile(x, y, this) : null;
     }
 
-    doCollisionDetection(x, y, width, height, movementX, movementY, collide) {
+    doCollisionDetection(x, y, width, height, movementX, movementY, collide, collideObj) {
         const goalX = x + movementX;
         const goalY = y + movementY;
         
@@ -201,6 +236,13 @@ export class GameWorld {
                 }
             }
             x = Math.min(x, goalX);
+            //Objects
+            const objs = this.getObjectsInArea(x + width, y, movementX, height);
+            for (let obj of objs) {
+                if (collideObj(obj)) {
+                    x = Math.min(x, obj.x - width);
+                }
+            }
         }
         else if (movementX < 0) {
             loop:
@@ -214,6 +256,13 @@ export class GameWorld {
                 x = i;
             }
             x = Math.max(x, goalX);
+            //Objects
+            const objs = this.getObjectsInArea(x, y, movementX, height);
+            for (let obj of objs) {
+                if (collideObj(obj)) {
+                    x = Math.max(x, obj.x + obj.width);
+                }
+            }
         }
         //Y axis
         if (movementY > 0) {
@@ -228,6 +277,13 @@ export class GameWorld {
                 }
             }
             y = Math.min(y, goalY);
+            //Objects
+            const objs = this.getObjectsInArea(x, y + height, width, movementY);
+            for (let obj of objs) {
+                if (collideObj(obj)) {
+                    y = Math.min(y, obj.y - height);
+                }
+            }
         }
         else if (movementY < 0) {
             loop:
@@ -241,6 +297,13 @@ export class GameWorld {
                 y = i;
             }
             y = Math.max(y, goalY);
+            //Objects
+            const objs = this.getObjectsInArea(x, y, width, movementY);
+            for (let obj of objs) {
+                if (collideObj(obj)) {
+                    y = Math.max(y, obj.y + obj.height);
+                }
+            }
         }
 
         return {x: x, y: y};
@@ -267,8 +330,8 @@ export class GameWorld {
         let creatures = new Array();
         for(let i = 0; i < this._objects.length; i++) {
             let obj = this._objects[i];
-            if((obj.x + obj.width >= x && obj.x <= x + length) && (obj.y + obj.height >= y && obj.y <= y + height)) {
-                creatures[i] = obj;
+            if((obj.x + obj.width > x && obj.x < x + length) && (obj.y + obj.height > y && obj.y < y + height)) {
+                creatures.push(obj);
             }
         }
 

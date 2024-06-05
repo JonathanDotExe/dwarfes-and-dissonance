@@ -1,6 +1,7 @@
 import { LivingObject } from "./livingobject.js";
 import { TILE_SIZE } from "./tile.js";
 import {Chest} from "./static/chest.js";
+import {Dwarf} from "./static/dwarf.js";
 
 const playerFrontKnife = new Image();
 playerFrontKnife.src = "/res/objects/player_front_knife.png";
@@ -49,6 +50,8 @@ export class Player extends LivingObject {
         this.sightRange = 6;
         this.lastTime = 0;
         this.weapon = 0;
+        this.direction = {x: 0, y: 1};
+        this.score = 0;
     }
 
     init(world) {
@@ -82,7 +85,7 @@ export class Player extends LivingObject {
                 this.lastTime = curTime;
             }
         }
-        const speed = this.isInFluid() ? 1 : 4;
+        const speed = this.isInFluid() ? 2 : 4;
 
         this.move(motion.x * speed , motion.y * speed, deltaTime);
     }
@@ -181,6 +184,7 @@ export class Player extends LivingObject {
                     super.draw(camX, camY, ctx);
                 }
             }
+
         }
     }
 
@@ -202,12 +206,16 @@ export class Player extends LivingObject {
         const attackPosX = this.x + this.width/2 + (this.direction.x) - 0.5;
         const attackPosY = this.y + this.height/2 + (this.direction.y) - 0.5;
 
+
         if (this.weapon === 0) {
             let creatures = this.world.getObjectsInArea(attackPosX, attackPosY, 1, 1);
 
             creatures.forEach((obj) => {
                 if (obj instanceof LivingObject && obj !== this) {
-                    obj.takeDamage(10);
+                    if (obj.takeDamage(10)) {
+                        this.score += obj.killScore;
+                    }
+                    obj.overwriteForce(this.direction.x * 6, this.direction.y * 6);
                 }
             })
         } else if(this.weapon === 1) {
@@ -215,7 +223,10 @@ export class Player extends LivingObject {
 
             creatures.forEach((obj) => {
                 if (obj instanceof LivingObject && obj !== this) {
-                    obj.takeDamage(18);
+                    if (obj.takeDamage(18)) {
+                        this.score += obj.killScore;
+                    }
+                    obj.overwriteForce(this.direction.x * 6, this.direction.y * 6);
                 }
             })
         } else {
@@ -223,7 +234,10 @@ export class Player extends LivingObject {
 
             creatures.forEach((obj) => {
                 if (obj instanceof LivingObject && obj !== this) {
-                    obj.takeDamage(12);
+                    if (obj.takeDamage(12)) {
+                        this.score += obj.killScore;
+                    }
+                    obj.overwriteForce(this.direction.x * 6, this.direction.y * 6);
                 }
             })
         }
@@ -243,11 +257,22 @@ export class Player extends LivingObject {
             if (obj instanceof Chest) {
                 obj.open();
             }
-        })
+            else if(obj instanceof Dwarf && obj !== this){
+                obj.healPlayer(this);
+            }
+        });
     }
-
 
     changeWeapon(weaponId) {
         this.weapon = weaponId % 3;
     }
+
+    heal(amount) {
+        if(this._health + amount > this._maxHealth){
+            this._health = this._maxHealth;
+        } else{
+            this._health += amount;
+        }
+    }
+
 }

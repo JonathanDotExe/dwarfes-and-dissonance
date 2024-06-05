@@ -15,6 +15,12 @@ export class GameObject {
         this._y = y;
         this._world = null;
         this._state = GameObjectState.New;
+        this._xMotion = 0;
+        this._yMotion = 0;
+    }
+
+    get friction() {
+        return 8;
     }
 
     /**
@@ -36,7 +42,11 @@ export class GameObject {
     }
 
     update(deltaTime, env) {
-
+        //Movement
+        this.move(this.xMotion, this.yMotion, deltaTime);
+        //Friction
+        this.xMotion -= Math.sign(this.xMotion) * Math.min(this.friction * deltaTime, Math.abs(this.xMotion));
+        this.yMotion -= Math.sign(this.yMotion) * Math.min(this.friction * deltaTime, Math.abs(this.yMotion));
     }
 
     draw(camX, camY, ctx) {
@@ -44,7 +54,7 @@ export class GameObject {
     }
 
     move(xMotion, yMotion, deltaTime) {
-        const movement = this.world.doCollisionDetection(this.x, this.y, this.width, this.height, xMotion * deltaTime, yMotion * deltaTime, t => this.doesCollide(t));
+        const movement = this.world.doCollisionDetection(this.x, this.y, this.width, this.height, xMotion * deltaTime, yMotion * deltaTime, t => this.doesCollide(t), o => this.doesCollideObject(o));
         this.x = movement.x;
         this.y = movement.y;
     }
@@ -57,9 +67,33 @@ export class GameObject {
         return tile == null || tile.solid || tile.fluid;
     }
 
+    doesCollideObject(object) {
+        return object != null && object.solid;
+    }
+
     isInFluid() {
         const tile = this._world.getTile(Math.floor(this.x + this.width/2), Math.floor(this.y + this.height/2));
         return !!tile && tile.fluid;
+    }
+
+    applyForce(forceX, forceY) {
+        this.xMotion += forceX;
+        this.yMotion += forceY;
+    }
+
+    overwriteForce(forceX, forceY) {
+        if (Math.sign(this.xMotion) == Math.sign(forceX)) {
+            this.xMotion = Math.sign(this.xMotion) * Math.max(this.xMotion);
+        }
+        else {
+            this.xMotion += forceX;
+        }
+        if (Math.sign(this.yMotion) == Math.sign(forceY)) {
+            this.yMotion = Math.sign(this.yMotion) * Math.max(this.yMotion);
+        }
+        else {
+            this.yMotion += forceY;
+        }
     }
 
     get width() {
@@ -86,8 +120,32 @@ export class GameObject {
         this._y = val;
     }
 
+    get xMotion() {
+        return this._xMotion;
+    }
+
+    get yMotion() {
+        return this._yMotion;
+    }
+
+    set xMotion(val) {
+        this._xMotion = val;
+    }
+
+    set yMotion(val) {
+        this._yMotion = val;
+    }
+
     get world() {
         return this._world;
+    }
+
+    get solid() {
+        return false;
+    }
+
+    get inMotion() {
+        return this.xMotion != 0 || this.yMotion != 0;
     }
 
 }
