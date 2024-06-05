@@ -219,8 +219,9 @@ export class Enemy extends LivingObject {
         creatures.forEach((obj) => {
             if(this.isTarget(obj)) {
                 obj.takeDamage(damage);
-                obj.applyForce(this._direction.x * 8, this._direction.y * 8);
+                obj.overwriteForce(this._direction.x * 8, this._direction.y * 8);
             }
         })
     }
+
 }

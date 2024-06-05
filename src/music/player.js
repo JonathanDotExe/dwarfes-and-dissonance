@@ -1,3 +1,4 @@
+import { SimpleReverb } from "../lib/reverb.js";
 
 export class AudioLoop {
 
@@ -39,23 +40,56 @@ export class AudioChannel {
 
 }
 
+export function createGainChannel(ctx, g) {
+    let gain = ctx.createGain();
+    gain.gain.setValueAtTime(g, 0);
+    return new AudioChannel(gain, gain);
+}
+
 export class MusicPlayer {
 
-    constructor(bpm, bars) { //BPM 108, bars 8
+    constructor(bpm, bars, beatsPerBar, ctx) {
         this._bpm = bpm;
         this._bars = bars;
+        this._beatsPerBar = beatsPerBar;
         this._channels = {};
-        this._audioCtx = new (window.AudioContext || window.webkitAudioContext)({sampleRate: 48000});
-        //this._audioCtx.sampleRate = 48000;
+        this._audioCtx =  ctx;
         this.onLoopStart = (player) => {};
         this._nextLoopTime = 0;
+        this._preDecisionBars = 2;
+        //Gain
+        //this._compressor = this._audioCtx.createDynamicsCompressor();
+        //this._compressor.threshold.value = -6;
+        //this._compressor.ratio.value = 2;
+        this._masterGain = this._audioCtx.createGain();
+        this._masterGain.connect(this._audioCtx.destination);
+        //this._compressor.connect(this._audioCtx.destination);
+        //Filter
+        this._filter = this._audioCtx.createBiquadFilter();
+        this._filter.frequency.setValueAtTime(700, this._audioCtx.currentTime);
+        this._filter.Q.setValueAtTime(1, this._audioCtx.currentTime);
+        this.deactivateWaterFilter();
+        this._filter.connect(this._masterGain);
+        //Reverb
+        this._reverb = new SimpleReverb(this._audioCtx, {
+            seconds: 5,
+            decay: 5
+        });
+        this._reverb.connect(this._masterGain);
+        //Mix
+        this._wetGain = this._audioCtx.createGain();
+        this._filter.connect(this._wetGain);
+        this._wetGain.connect(this._reverb.input);
+        this.deactivateCaveReverb();
+        this._running = true;
+        this._masterGain.gain.value = 1;
     }
 
     addChannel(key, ch) {
         if (key in this._channels) {
             throw "Channel with key " + key + " already created.";
         }
-        ch.connect(this._audioCtx.destination);
+        ch.connect(this._filter);
         this._channels[key] = ch;
         return key;
     }
@@ -68,13 +102,45 @@ export class MusicPlayer {
         this._nextLoopTime = this._audioCtx.currentTime + this.barDuration * 2; //Start in two bars
         const t = this;
         const func = () => {  //Loop every half bar and check if it's time to generate the next audio
-            if (this._nextLoopTime - t._audioCtx.currentTime <= t.loopDuration) {
-                t.onLoopStart(t);
-                t._nextLoopTime += t.loopDuration;
+            if (this._running) {
+                if (t._nextLoopTime - t._audioCtx.currentTime <= t._preDecisionBars * t.barDuration) {
+                    t.onLoopStart(t);
+                    t._nextLoopTime += t.loopDuration;
+                }
+                setTimeout(func, t.barDuration/2);
             }
-            setTimeout(func, t.barDuration/2);
         };
         func();
+    }
+
+    activateWaterFilter() {
+        this._filter.type ='lowpass';
+    }
+
+    deactivateWaterFilter() {
+        this._filter.type = 'peaking';
+    }
+
+    activateCaveReverb() {
+        this._wetGain.gain.value = 1.5;
+    }
+
+    deactivateCaveReverb() {
+        this._wetGain.gain.value = 0;
+    }
+
+
+    fadeIn(time) {
+        this._masterGain.gain.exponentialRampToValueAtTime(1, this._audioCtx.currentTime + time);
+    }
+
+    fadeOut(time) {
+        this._masterGain.gain.exponentialRampToValueAtTime(Number.EPSILON, this._audioCtx.currentTime + time);
+    }
+
+    stop(time) {
+        this._running = false;
+        this.fadeOut(time);
     }
 
     get bpm() {
@@ -85,8 +151,12 @@ export class MusicPlayer {
         return this._bars;
     }
 
+    get beatsPerBar() {
+        return this._beatsPerBar;
+    }
+
     get barDuration() {
-        return 60.0/(this.bpm) * 4;
+        return 60.0/(this.bpm) * this.beatsPerBar;
     }
 
     get loopDuration() {

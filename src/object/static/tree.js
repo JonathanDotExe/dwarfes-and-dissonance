@@ -10,6 +10,10 @@ export class Tree extends LivingObject{
         super(x,y, 30);
     }
 
+    get killScore() {
+        return 10;
+    }
+
     update(deltaTime, env) {
         this.xMotion = 0;
         this.yMotion = 0;

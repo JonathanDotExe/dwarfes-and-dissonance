@@ -5,6 +5,12 @@ import { Piranha } from './object/enemies/piranha.js';
 import { Chest } from './object/static/chest.js';
 import { Tree } from './object/static/tree.js';
 import { GRASS_TILE, SAND_TILE, STONE_FLOOR_TILE, STONE_TILE, WATER_TILE } from './object/tile.js';
+import { Ork } from './object/enemies/ork.js';
+import { Flyingeye } from './object/enemies/flyingeye.js';
+import {Dwarf} from "./object/static/dwarf.js";
+import {Bighouse} from "./object/static/bighouse.js";
+import {Smallhouse} from "./object/static/smallhouse.js";
+
 
 const CAVE_CONNECTION_RANGE = 64;
 const CAVE_CONNECTION_COUNT = 4;
@@ -76,7 +82,7 @@ export class WorldGenerator {
                 else if(val < 0.3) {
                     tile = SAND_TILE;
                 }
-                else if(val < 0.6) {
+                else if(val < 0.55) {
                     tile = GRASS_TILE;
                 }
                 world.setTile(x + i, y + j, tile);
@@ -172,7 +178,7 @@ export class WorldGenerator {
                     world.addObject(new Tree(treeX, treeY));
                 }
             }
-        }, 4, rng);
+        }, 8, rng);
         //Chests
         placeInChunks(x, y, width, height, 32, (x, y) => {
             if (world.getTile(x, y) == STONE_FLOOR_TILE) {
@@ -190,7 +196,7 @@ export class WorldGenerator {
                     world.addObject(goblin);
                 }
             }
-        }, 4, rng);
+        }, 3, rng);
         //Piranhias
         placeInChunks(x, y, width, height, 64, (x, y) => {
             const piranhaX = x + Math.floor(rng() * 4);
@@ -199,7 +205,48 @@ export class WorldGenerator {
             if (!piranha.doesCollide(world.getTile(piranhaX, piranhaY))) {
                 world.addObject(piranha);
             }
-        }, 2, rng);
-    }
+        }, 3, rng);
+        //Orks
+        placeInChunks(x, y, width, height, 64, (x, y) => {
+            const orkX = x + Math.floor(rng() * 4);
+            const orkY = y + Math.floor(rng() * 4);
+            const ork = new Ork(orkX, orkY);
+            if (!ork.doesCollide(world.getTile(orkX, orkY))) {
+                world.addObject(ork);
+            }
+        }, 4, rng);
 
+        //Flyingeye
+        placeInChunks(x, y, width, height, 64, (x, y) => {
+            const flyingeyeX = x + Math.floor(rng() * 4);
+            const flyingeyeY = y + Math.floor(rng() * 4);
+            const flyingeye = new Flyingeye(flyingeyeX, flyingeyeY);
+            if (!flyingeye.doesCollide(world.getTile(flyingeyeX, flyingeyeY))) {
+                world.addObject(flyingeye);
+            }
+        }, 2, rng);
+
+        //Villages
+        placeInChunks(x, y, width, height, 64, (x, y) => {
+            for (let i = 0; i < 3; i++) {
+                const dwarfX = x + Math.floor(rng() * 4);
+                const dwarfY = y + Math.floor(rng() * 4);
+                const dwarf = new Dwarf(dwarfX, dwarfY);
+                const bigHouse = new Bighouse(dwarfX, dwarfY - 5);
+                const smallHouse = new Smallhouse(dwarfX + 5, dwarfY - 2);
+                if (!dwarf.doesCollide(world.getTile(dwarfX, dwarfY)) && (world.getObjectsInArea(dwarfX, dwarfY, 1, 1).length === 0)) {
+                    world.addObject(dwarf);
+                }
+                if(i === 1 && !bigHouse.doesCollide(world.getTile(dwarfX, dwarfY - 5), world) && (world.getObjectsInArea(dwarfX, dwarfY - 5, 4, 3).length === 0)){
+                    world.addObject(bigHouse);
+                }
+                if(i === 2 && !smallHouse.doesCollide(world.getTile(dwarfX + 5, dwarfY - 2), world) && (world.getObjectsInArea(dwarfX + 5, dwarfY - 2, 4, 3).length === 0)){
+                    world.addObject(smallHouse);
+                }
+            }
+        }, 3, rng);
+
+
+
+    }
 }

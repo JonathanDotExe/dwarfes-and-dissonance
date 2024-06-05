@@ -54,7 +54,7 @@ export class GameObject {
     }
 
     move(xMotion, yMotion, deltaTime) {
-        const movement = this.world.doCollisionDetection(this.x, this.y, this.width, this.height, xMotion * deltaTime, yMotion * deltaTime, t => this.doesCollide(t));
+        const movement = this.world.doCollisionDetection(this.x, this.y, this.width, this.height, xMotion * deltaTime, yMotion * deltaTime, t => this.doesCollide(t), o => this.doesCollideObject(o));
         this.x = movement.x;
         this.y = movement.y;
     }
@@ -67,6 +67,10 @@ export class GameObject {
         return tile == null || tile.solid || tile.fluid;
     }
 
+    doesCollideObject(object) {
+        return object != null && object.solid;
+    }
+
     isInFluid() {
         const tile = this._world.getTile(Math.floor(this.x + this.width/2), Math.floor(this.y + this.height/2));
         return !!tile && tile.fluid;
@@ -75,6 +79,21 @@ export class GameObject {
     applyForce(forceX, forceY) {
         this.xMotion += forceX;
         this.yMotion += forceY;
+    }
+
+    overwriteForce(forceX, forceY) {
+        if (Math.sign(this.xMotion) == Math.sign(forceX)) {
+            this.xMotion = Math.sign(this.xMotion) * Math.max(this.xMotion);
+        }
+        else {
+            this.xMotion += forceX;
+        }
+        if (Math.sign(this.yMotion) == Math.sign(forceY)) {
+            this.yMotion = Math.sign(this.yMotion) * Math.max(this.yMotion);
+        }
+        else {
+            this.yMotion += forceY;
+        }
     }
 
     get width() {
