@@ -82,7 +82,7 @@ export class WorldGenerator {
                 else if(val < 0.3) {
                     tile = SAND_TILE;
                 }
-                else if(val < 0.6) {
+                else if(val < 0.55) {
                     tile = GRASS_TILE;
                 }
                 world.setTile(x + i, y + j, tile);
@@ -178,7 +178,7 @@ export class WorldGenerator {
                     world.addObject(new Tree(treeX, treeY));
                 }
             }
-        }, 4, rng);
+        }, 8, rng);
         //Chests
         placeInChunks(x, y, width, height, 32, (x, y) => {
             if (world.getTile(x, y) == STONE_FLOOR_TILE) {
