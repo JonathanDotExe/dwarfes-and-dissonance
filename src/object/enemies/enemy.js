@@ -79,7 +79,7 @@ export class Enemy extends LivingObject {
         //Attack
         let curTime = new Date().getTime();
         if((curTime - this.lastTime > this.cooldown) || this.lastTime === undefined) {
-            this.enemyAttack(this.attackPosX, this.attackPosY, this.rangeX, this.rangeY, this.damage);
+            this.enemyAttack(this.attackPosX, this.attackPosY, this.rangeX + this.width, this.rangeY + this.height, this.damage);
             this.lastTime = curTime;
         }
     }
@@ -129,7 +129,38 @@ export class Enemy extends LivingObject {
         return { x: xMotion, y: yMotion};
     }
 
+    lastX = 0;
+    lastY = 0;
+    lastCounter = 0;
+    lastRoutine = false;
+    lastThreshold = 10;
+    // If change, also change in lastRoutine
+    lastAmount = 40;
     moveAttack(target) {
+        // Check if running into a wall and moveRand if so
+        if(this.lastRoutine) {
+            if(this.lastAmount > 0) {
+                this.lastAmount--;
+                return this.moveRand();
+            } else {
+                this.lastRoutine = false;
+                this.lastAmount = 40;
+            }
+        }
+
+        let stuckArea = 0.2;
+        if((this.x >= this.lastX - stuckArea && this.x <= this.lastX + stuckArea) && (this.y >= this.lastY - stuckArea && this.y <= this.lastY + stuckArea)) {
+            this.lastCounter++;
+            if(this.lastCounter == this.lastThreshold) {
+                this.lastRoutine = true;
+                this.lastCounter = 0;
+            }
+        } else {
+            this.lastCounter = 0;
+            this.lastX = this.x;
+            this.lastY = this.y;
+        }
+
         let dir;
         let diagonal = 1/Math.sqrt(2);
 
