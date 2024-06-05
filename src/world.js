@@ -7,6 +7,13 @@ import {Piranha} from "./object/enemies/piranha.js";
 import { createAmbientMusicGenerator } from "./music/music.js";
 import { WorldGenerator } from "./worldgenerator.js";
 import {LivingObject} from "./object/livingobject.js";
+import {Flyingeye} from "./object/enemies/flyingeye.js";
+import {Ork} from "./object/enemies/ork.js";
+import {Dwarf} from "./object/static/dwarf.js";
+import {Bighouse} from "./object/static/bighouse.js";
+import {Smallhouse} from "./object/static/smallhouse.js";
+
+
 export const WORLD_SIZE = 256;
 
 const score = new Image();
@@ -57,10 +64,10 @@ export class GameWorld {
         this.addObject(new Tree(10,12));
         this.addObject(new Chest(15,8));
         this.addObject(new Piranha(1,1));
+        this.addObject(new Dwarf(5, 5));
+        this.addObject(new Bighouse(20, 20));
+        this.addObject(new Smallhouse(10, 10));
          */
-
-
-
 
         //Add player
         this.addObject(this._player);
@@ -212,7 +219,7 @@ export class GameWorld {
         return !!tile ? tile.getDisplayTile(x, y, this) : null;
     }
 
-    doCollisionDetection(x, y, width, height, movementX, movementY, collide) {
+    doCollisionDetection(x, y, width, height, movementX, movementY, collide, collideObj) {
         const goalX = x + movementX;
         const goalY = y + movementY;
         
@@ -232,7 +239,7 @@ export class GameWorld {
             //Objects
             const objs = this.getObjectsInArea(x + width, y, movementX, height);
             for (let obj of objs) {
-                if (obj.solid) {
+                if (collideObj(obj)) {
                     x = Math.min(x, obj.x - width);
                 }
             }
@@ -252,7 +259,7 @@ export class GameWorld {
             //Objects
             const objs = this.getObjectsInArea(x, y, movementX, height);
             for (let obj of objs) {
-                if (obj.solid) {
+                if (collideObj(obj)) {
                     x = Math.max(x, obj.x + obj.width);
                 }
             }
@@ -273,7 +280,7 @@ export class GameWorld {
             //Objects
             const objs = this.getObjectsInArea(x, y + height, width, movementY);
             for (let obj of objs) {
-                if (obj.solid) {
+                if (collideObj(obj)) {
                     y = Math.min(y, obj.y - height);
                 }
             }
@@ -293,7 +300,7 @@ export class GameWorld {
             //Objects
             const objs = this.getObjectsInArea(x, y, width, movementY);
             for (let obj of objs) {
-                if (obj.solid) {
+                if (collideObj(obj)) {
                     y = Math.max(y, obj.y + obj.height);
                 }
             }

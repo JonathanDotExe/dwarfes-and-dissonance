@@ -1,5 +1,6 @@
 import { LivingObject } from "./livingobject.js";
 import { TILE_SIZE } from "./tile.js";
+import {Dwarf} from "./static/dwarf.js";
 
 const playerFront = new Image();
 playerFront.src = "/res/objects/player_front_knife.png";
@@ -15,6 +16,7 @@ playerRight.src = "/res/objects/player_right_knife.png";
 
 export class Player extends LivingObject {
 
+    direction;
     constructor(x, y) {
         super(x, y, 100);
         this.sightRange = 6;
@@ -98,6 +100,9 @@ export class Player extends LivingObject {
         // For now only 1 weapon -> 1 Tile range
         // Can be updated and stats gotten from a possible future weapon or inventory class (same for dmg)
         //const motion = env.input.movementAxis;
+        if(this.direction === undefined) {
+            return;
+        }
 
         const attackPosX = this.x + this.width/2 + (this.direction.x) - 0.5;
         const attackPosY = this.y + this.height/2 + (this.direction.y) - 0.5;
@@ -110,7 +115,18 @@ export class Player extends LivingObject {
                 }
                 obj.overwriteForce(this.direction.x * 6, this.direction.y * 6);
             }
-        })
+            else if(obj instanceof Dwarf && obj !== this){
+                obj.healPlayer(this);
+            }
+        });
+    }
+
+    heal(amount) {
+        if(this._health + amount > this._maxHealth){
+            this._health = this._maxHealth;
+        } else{
+            this._health += amount;
+        }
     }
 
 }

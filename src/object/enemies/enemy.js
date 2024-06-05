@@ -215,4 +215,5 @@ export class Enemy extends LivingObject {
             }
         })
     }
+
 }

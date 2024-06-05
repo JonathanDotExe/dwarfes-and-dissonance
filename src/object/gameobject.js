@@ -54,7 +54,7 @@ export class GameObject {
     }
 
     move(xMotion, yMotion, deltaTime) {
-        const movement = this.world.doCollisionDetection(this.x, this.y, this.width, this.height, xMotion * deltaTime, yMotion * deltaTime, t => this.doesCollide(t));
+        const movement = this.world.doCollisionDetection(this.x, this.y, this.width, this.height, xMotion * deltaTime, yMotion * deltaTime, t => this.doesCollide(t), o => this.doesCollideObject(o));
         this.x = movement.x;
         this.y = movement.y;
     }
@@ -65,6 +65,10 @@ export class GameObject {
 
     doesCollide(tile) {
         return tile == null || tile.solid || tile.fluid;
+    }
+
+    doesCollideObject(object) {
+        return object != null && object.solid;
     }
 
     isInFluid() {
