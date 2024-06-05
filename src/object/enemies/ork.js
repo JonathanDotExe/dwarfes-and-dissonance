@@ -8,7 +8,7 @@ export class Ork extends Enemy {
 
 
     constructor(x, y) {
-        super(x, y, 50, 2);
+        super(x, y, 50, 1.5);
         this.count = 0;
         this.dir = 0;
         this.lastTime = 0;

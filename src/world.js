@@ -219,7 +219,7 @@ export class GameWorld {
         return !!tile ? tile.getDisplayTile(x, y, this) : null;
     }
 
-    doCollisionDetection(x, y, width, height, movementX, movementY, collide) {
+    doCollisionDetection(x, y, width, height, movementX, movementY, collide, collideObj) {
         const goalX = x + movementX;
         const goalY = y + movementY;
         
@@ -239,7 +239,7 @@ export class GameWorld {
             //Objects
             const objs = this.getObjectsInArea(x + width, y, movementX, height);
             for (let obj of objs) {
-                if (obj.solid) {
+                if (collideObj(obj)) {
                     x = Math.min(x, obj.x - width);
                 }
             }
@@ -259,7 +259,7 @@ export class GameWorld {
             //Objects
             const objs = this.getObjectsInArea(x, y, movementX, height);
             for (let obj of objs) {
-                if (obj.solid) {
+                if (collideObj(obj)) {
                     x = Math.max(x, obj.x + obj.width);
                 }
             }
@@ -280,7 +280,7 @@ export class GameWorld {
             //Objects
             const objs = this.getObjectsInArea(x, y + height, width, movementY);
             for (let obj of objs) {
-                if (obj.solid) {
+                if (collideObj(obj)) {
                     y = Math.min(y, obj.y - height);
                 }
             }
@@ -300,7 +300,7 @@ export class GameWorld {
             //Objects
             const objs = this.getObjectsInArea(x, y, width, movementY);
             for (let obj of objs) {
-                if (obj.solid) {
+                if (collideObj(obj)) {
                     y = Math.max(y, obj.y + obj.height);
                 }
             }

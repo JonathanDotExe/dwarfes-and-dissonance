@@ -50,7 +50,7 @@ export class Flyingeye extends Enemy {
         return 3;
     }
 
-    doesCollide(tile) {
+    doesCollideObject(obj) {
         return false;
     }
 
