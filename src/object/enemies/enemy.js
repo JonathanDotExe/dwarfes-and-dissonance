@@ -36,11 +36,11 @@ export class Enemy extends LivingObject {
     }
 
     get rangeX() {
-        return 1;
+        return 1 + this.width;
     }
 
     get rangeY() {
-        return 1;
+        return 1 + this.height;
     }
 
     // AttackPosX and Y need to be written as getter
@@ -79,6 +79,14 @@ export class Enemy extends LivingObject {
         //Attack
         let curTime = new Date().getTime();
         if((curTime - this.lastTime > this.cooldown) || this.lastTime === undefined) {
+            /*let Xrange = this.rangeX;
+            let Yrange = this.rangeY;
+            if(this._direction.x >= 0) {
+                Xrange += this.width;
+            }
+            if(this._direction.y >= 0) {
+               Yrange += this.height;
+            }*/
             this.enemyAttack(this.attackPosX, this.attackPosY, this.rangeX, this.rangeY, this.damage);
             this.lastTime = curTime;
         }
