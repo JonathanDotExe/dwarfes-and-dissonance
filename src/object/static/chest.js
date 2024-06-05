@@ -26,5 +26,6 @@ export class Chest extends GameObject{
 
     open() {
         this.interacted = true;
+        this.world.player.changeWeapon(Math.floor(Math.random()*10));
     }
 }
