@@ -39,7 +39,11 @@ playerLeftSpear.src = "/res/objects/player_left_spear.png";
 const playerRightSpear = new Image();
 playerRightSpear.src = "/res/objects/player_right_spear.png";
 
+const playerDead = new Image();
+playerDead.src = "/res/objects/player_dead.png";
+
 const INTERACT_COOLDWN = 250;
+
 
 export class Player extends LivingObject {
 
@@ -52,6 +56,7 @@ export class Player extends LivingObject {
         this.weapon = 0;
         this.direction = {x: 0, y: 1};
         this.score = 0;
+        this.isDead = false;
     }
 
     init(world) {
@@ -60,42 +65,53 @@ export class Player extends LivingObject {
     }
 
     update(deltaTime, env) {
-        super.update(deltaTime, env);
-        const motion = env.input.movementAxis;
+        if(!this.isDead) {
+            super.update(deltaTime, env);
+            const motion = env.input.movementAxis;
 
-        // save direction for attacking
-        if(motion.x !== 0 || motion.y !== 0) {
-            this.direction = motion;
-        }
+            // save direction for attacking
+            if(motion.x !== 0 || motion.y !== 0) {
+                this.direction = motion;
+            }
 
-        // attacking
-        if(env.input.currentlyAttacking) {
-            let curTime = new Date().getTime();
-            if((curTime - this.lastTime > 500) || this.lastTime === undefined) {
-                this.attack();
-                this.lastTime = curTime;
+            // attacking
+            if(env.input.currentlyAttacking && this.isDead === false) {
+                let curTime = new Date().getTime();
+                if((curTime - this.lastTime > 500) || this.lastTime === undefined) {
+                    this.attack();
+                    this.lastTime = curTime;
+                }
+            }
+
+            // interacting
+            if(env.input.currentlyInteracting) {
+                let curTime = new Date().getTime();
+                if((curTime - this.lastTime > INTERACT_COOLDWN) || this.lastTime === undefined) {
+                    this.interact();
+                    this.lastTime = curTime;
+                }
+            }
+
+            const speed = this.isInFluid() ? 2 : 4;
+
+            this.move(motion.x * speed , motion.y * speed, deltaTime);
+        } else{
+            super.update(deltaTime, env);
+            if(env.input.currentlyAttacking) {
+                this.respawn();
             }
         }
 
-        // interacting
-        if(env.input.currentlyInteracting) {
-            let curTime = new Date().getTime();
-            if((curTime - this.lastTime > INTERACT_COOLDWN) || this.lastTime === undefined) {
-                this.interact();
-                this.lastTime = curTime;
-            }
-        }
-        const speed = this.isInFluid() ? 2 : 4;
-
-        this.move(motion.x * speed , motion.y * speed, deltaTime);
     }
 
     kill() {
-        this.respawn();
+        this.setHealth(1);
+        this.isDead = true;
     }
 
     respawn() {
         this._health = this._maxHealth;
+        this.isDead = false;
         do {
             this.x = Math.floor(Math.random() * this.world.worldWidth)
             this.y = Math.floor(Math.random() * this.world.worldHeight)
@@ -103,6 +119,10 @@ export class Player extends LivingObject {
     }
 
     draw(camX, camY, ctx) {
+        if(this.isDead) {
+            ctx.drawImage(playerDead, (this.x - camX) * TILE_SIZE, (this.y - camY) * TILE_SIZE);
+            return;
+        }
         if (this.weapon === 0) {
             if (this.direction === undefined) {
                 ctx.drawImage(playerFrontKnife, (this.x - camX) * TILE_SIZE, (this.y - camY) * TILE_SIZE);

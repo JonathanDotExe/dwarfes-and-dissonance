@@ -19,6 +19,14 @@ export const WORLD_SIZE = 256;
 const score = new Image();
 score.src = "res/score/score.png";
 
+const died = new Image();
+died.src = "res/death/died.png";
+
+const respawn = new Image();
+respawn.src = "res/death/respawn.png";
+
+
+
 export class GameWorld {
 
     constructor() {
@@ -181,8 +189,10 @@ export class GameWorld {
         ctx.strokeWidth = "5px";
         ctx.strokeText(this.player.score, 20 + scoreWidth, scoreHeight + 5);
 
-
-
+        if(this.player.isDead){
+            ctx.drawImage(died, 640-(TILE_SIZE*6), 160,TILE_SIZE*12,145);
+            ctx.drawImage(respawn, 640-(TILE_SIZE*3), 450,TILE_SIZE*6,64);
+        }
 
     }
 

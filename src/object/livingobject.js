@@ -13,6 +13,10 @@ export class LivingObject extends GameObject {
         return 0;
     }
 
+    setHealth(health){
+        return this._health = health;
+    }
+
     takeDamage(damage) {
         if (damage < 0) {
             throw "Damage must not be below zero";
