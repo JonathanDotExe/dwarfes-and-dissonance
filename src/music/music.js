@@ -1,4 +1,8 @@
+import { Flyingeye } from "../object/enemies/flyingeye.js";
+import { Piranha } from "../object/enemies/piranha.js";
 import { Chest } from "../object/static/chest.js";
+import { Dwarf } from "../object/static/dwarf.js";
+import { Smallhouse } from "../object/static/smallhouse.js";
 import { Tree } from "../object/static/tree.js";
 import { SAND_TILE } from "../object/tile.js";
 import { AmbientEnergySupplier, FightEnergySupplier, MusicGenerator, MusicGeneratorSection, RandomMusicGeneratorTrack, SequenceMusicGeneratorTrack, SyncMusicGeneratorTrack } from "./generator.js";
@@ -153,6 +157,16 @@ export async function createFightMusicGenerator(world, ctx) {
                 brass,
                 { minEnergy: 0.8 }
             ),
+            new RandomMusicGeneratorTrack(
+                'guiro',
+                [new AudioLoop(AUDIO_FILES.fight.guiro1, 0)],
+                { canPlay: (world) => world.getObjectsInArea(world.player.x - 12, world.player.y - 12, 24 + world.player.width, 24 + world.player.height).filter(o => o instanceof Piranha).length > 0 }
+            ),
+            new RandomMusicGeneratorTrack(
+                'glide_synth',
+                [new AudioLoop(AUDIO_FILES.fight.glideSynth1, 0)],
+                { canPlay: (world) => world.getObjectsInArea(world.player.x - 12, world.player.y - 12, 24 + world.player.width, 24 + world.player.height).filter(o => o instanceof Flyingeye).length > 0 }
+            ),
         ], 0, 2)
     ], new FightEnergySupplier(), ctx);
 }
@@ -245,7 +259,7 @@ export async function createAmbientMusicGenerator(world, ctx) {
                     new RandomMusicGeneratorTrack(
                         'pizz_strings',
                         [new AudioLoop(AUDIO_FILES.ambient.pizzStrings1, 0)],
-                        { chance: 0.3, minEnergy: 0.4, excludesAll: ['epiano'] }
+                        { canPlay: (world) => world.getObjectsInArea(world.player.x - 10, world.player.y - 10, 12, 12).filter(o => o instanceof Dwarf || o instanceof Smallhouse).length > 0 }
                     ),
                     new RandomMusicGeneratorTrack(
                         'pizz_drums',
@@ -334,11 +348,10 @@ export async function createAmbientMusicGenerator(world, ctx) {
                         { minEnergy: 0.6, chance: 0.5 , excludesAll: ['violin1']}
                     ),
                     //Pizz
-                    //TODO only trigger for dwarfes
                     new RandomMusicGeneratorTrack(
                         'pizz_strings',
                         [new AudioLoop(AUDIO_FILES.ambient.pizzStrings1, 0)],
-                        { chance: 0.2, minEnergy: 0.6 }
+                        { canPlay: (world) => world.getObjectsInArea(world.player.x - 10, world.player.y - 10, 12, 12).filter(o => o instanceof Dwarf || o instanceof Smallhouse).length > 0 }
                     ),
 
                 ], 0.5, 2)
