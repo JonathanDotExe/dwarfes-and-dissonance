@@ -11,6 +11,10 @@ export class Goblin extends Enemy {
         super(x, y, 25, 2);
     }
 
+    get killScore() {
+        return 50;
+    }
+
     draw(camX, camY, ctx) {
         ctx.drawImage(goblinImage, (this.x - camX) * TILE_SIZE, (this.y - camY) * TILE_SIZE);
         super.draw(camX, camY, ctx);

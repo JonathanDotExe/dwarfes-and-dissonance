@@ -6,16 +6,31 @@ flyingeyeImage.src = "/res/objects/flying_eye.png";
 
 export class Flyingeye extends Enemy {
 
-    rangeX = 2;
-    rangeY = 2;
-    damage = 30;
-    cooldown = 1000;
-
     constructor(x, y) {
         super(x, y, 100, 2);
         this.count = 0;
         this.dir = 0;
         this.lastTime = 0;
+    }
+
+    get killScore() {
+        return 100;
+    }
+
+    get cooldown() {
+        return 1000;
+    }
+
+    get damage() {
+        return 30;
+    }
+
+    get rangeX() {
+        return 2;
+    }
+
+    get rangeY() {
+        return 2;
     }
 
     draw(camX, camY, ctx) {
@@ -34,4 +49,9 @@ export class Flyingeye extends Enemy {
     get width(){
         return 3;
     }
+
+    doesCollide(tile) {
+        return false;
+    }
+
 }

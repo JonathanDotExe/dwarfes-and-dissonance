@@ -16,6 +16,8 @@ import {Smallhouse} from "./object/static/smallhouse.js";
 
 export const WORLD_SIZE = 256;
 
+const score = new Image();
+score.src = "res/score/score.png";
 
 export class GameWorld {
 
@@ -57,8 +59,7 @@ export class GameWorld {
         gen.generate(this, 0, 0, this.worldWidth, this.worldHeight);
 
         //Add objects
-        this.addObject(new Ork(20, 15));
-        this.addObject(new Flyingeye(30,20));
+        /*
         this.addObject(new Goblin(10, 7));
         this.addObject(new Tree(10,12));
         this.addObject(new Chest(15,8));
@@ -66,10 +67,11 @@ export class GameWorld {
         this.addObject(new Dwarf(5, 5));
         this.addObject(new Bighouse(20, 20));
         this.addObject(new Smallhouse(10, 10));
-        this.addObject(this._player);
-
+         */
 
         //Add player
+        this.addObject(this._player);
+
         createAmbientMusicGenerator(this).then(m => {
             m.init();
         })
@@ -162,6 +164,26 @@ export class GameWorld {
                 }
             }
         }
+        //Draw Score
+        const scoreWidth = TILE_SIZE*5;
+        const scoreHeight = 45;
+        ctx.drawImage(score,10,10,scoreWidth,scoreHeight);
+
+        ctx.fillStyle = "rgb(8,20,83)";
+        ctx.font = "50px serif";
+        ctx.fillText(this.player.score, 20 + scoreWidth, scoreHeight + 5);
+
+        ctx.strokeStyle = "black";
+        ctx.strokeWidth = "7px";
+        ctx.strokeText(this.player.score, 20 + scoreWidth, scoreHeight + 5);
+
+        ctx.strokeStyle = "rgb(205,156,42)";
+        ctx.strokeWidth = "5px";
+        ctx.strokeText(this.player.score, 20 + scoreWidth, scoreHeight + 5);
+
+
+
+
     }
 
     addObject(obj) {

@@ -22,6 +22,7 @@ export class Player extends LivingObject {
         this.sightRange = 6;
         this.lastTime = 0;
         this.direction = {x: 0, y: 1};
+        this.score = 0;
     }
 
     init(world) {
@@ -47,7 +48,7 @@ export class Player extends LivingObject {
             }
         }
 
-        const speed = this.isInFluid() ? 1 : 4;
+        const speed = this.isInFluid() ? 2 : 4;
 
         this.move(motion.x * speed , motion.y * speed, deltaTime);
     }
@@ -109,12 +110,15 @@ export class Player extends LivingObject {
 
         creatures.forEach((obj) => {
             if(obj instanceof LivingObject && obj !== this) {
-                obj.takeDamage(10);
-                obj.applyForce(this.direction.x * 8, this.direction.y * 8);
-            } else if(obj instanceof Dwarf && obj !== this){
+                if (obj.takeDamage(10)) {
+                    this.score += obj.killScore;
+                }
+                obj.overwriteForce(this.direction.x * 6, this.direction.y * 6);
+            }
+            else if(obj instanceof Dwarf && obj !== this){
                 obj.healPlayer(this);
             }
-        })
+        });
     }
 
     heal(amount) {

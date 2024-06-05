@@ -9,14 +9,21 @@ export class LivingObject extends GameObject {
         this._health = maxHealth;
     }
 
+    get killScore() {
+        return 0;
+    }
+
     takeDamage(damage) {
         if (damage < 0) {
             throw "Damage must not be below zero";
         }
+        const oldHealth = this.health;
         this._health -= damage;
-        if (this._health <= 0) {
+        if (this._health <= 0 && oldHealth > 0) {
             this.kill();
+            return true;
         }
+        return false;
     }
 
     kill() {

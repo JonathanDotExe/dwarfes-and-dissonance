@@ -130,67 +130,73 @@ export class Enemy extends LivingObject {
     }
 
     moveAttack(target) {
-        // chase Player
-        // Move towards the closest of 8 directions to player
+        let dir;
+        let diagonal = 1/Math.sqrt(2);
+
+        const graceArea = 2;
+
         const playerX = target.x;
         const playerY = target.y;
 
-        let xMove = 0;
-        let yMove = 0;
+        const playerXLeft = playerX - graceArea;
+        const playerXRight = playerX + graceArea;
+        const playerYUp = playerY - graceArea;
+        const playerYDown = playerY + graceArea;
 
-        let diffMoveX = 0;
-        let diffX = this.x - playerX;
-        if(diffX < 0) {
-            diffX = diffX * (-1);
-        }
-        // Set player one width to the left
-        // Make value positive
-        // If Different smaller than difference without moving -> enemy is to the left
-        // If Different bigger than difference without moving -> enemy is to the right
-        diffMoveX = (this.x - 1) - playerX;
-        if(diffMoveX < 0) {
-            diffMoveX = diffMoveX * (-1);
-        }
-        if(diffMoveX < diffX) {
-            xMove = -1;
-        } else if(diffMoveX > diffX) {
-            xMove = 2;
-        }
-
-        let diffMoveY = 0;
-        let diffY = this.y - playerY;
-        if(diffY < 0) {
-            diffY = diffY * (-1);
-        }
-        // Same for height Differenz
-        // If Different smaller than difference without moving -> enemy is higher
-        // If Different bigger than difference without moving -> enemy is lower
-        diffMoveY = (this.y - 1) - playerY;
-        if(diffMoveY < 0) {
-            diffMoveY = diffMoveY * (-1);
-        }
-        if(diffMoveY < diffY) {
-            yMove = -1;
-        } else if(diffMoveY > diffY) {
-            yMove = 1;
-        }
-
-        // if both are set, movement is gonna be diaganolly so next to recalculated
-        if(xMove !== 0.0 && yMove !== 0.0) {
-            let diagonal = 1/Math.sqrt(2);
-            if (xMove > 0) {
-                xMove = diagonal;
+        // Inside X Grace Area
+        if(this.x >= playerXLeft && this.x <= playerXRight) {
+            // Inside Y Grace Area
+            if(this.y >= playerYUp && this.y <= playerYDown) {
+                // Check shortest direction
+                dir = this.shortestDiag(diagonal, playerX, playerY);
             } else {
-                xMove = -(diagonal);
+                // Outside of Y Grace Area
+                // Move up or down
+                if(this.y > playerY) {
+                    // Enemy under player
+                    dir = {x: 0, y: -1};
+                } else {
+                    // Enemy over player
+                    dir = {x: 0, y: 1};
+                }
             }
-
-            if (yMove > 0) {
-                yMove = diagonal;
+        } else {
+            // Outside of X Grace Area
+            // Inside Y Grace Area
+            if(this.y >= playerYUp && this.y <= playerYDown) {
+                // Move left or right
+                if(this.x > playerX) {
+                    // Enemy right from player
+                    dir = {x: -1, y: 0};
+                } else {
+                    // Enemy left from player
+                    dir = {x: 1, y: 0};
+                }
             } else {
-                yMove = -(diagonal);
+                // Outside of all grace Areas
+                dir = this.shortestDiag(diagonal, playerX, playerY);
             }
         }
-        return { x: xMove, y: yMove };
+
+        return dir;
+    }
+
+    shortestDiag(diagonal, playerX, playerY) {
+        let dir;
+        if(this.x > playerX && this.y > playerY) {
+            // Enemy right down from player
+            dir = {x: -diagonal, y: -diagonal}
+        } else if (this.x > playerX && this.y < playerY) {
+            // Enemy right up from player
+            dir = {x: -diagonal, y: diagonal}
+        } else if (this.x < playerX && this.y < playerY) {
+            // Enemy left up from player
+            dir = {x: diagonal, y: diagonal}
+        } else {
+            // Enemy left down from player
+            dir = {x: diagonal, y: -diagonal}
+        }
+        return dir;
     }
     
     isTarget(obj) {
@@ -205,7 +211,7 @@ export class Enemy extends LivingObject {
         creatures.forEach((obj) => {
             if(this.isTarget(obj)) {
                 obj.takeDamage(damage);
-                obj.applyForce(this._direction.x * 8, this._direction.y * 8);
+                obj.overwriteForce(this._direction.x * 8, this._direction.y * 8);
             }
         })
     }
