@@ -23,6 +23,10 @@ export class GameObject {
         return 8;
     }
 
+    get bounce() {
+        return false;
+    }
+
     /**
      * Initialized the game object for the given world
      * Should only be called once
@@ -43,7 +47,13 @@ export class GameObject {
 
     update(deltaTime, env) {
         //Movement
-        this.move(this.xMotion, this.yMotion, deltaTime);
+        const diff = this.move(this.xMotion, this.yMotion, deltaTime);
+        if (this.bounce && diff.x != 0) {
+            this.xMotion = -this.xMotion;
+        }
+        if (this.bounce && diff.y != 0) {
+            this.yMotion = -this.yMotion;
+        }
         //Friction
         this.xMotion -= Math.sign(this.xMotion) * Math.min(this.friction * deltaTime, Math.abs(this.xMotion));
         this.yMotion -= Math.sign(this.yMotion) * Math.min(this.friction * deltaTime, Math.abs(this.yMotion));
@@ -54,9 +64,16 @@ export class GameObject {
     }
 
     move(xMotion, yMotion, deltaTime) {
-        const movement = this.world.doCollisionDetection(this.x, this.y, this.width, this.height, xMotion * deltaTime, yMotion * deltaTime, t => this.doesCollide(t), o => this.doesCollideObject(o));
+        const xM = xMotion * deltaTime;
+        const yM = yMotion * deltaTime;
+        const movement = this.world.doCollisionDetection(this.x, this.y, this.width, this.height, xM, yM, t => this.doesCollide(t), o => this.doesCollideObject(o));
+        const diff = {
+            x: this.x + xM - movement.x,
+            y: this.y + yM - movement.y,
+        }
         this.x = movement.x;
         this.y = movement.y;
+        return diff;
     }
 
     onRemove() {

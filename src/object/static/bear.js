@@ -32,6 +32,11 @@ export class Bear extends LivingObject{
         return true;
     }
 
+    
+    get bounce() {
+        return true;
+    }
+
     takeDamage(damage) {
         return false;
     }
