@@ -10,6 +10,7 @@ import { Flyingeye } from './object/enemies/flyingeye.js';
 import {Dwarf} from "./object/static/dwarf.js";
 import {Bighouse} from "./object/static/bighouse.js";
 import {Smallhouse} from "./object/static/smallhouse.js";
+import { Bear } from './object/static/bear.js';
 
 
 const CAVE_CONNECTION_RANGE = 64;
@@ -168,6 +169,13 @@ export class WorldGenerator {
                 world.addObject(new Tree(treeX, treeY));
             }
         }, 6, rng);
+        //Bears
+        placeInChunks(x, y, width, height, 32, (bearX, bearY) => {
+            const tile = world.getTile(bearX, bearY)
+            if (tile != null && !tile.solid && !tile.fluid) {
+                world.addObject(new Bear(bearX, bearY));
+            }
+        }, 1, rng);
         //Forests
         placeInChunks(x, y, width, height, 64, (x, y) => {
             //Place 20 trees
