@@ -23,7 +23,13 @@ export class Chest extends GameObject{
         super.draw(camX, camY, ctx);
     }
 
+    alreadyOpened = false;
     open() {
+        if(this.alreadyOpened) {
+            return;
+        } else {
+            this.alreadyOpened = true;
+        }
         this.interacted = true;
         this.world.player.changeWeapon(Math.floor(Math.random() * 10));
     }
