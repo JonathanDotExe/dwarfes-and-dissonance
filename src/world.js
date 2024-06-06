@@ -186,6 +186,11 @@ export class GameWorld {
         ctx.strokeText(this.player.score, 20 + scoreWidth, scoreHeight + 5);
 
         if(this.player.isDead){
+            const gradient = ctx.createRadialGradient(640,320,75,640,320,300);
+            gradient.addColorStop(0,"rgba(138, 23, 15, 0.5)");
+            gradient.addColorStop(1,"rgba(89, 15, 10,0.7)");
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0,0,1280,720);
             ctx.drawImage(died, 640-(TILE_SIZE*6), 160,TILE_SIZE*12,145);
             ctx.drawImage(respawn, 640-(TILE_SIZE*3), 450,TILE_SIZE*6,64);
         }
