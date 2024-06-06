@@ -36,4 +36,12 @@ export class Bear extends LivingObject{
         return false;
     }
 
+    applyForce(forceX, forceY) {
+        super.applyForce(forceX * 2, forceY * 2)
+    }
+
+    overwriteForce(forceX, forceY) {
+        super.overwriteForce(forceX * 2, forceY * 2)
+    }
+
 }
