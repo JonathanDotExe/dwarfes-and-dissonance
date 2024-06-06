@@ -48,6 +48,7 @@ const INTERACT_COOLDWN = 250;
 export class Player extends LivingObject {
 
     direction;
+    delay = 0;
 
     constructor(x, y) {
         super(x, y, 100);
@@ -97,7 +98,8 @@ export class Player extends LivingObject {
             this.move(motion.x * speed , motion.y * speed, deltaTime);
         } else{
             super.update(deltaTime, env);
-            if(env.input.currentlyAttacking) {
+            this.delay++;
+            if(env.input.currentlyAttacking && this.delay > 150) {
                 this.respawn();
             }
         }
@@ -112,6 +114,7 @@ export class Player extends LivingObject {
     respawn() {
         this._health = this._maxHealth;
         this.isDead = false;
+        this.delay = 0;
         do {
             this.x = Math.floor(Math.random() * this.world.worldWidth)
             this.y = Math.floor(Math.random() * this.world.worldHeight)
