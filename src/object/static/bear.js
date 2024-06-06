@@ -17,7 +17,9 @@ export class Bear extends LivingObject{
         if (this.xMotion != 0 || this.yMotion != 0) {
             for (let obj of this.world.getObjectsInArea(this.x, this.y, this.width, this.height)) {
                 if (obj instanceof Enemy) {
-                    obj.takeDamage(obj.health);
+                    if (obj.takeDamage(obj.health)) {
+                        this.world.player.score += obj.killScore; //FIXME fails when there are multiple players
+                    }
                 }
             }
         }
