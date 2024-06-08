@@ -84,7 +84,7 @@ export class GameWorld {
     update(deltaTime, env) {
         //Update objects
         //Only update objects around player
-        for (let obj of this._objects) {
+        for (let obj of this.getObjectsInArea(this.player.x - 20, this.player.y - 20, 40 + this.player.width, 40 + this.player.height)) {
             obj.update(deltaTime, env);
         }
     }

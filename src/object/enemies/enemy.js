@@ -75,7 +75,7 @@ export class Enemy extends LivingObject {
             }
         })
         //Move
-        const motion = this.getMovement();
+        const motion = this.getMovement(deltaTime);
         this.move(motion.x * this.speed, motion.y * this.speed, deltaTime);
         if (motion.x != 0 || motion.y != 0) {
             this._direction = motion;
@@ -88,9 +88,9 @@ export class Enemy extends LivingObject {
         }
     }
 
-    getMovement() {
+    getMovement(delta) {
         if (this._target != null) {
-            return this.moveAttack(this._target);
+            return this.moveAttack(this._target, delta);
         }
         return this.moveRand();
     }
@@ -137,25 +137,25 @@ export class Enemy extends LivingObject {
     lastY = 0;
     lastCounter = 0;
     lastRoutine = false;
-    lastThreshold = 10;
+    lastThreshold = 1;
     // If change, also change in lastRoutine
-    lastAmount = 40;
-    moveAttack(target) {
+    lastAmount = 2
+    moveAttack(target, delta) {
         // Check if running into a wall and moveRand if so
         if(this.lastRoutine) {
             if(this.lastAmount > 0) {
-                this.lastAmount--;
+                this.lastAmount -= delta;
                 return this.moveRand();
             } else {
                 this.lastRoutine = false;
-                this.lastAmount = 40;
+                this.lastAmount = 2;
             }
         }
 
         let stuckArea = 0.2;
         if((this.x >= this.lastX - stuckArea && this.x <= this.lastX + stuckArea) && (this.y >= this.lastY - stuckArea && this.y <= this.lastY + stuckArea)) {
-            this.lastCounter++;
-            if(this.lastCounter == this.lastThreshold) {
+            this.lastCounter += delta;
+            if(this.lastCounter >= this.lastThreshold) {
                 this.lastRoutine = true;
                 this.lastCounter = 0;
             }
