@@ -83,6 +83,7 @@ export class GameWorld {
 
     update(deltaTime, env) {
         //Update objects
+        //Only update objects around player
         for (let obj of this._objects) {
             obj.update(deltaTime, env);
         }
@@ -129,8 +130,7 @@ export class GameWorld {
             }
         }
         //Draw objects
-        //TODO only draw whats in cam
-        for (let obj of this._objects) {
+        for (let obj of this.getObjectsInArea(camX, camY, camWidth, camHeight)) {
             obj.draw(camX, camY, ctx);
         }
         //Draw solid tiles

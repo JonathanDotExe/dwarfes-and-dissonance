@@ -195,7 +195,7 @@ export class WorldGenerator {
         }, 4, rng);
         //Goblins
         placeInChunks(x, y, width, height, 64, (x, y) => {
-            const amount = 4 + Math.floor(rng() * 6)
+            const amount = 4 + Math.floor(rng() * 3)
             for (let i = 0; i < amount; i++) {
                 const goblinX = x + Math.floor(rng() * 4);
                 const goblinY = y + Math.floor(rng() * 4);
@@ -207,7 +207,7 @@ export class WorldGenerator {
         }, 2, rng);
         //Piranhias
         placeInChunks(x, y, width, height, 64, (x, y) => {
-            const amount = 3 + Math.floor(rng() * 3)
+            const amount = 2 + Math.floor(rng() * 2)
             for (let i = 0; i < amount; i++) {
                 const piranhaX = x + Math.floor(rng() * 4);
                 const piranhaY = y + Math.floor(rng() * 4);
@@ -216,7 +216,7 @@ export class WorldGenerator {
                     world.addObject(piranha);
                 }
             }
-        }, 3, rng);
+        }, 2, rng);
         //Orks
         placeInChunks(x, y, width, height, 64, (x, y) => {
             const orkX = x + Math.floor(rng() * 4);
@@ -226,7 +226,7 @@ export class WorldGenerator {
                 world.addObject(ork);
             }
             //Goblins
-            const amount = 4 + Math.floor(rng() * 4) 
+            const amount = 2 + Math.floor(rng() * 2) 
             for (let i = 0; i < amount; i++) {
                 const goblinX = x + Math.floor(rng() * 4);
                 const goblinY = y + Math.floor(rng() * 4);
@@ -235,7 +235,7 @@ export class WorldGenerator {
                     world.addObject(goblin);
                 }
             }
-        }, 3, rng);
+        }, 2, rng);
 
         //Flyingeye
         placeInChunks(x, y, width, height, 64, (x, y) => {
