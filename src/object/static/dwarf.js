@@ -17,7 +17,7 @@ export class Dwarf extends GameObject{
         super(x,y,5);
         this.random = Math.random();
         this.healamount = 50;
-        this.interacted = false;
+        this.cooldown = 0;
     }
 
     draw(camX, camY, ctx) {
@@ -31,14 +31,20 @@ export class Dwarf extends GameObject{
         super.draw(camX, camY, ctx);
     }
 
+    update(delta, env) {
+        super.update(delta, env);
+        this.cooldown -= delta;
+    }
+
     get solid() {
         return true;
     }
 
     healPlayer(player){
-        if(!this.interacted)
-        player.heal(this.healamount);
-        this.interacted = true;
+        if(this.cooldown <= 0) {
+            player.heal(this.healamount);
+            this.cooldown = 10.0;
+        }
     }
 
 

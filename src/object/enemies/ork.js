@@ -14,6 +14,10 @@ export class Ork extends Enemy {
         this.lastTime = 0;
     }
 
+    get energyScore() {
+        return 2;
+    }
+
     get killScore() {
         return 80;
     }

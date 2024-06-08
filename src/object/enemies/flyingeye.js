@@ -15,6 +15,10 @@ export class Flyingeye extends Enemy {
         this.lastTime = 0;
     }
 
+    get energyScore() {
+        return 3;
+    }
+
     get killScore() {
         return 100;
     }
@@ -28,11 +32,11 @@ export class Flyingeye extends Enemy {
     }
 
     get rangeX() {
-        return 2;
+        return 1;
     }
 
     get rangeY() {
-        return 2;
+        return 1;
     }
 
     draw(camX, camY, ctx) {

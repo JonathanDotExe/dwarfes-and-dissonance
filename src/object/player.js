@@ -115,6 +115,9 @@ export class Player extends LivingObject {
         this._health = this._maxHealth;
         this.isDead = false;
         this.delay = 0;
+        this.score = 0;
+        this.xMotion = 0;
+        this.yMotion = 0;
         do {
             this.x = Math.floor(Math.random() * this.world.worldWidth)
             this.y = Math.floor(Math.random() * this.world.worldHeight)

@@ -15,6 +15,10 @@ export class Piranha extends Enemy{
         return 30;
     }
 
+    get energyScore() {
+        return 0.5;
+    }
+
     draw(camX, camY, ctx) {
         ctx.drawImage(piranhaImage, (this.x - camX) * TILE_SIZE, (this.y - camY) * TILE_SIZE);
         super.draw(camX, camY, ctx);

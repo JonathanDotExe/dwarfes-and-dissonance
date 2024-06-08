@@ -195,7 +195,7 @@ export class WorldGenerator {
         }, 4, rng);
         //Goblins
         placeInChunks(x, y, width, height, 64, (x, y) => {
-            const amount = 3 + Math.floor(rng() * 3)
+            const amount = 4 + Math.floor(rng() * 6)
             for (let i = 0; i < amount; i++) {
                 const goblinX = x + Math.floor(rng() * 4);
                 const goblinY = y + Math.floor(rng() * 4);
@@ -204,14 +204,17 @@ export class WorldGenerator {
                     world.addObject(goblin);
                 }
             }
-        }, 3, rng);
+        }, 2, rng);
         //Piranhias
         placeInChunks(x, y, width, height, 64, (x, y) => {
-            const piranhaX = x + Math.floor(rng() * 4);
-            const piranhaY = y + Math.floor(rng() * 4);
-            const piranha = new Piranha(piranhaX, piranhaY);
-            if (!piranha.doesCollide(world.getTile(piranhaX, piranhaY))) {
-                world.addObject(piranha);
+            const amount = 3 + Math.floor(rng() * 3)
+            for (let i = 0; i < amount; i++) {
+                const piranhaX = x + Math.floor(rng() * 4);
+                const piranhaY = y + Math.floor(rng() * 4);
+                const piranha = new Piranha(piranhaX, piranhaY);
+                if (!piranha.doesCollide(world.getTile(piranhaX, piranhaY))) {
+                    world.addObject(piranha);
+                }
             }
         }, 3, rng);
         //Orks
@@ -222,7 +225,17 @@ export class WorldGenerator {
             if (!ork.doesCollide(world.getTile(orkX, orkY))) {
                 world.addObject(ork);
             }
-        }, 4, rng);
+            //Goblins
+            const amount = 4 + Math.floor(rng() * 4) 
+            for (let i = 0; i < amount; i++) {
+                const goblinX = x + Math.floor(rng() * 4);
+                const goblinY = y + Math.floor(rng() * 4);
+                const goblin = new Goblin(goblinX, goblinY);
+                if (!goblin.doesCollide(world.getTile(goblinX, goblinY))) {
+                    world.addObject(goblin);
+                }
+            }
+        }, 3, rng);
 
         //Flyingeye
         placeInChunks(x, y, width, height, 64, (x, y) => {
@@ -232,7 +245,7 @@ export class WorldGenerator {
             if (!flyingeye.doesCollide(world.getTile(flyingeyeX, flyingeyeY))) {
                 world.addObject(flyingeye);
             }
-        }, 2, rng);
+        }, 1, rng);
 
         //Villages
         placeInChunks(x, y, width, height, 64, (x, y) => {

@@ -15,6 +15,10 @@ export class Enemy extends LivingObject {
         this.lastTime = 0;
     }
 
+    get energyScore() {
+        return 1;
+    }
+
     get range(){
         return this._range;
     }
@@ -32,7 +36,7 @@ export class Enemy extends LivingObject {
     }
 
     get damage() {
-        return 10;
+        return 5;
     }
 
     get rangeX() {
@@ -242,7 +246,7 @@ export class Enemy extends LivingObject {
         creatures.forEach((obj) => {
             if(this.isTarget(obj)) {
                 obj.takeDamage(damage);
-                obj.overwriteForce(this._direction.x * 8, this._direction.y * 8);
+                obj.overwriteForce(this._direction.x * 6, this._direction.y * 6);
             }
         })
     }

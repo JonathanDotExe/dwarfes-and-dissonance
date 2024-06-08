@@ -157,7 +157,7 @@ export class FightEnergySupplier extends EnergySupplier {
 
     getEnergyLevel(world) {
         const enemies = world.getObjectsInArea(world.player.x - 12, world.player.y - 12, 24 + world.player.width, 24 + world.player.height).filter(e => e instanceof Enemy);
-        return Math.min(enemies.length/8.0 + (1 - world.player.healthPercent) * 0.4, 1);
+        return Math.min(enemies.reduce((sum, e) => sum + e.energyScore, 0.0)/10.0 + (1 - world.player.healthPercent) * 0.3, 1);
     }
 
 }
