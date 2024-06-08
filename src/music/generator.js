@@ -32,6 +32,9 @@ export class MusicGeneratorTrack {
                 excludesAll: this._options.excludesAll,
             }
         }
+        else {
+
+        }
         return null;
     }
 
@@ -58,6 +61,7 @@ export class SequenceMusicGeneratorTrack extends MusicGeneratorTrack {
     constructor(identifier, loops, options = {}) {
         super(identifier, loops, options);
         this._index = 0;
+        this._selected = false;
     }
 
     get index() {
@@ -65,11 +69,18 @@ export class SequenceMusicGeneratorTrack extends MusicGeneratorTrack {
     }
 
     selectLoop(world, energyLevel) {
+        this._selected = true;
         return this._loops[this.index];
     }
 
     selectionFinished() {
-        this._index = (this._index + 1) % this._loops.length;
+        if (this._selected) {
+            this._index = (this._index + 1) % this._loops.length;
+        }
+        else {
+            this._index = 0;
+        }
+        this._selected = false;
     }
 
 }
