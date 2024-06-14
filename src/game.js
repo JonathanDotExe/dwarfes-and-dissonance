@@ -54,8 +54,7 @@ export class Game {
         }
         window.requestAnimationFrame(loop);
     }
-    
-    //Source: https://www.sitepoint.com/quick-tip-game-loop-in-javascript/
+    //Information about game loop: https://www.sitepoint.com/quick-tip-game-loop-in-javascript/
 }
 
 window.addEventListener('load', () => {

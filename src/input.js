@@ -1,3 +1,6 @@
+/**
+ * Listens to mouse and keyboard inputs and stores them in variables for easy access in the game objects
+ */
 export class Input {
 
     constructor() {

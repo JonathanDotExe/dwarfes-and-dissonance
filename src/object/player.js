@@ -129,6 +129,7 @@ export class Player extends LivingObject {
             ctx.drawImage(playerDead, (this.x - camX) * TILE_SIZE, (this.y - camY) * TILE_SIZE);
             return;
         }
+        //Different sprites for different weapons
         if (this.weapon === 0) {
             if (this.direction === undefined) {
                 ctx.drawImage(playerFrontKnife, (this.x - camX) * TILE_SIZE, (this.y - camY) * TILE_SIZE);
@@ -279,6 +280,7 @@ export class Player extends LivingObject {
         const interactPosY = this.y + this.height/2 + this.direction.y - 0.5;
         let objInRange = this.world.getObjectsInArea(interactPosX, interactPosY, 1, 1);
 
+        //Check for dwarfes and chests
         objInRange.forEach((obj) => {
             if (obj instanceof Chest) {
                 obj.open();

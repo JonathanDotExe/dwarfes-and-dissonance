@@ -18,6 +18,9 @@ const CAVE_CONNECTION_COUNT = 4;
 const MAX_CAVE_WIDTH = 6;
 const CAVE_THRESHOLD = 0.5;
 
+/**
+ * Tries to place a random amount (between amount and minAmount) of objects in each chunk of the given size
+ */
 function placeInChunks(x, y, width, height, chunkSize, place, amount, rng, minAmount=0) {
     for (let i = 0; i < width; i += chunkSize) {
         for (let j = 0; j < height; j +=chunkSize) {

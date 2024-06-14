@@ -2,6 +2,9 @@ import { Enemy } from "../object/enemies/enemy.js";
 import { STONE_FLOOR_TILE } from "../object/tile.js";
 import { AudioChannel, MusicPlayer } from "./player.js";
 
+/**
+ * Represents a track for a music piece containing the loops for the corresponding channel
+ */
 export class MusicGeneratorTrack {
 
     constructor(identifier, loops, options = {}) {
@@ -16,12 +19,18 @@ export class MusicGeneratorTrack {
         return this._identifier;
     }
 
+    /**
+     * Selects a loop from the list of possible loops
+     */
     selectLoop(world, energyLevel) {
         return null
     }
 
+    /**
+     * Returns the loop that should be played on the channel next iteration or none if the conditions are not met
+     */
     nextLoop(world, energyLevel) {
-        if (this._options.canPlay(world) && energyLevel >= this._options.minEnergy && energyLevel < this._options.maxEnergy && Math.random() <= this._options.chance) {
+        if (this._options.canPlay(world) && energyLevel >= this._options.minEnergy && energyLevel < this._options.maxEnergy && Math.random() <= this._options.chance) { //Conditions
             const loop = this.selectLoop(world, energyLevel);
             if (!loop) {
                 return null;
@@ -32,9 +41,6 @@ export class MusicGeneratorTrack {
                 excludesAll: this._options.excludesAll,
             }
         }
-        else {
-
-        }
         return null;
     }
 
@@ -44,6 +50,9 @@ export class MusicGeneratorTrack {
 
 }
 
+/**
+ * A track that randomly selects a loop from the list of possible loops
+ */
 export class RandomMusicGeneratorTrack extends MusicGeneratorTrack {
 
     constructor(identifier, loops, options = {}) {
@@ -56,6 +65,9 @@ export class RandomMusicGeneratorTrack extends MusicGeneratorTrack {
 
 }
 
+/**
+ * A track that always plays the loops sequentially after each other
+ */
 export class SequenceMusicGeneratorTrack extends MusicGeneratorTrack {
 
     constructor(identifier, loops, options = {}) {
@@ -85,6 +97,10 @@ export class SequenceMusicGeneratorTrack extends MusicGeneratorTrack {
 
 }
 
+
+/**
+ * A track that always plays the loops at the position another track is playing (to synchronize them)
+ */
 export class SyncMusicGeneratorTrack extends MusicGeneratorTrack {
 
     constructor(identifier, loops, track, options = {}) {
@@ -98,6 +114,9 @@ export class SyncMusicGeneratorTrack extends MusicGeneratorTrack {
 
 }
 
+/**
+ * A section of a music piece with a collection of tracks that plays in a specific energy range
+ */
 export class MusicGeneratorSection {
 
     constructor(tracks, minEnergy = 0, maxEnergy = 1) {
@@ -120,6 +139,9 @@ export class MusicGeneratorSection {
 
 }
 
+/**
+ * An abstract class that supplies the music generator with an energy level used for loop selection
+ */
 export class EnergySupplier {
 
     getEnergyLevel(world) {
@@ -132,6 +154,9 @@ export class EnergySupplier {
 
 }
 
+/**
+ * The energy supplier for the ambient. The energy slowly rises and randomly dips sometimes.
+ */
 export class AmbientEnergySupplier extends EnergySupplier {
 
     constructor() {
@@ -164,6 +189,9 @@ export class AmbientEnergySupplier extends EnergySupplier {
 
 }
 
+/**
+ * Supplies the energy for a fight. Energy is based on the amount and type of enemys around as well as the players health.
+ */
 export class FightEnergySupplier extends EnergySupplier {
 
     getEnergyLevel(world) {
@@ -173,6 +201,10 @@ export class FightEnergySupplier extends EnergySupplier {
 
 }
 
+/**
+ * A dynamic generator of game music. Has a collection of sections with tracks with multiply possible loops. All loops have the same bar length and tempo.
+ * The music generator internally creates a music player and supplies it with the loops to play.
+ */
 export class MusicGenerator {
 
     constructor(world, bpm, bars, beatsPerBar, channels, sections, energySupplier, ctx) {
@@ -183,6 +215,9 @@ export class MusicGenerator {
         this._energySupplier = energySupplier;
     }
     
+    /**
+     * Starts the music
+     */
     init() {
         //Create tracks
         for (let key in this._channels) {
@@ -225,6 +260,10 @@ export class MusicGenerator {
         this._player.start();
     }
 
+    /**
+     * Called every game update
+     * Used to activate special effects when the player enters water or caves
+     */
     update(delta) {
         this._energySupplier.update(delta);
         //Water
@@ -243,6 +282,7 @@ export class MusicGenerator {
         }
     }
 
+    //Forward to player
     fadeIn(time) {
         this._player.fadeIn(time);
     }

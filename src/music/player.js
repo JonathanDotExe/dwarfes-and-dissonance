@@ -1,5 +1,8 @@
 import { SimpleReverb } from "../lib/reverb.js";
 
+/**
+ * A playable audio loop with the binary media data and the amount of bars of silence before the loop starts
+ */
 export class AudioLoop {
 
     constructor(buffer, preBars) {
@@ -17,6 +20,10 @@ export class AudioLoop {
 }
 
 
+/**
+ * Represents an audio channel of one instrument with a processing chain
+ * Start is the first noide of the chain where the audio is sent into and end is the output that is sent to the master effects.
+ */
 export class AudioChannel {
 
     constructor(start, end) {
@@ -58,12 +65,8 @@ export class MusicPlayer {
         this._nextLoopTime = 0;
         this._preDecisionBars = 2;
         //Gain
-        //this._compressor = this._audioCtx.createDynamicsCompressor();
-        //this._compressor.threshold.value = -6;
-        //this._compressor.ratio.value = 2;
         this._masterGain = this._audioCtx.createGain();
         this._masterGain.connect(this._audioCtx.destination);
-        //this._compressor.connect(this._audioCtx.destination);
         //Filter
         this._filter = this._audioCtx.createBiquadFilter();
         this._filter.frequency.setValueAtTime(700, this._audioCtx.currentTime);
@@ -83,8 +86,20 @@ export class MusicPlayer {
         this.deactivateCaveReverb();
         this._running = true;
         this._masterGain.gain.value = 1;
+
+        /**
+         * Processing chain
+         * 
+         * channels -> filter ------------------> master -> out
+         *               |                          ^
+         *               |->  wetGain -> reverb ----|
+         * 
+         */
     }
 
+    /**
+     * Create a channel for a track with the given key
+     */
     addChannel(key, ch) {
         if (key in this._channels) {
             throw "Channel with key " + key + " already created.";
@@ -94,6 +109,9 @@ export class MusicPlayer {
         return key;
     }
 
+    /**
+     * Plays the given loop in the given channel in time with the next loop iteration
+     */
     play(key, loop) {
         this._channels[key].play(loop, this);
     }

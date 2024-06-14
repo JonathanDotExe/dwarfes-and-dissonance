@@ -6,7 +6,9 @@ export const GameObjectState = {
 }
 
 /**
+ * Represents a movable object in the game whose position is not bound to tiles.
  * Coordinates are in TILE_SIZE units
+ * Motions are all given in Tile/s
  */
 export class GameObject {
 
@@ -19,10 +21,16 @@ export class GameObject {
         this._yMotion = 0;
     }
 
+    /**
+     * How much motion the object looses per/s
+     */
     get friction() {
         return 8;
     }
 
+    /**
+     * Determines if the object bounces of walls when colliding with motion
+     */
     get bounce() {
         return false;
     }
@@ -45,6 +53,13 @@ export class GameObject {
         this._state = GameObjectState.Alive;
     }
 
+    /**
+     * 
+     * Called every game frame
+     * 
+     * @param {*} deltaTime the time since the last update in seconds
+     * @param {*} env a structure with game environment objects like the Input
+     */
     update(deltaTime, env) {
         //Movement
         const diff = this.move(this.xMotion, this.yMotion, deltaTime);
@@ -59,10 +74,19 @@ export class GameObject {
         this.yMotion -= Math.sign(this.yMotion) * Math.min(this.friction * deltaTime, Math.abs(this.yMotion));
     }
 
+    /**
+     * Called when the game is drawn.
+     * Should draw itself on the canvas.
+     */
     draw(camX, camY, ctx) {
 
     }
 
+    /**
+     * Moves the object by the given motion considering delta time with collision detection.
+     * 
+     * @returns a vector containing the amount of tiles that the object couldn't move doe to collision detection
+     */
     move(xMotion, yMotion, deltaTime) {
         const xM = xMotion * deltaTime;
         const yM = yMotion * deltaTime;
@@ -80,10 +104,16 @@ export class GameObject {
         this._state = GameObjectState.Removed;
     }
 
+    /**
+     * @returns whether the object should collide with the given tile
+     */
     doesCollide(tile) {
         return tile == null || tile.solid || tile.fluid;
     }
 
+    /**
+     * @returns whether the object should collide with the given object
+     */
     doesCollideObject(object) {
         return object != null && object.solid;
     }
@@ -93,11 +123,17 @@ export class GameObject {
         return !!tile && tile.fluid;
     }
 
+    /**
+     * Adds force to the object
+     */
     applyForce(forceX, forceY) {
         this.xMotion += forceX;
         this.yMotion += forceY;
     }
 
+    /**
+     * Overwrites the objects force to prevent knockback from stacking
+     */
     overwriteForce(forceX, forceY) {
         if (Math.sign(this.xMotion) == Math.sign(forceX)) {
             this.xMotion = Math.sign(this.xMotion) * Math.max(this.xMotion);

@@ -1,6 +1,9 @@
 import { GameObject } from "./gameobject.js";
 import { TILE_SIZE, Tile } from "./tile.js";
 
+/**
+ * A game object with health
+ */
 export class LivingObject extends GameObject {
 
     constructor(x, y, maxHealth) {
@@ -9,6 +12,9 @@ export class LivingObject extends GameObject {
         this._health = maxHealth;
     }
 
+    /**
+     * the score the player gains when he kills this object
+     */
     get killScore() {
         return 0;
     }
@@ -17,6 +23,9 @@ export class LivingObject extends GameObject {
         return this._health = health;
     }
 
+    /**
+     * Object takes damage and performs kill logic if health <= 0
+     */
     takeDamage(damage) {
         if (damage < 0) {
             throw "Damage must not be below zero";
@@ -30,6 +39,23 @@ export class LivingObject extends GameObject {
         return false;
     }
 
+    /**
+     * Heals the object by the given amount
+     */
+    heal(amount) {
+        if (amount < 0) {
+            throw "Amount must not be below zero";
+        }
+        if(this._health + amount > this._maxHealth){
+            this._health = this._maxHealth;
+        } else{
+            this._health += amount;
+        }
+    }
+
+    /**
+     * Internal method, called by takeDamage when damage reaches 0
+     */
     kill() {
         this.world.removeObject(this);
     }

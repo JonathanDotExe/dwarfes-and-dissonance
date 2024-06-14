@@ -46,7 +46,7 @@ export class CaveTile extends Tile {
         this._display = display;
     }
 
-    getDisplayTile(x, y, world) { //A tile that should be displayed instead of this one
+    getDisplayTile(x, y, world) { //A tile that should be displayed instead of this one when the player is not near
         if (Math.pow(x + 0.5 - world.player.x + world.player.width/2, 2) + Math.pow(y + 0.5 - world.player.y + world.player.height/2, 2) < world.player.sightRange * world.player.sightRange) {
             return this;
         }
@@ -61,6 +61,9 @@ function loadTileImage(name) {
     return image;
 }
 
+/**
+ * Tile constants
+ */
 export const GRASS_TILE = new Tile(loadTileImage("grass"), false, false);
 export const SAND_TILE = new Tile(loadTileImage("sand"), false, false);
 export const WATER_TILE = new Tile(loadTileImage("water"), false, true);
